@@ -1,0 +1,150 @@
+import 'package:flutter/material.dart';
+
+import '../../i18n/app_strings.dart';
+import '../../i18n/language_controller.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/bounce_in.dart';
+import 'color_find_game_screen.dart';
+import 'color_intro_screen.dart';
+import 'color_sort_game_screen.dart';
+
+/// תפריט מודול הצבעים: היכרות, משחק "מצא את הצבע" ומשחק מיון.
+class ColorsMenuScreen extends StatelessWidget {
+  const ColorsMenuScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = LanguageScope.of(context).value;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  _HomeButton(onTap: () => Navigator.of(context).pop()),
+                  const Spacer(),
+                ],
+              ),
+              const SizedBox(height: 12),
+              BounceIn(
+                child: Text(
+                  AppStrings.colorsMenuTitle(l),
+                  style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w800),
+                ),
+              ),
+              const SizedBox(height: 32),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _MenuCard(
+                      label: AppStrings.introMenuItem(l),
+                      icon: Icons.wb_sunny_rounded,
+                      color: AppTheme.primary,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const ColorIntroScreen()),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _MenuCard(
+                      label: AppStrings.findMenuItem(l),
+                      icon: Icons.search_rounded,
+                      color: AppTheme.secondary,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const ColorFindGameScreen()),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _MenuCard(
+                      label: AppStrings.sortMenuItem(l),
+                      icon: Icons.shopping_basket_rounded,
+                      color: AppTheme.success,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const ColorSortGameScreen()),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuCard extends StatelessWidget {
+  const _MenuCard({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(26),
+      elevation: 4,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(26),
+        onTap: onTap,
+        child: Container(
+          width: 320,
+          constraints: const BoxConstraints(minHeight: AppTheme.minTouchTarget),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white, size: 40),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeButton extends StatelessWidget {
+  const _HomeButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      shape: const CircleBorder(),
+      elevation: 4,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: const Padding(
+          padding: EdgeInsets.all(14),
+          child: Icon(Icons.home_rounded, color: Color(0xFFFF7A59), size: 32),
+        ),
+      ),
+    );
+  }
+}
