@@ -5,6 +5,8 @@ import '../../i18n/language_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/responsive_center.dart';
+import '../../widgets/round_icon_button.dart';
+import '../../widgets/tap_scale.dart';
 import 'color_find_game_screen.dart';
 import 'color_intro_screen.dart';
 import 'color_sort_game_screen.dart';
@@ -27,7 +29,11 @@ class ColorsMenuScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _HomeButton(onTap: () => Navigator.of(context).pop()),
+                    RoundIconButton(
+                      icon: Icons.home_rounded,
+                      iconColor: AppTheme.primary,
+                      onTap: () => Navigator.of(context).pop(),
+                    ),
                     const Spacer(),
                   ],
                 ),
@@ -105,56 +111,45 @@ class _MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: color,
-      borderRadius: BorderRadius.circular(26),
-      elevation: 4,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(26),
-        onTap: onTap,
-        child: Container(
-          width: 320,
-          constraints: const BoxConstraints(minHeight: AppTheme.minTouchTarget),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-          child: Row(
-            children: [
-              Icon(icon, color: Colors.white, size: 40),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+    return TapScale(
+      onTap: onTap,
+      child: Container(
+        width: 320,
+        constraints: const BoxConstraints(minHeight: AppTheme.minTouchTarget),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.lerp(color, Colors.white, 0.14)!,
+              Color.lerp(color, Colors.black, 0.1)!,
             ],
           ),
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _HomeButton extends StatelessWidget {
-  const _HomeButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      shape: const CircleBorder(),
-      elevation: 4,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: const Padding(
-          padding: EdgeInsets.all(14),
-          child: Icon(Icons.home_rounded, color: Color(0xFFFF7A59), size: 32),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 40),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

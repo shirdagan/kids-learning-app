@@ -57,6 +57,10 @@ class _ObjectPainter extends CustomPainter {
         _paintGrapes(canvas, size, fill);
       case ObjectShape.flower:
         _paintFlower(canvas, size, fill);
+      case ObjectShape.cloud:
+        _paintCloud(canvas, size, fill);
+      case ObjectShape.moon:
+        _paintMoon(canvas, size, fill);
     }
   }
 
@@ -266,6 +270,51 @@ class _ObjectPainter extends CustomPainter {
       ..strokeWidth = w * 0.045
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(Offset(w * 0.5, h * 0.7), Offset(w * 0.5, h * 0.98), stem);
+  }
+
+  void _paintCloud(Canvas canvas, Size size, Paint fill) {
+    final w = size.width, h = size.height;
+    // ענן לבן זקוק למתאר גלוי כדי לא "להיעלם" על רקע לבן.
+    final outline = Paint()
+      ..color = const Color(0xFFB9C4CC)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.025
+      ..strokeJoin = StrokeJoin.round;
+
+    final path = Path()
+      ..moveTo(w * 0.20, h * 0.66)
+      ..quadraticBezierTo(w * 0.08, h * 0.66, w * 0.08, h * 0.52)
+      ..quadraticBezierTo(w * 0.08, h * 0.36, w * 0.25, h * 0.37)
+      ..quadraticBezierTo(w * 0.28, h * 0.20, w * 0.46, h * 0.20)
+      ..quadraticBezierTo(w * 0.62, h * 0.20, w * 0.66, h * 0.35)
+      ..quadraticBezierTo(w * 0.84, h * 0.28, w * 0.90, h * 0.48)
+      ..quadraticBezierTo(w * 0.96, h * 0.62, w * 0.82, h * 0.68)
+      ..quadraticBezierTo(w * 0.86, h * 0.80, w * 0.68, h * 0.80)
+      ..lineTo(w * 0.30, h * 0.80)
+      ..quadraticBezierTo(w * 0.15, h * 0.80, w * 0.20, h * 0.66)
+      ..close();
+
+    canvas.drawPath(path, fill);
+    canvas.drawPath(path, outline);
+  }
+
+  void _paintMoon(Canvas canvas, Size size, Paint fill) {
+    final w = size.width, h = size.height;
+    final full = Path()
+      ..addOval(
+        Rect.fromCircle(center: Offset(w * 0.55, h * 0.5), radius: w * 0.32),
+      );
+    final bite = Path()
+      ..addOval(
+        Rect.fromCircle(center: Offset(w * 0.70, h * 0.40), radius: w * 0.28),
+      );
+    final crescent = Path.combine(PathOperation.difference, full, bite);
+    canvas.drawPath(crescent, fill);
+
+    final starPaint = Paint()..color = fill.color;
+    canvas.drawCircle(Offset(w * 0.20, h * 0.26), w * 0.03, starPaint);
+    canvas.drawCircle(Offset(w * 0.16, h * 0.58), w * 0.022, starPaint);
+    canvas.drawCircle(Offset(w * 0.28, h * 0.72), w * 0.026, starPaint);
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../i18n/app_strings.dart';
 import '../i18n/language_controller.dart';
+import 'tap_scale.dart';
 
 /// אריח גדול במסך הבית עבור מודול לימוד אחד (צבעים, חיות, מספרים...).
 /// מודולים שעדיין לא נבנו מסומנים כ"בקרוב" ומעומעמים קלות.
@@ -26,15 +27,23 @@ class ModuleTile extends StatelessWidget {
     final badgeLabel = AppStrings.comingSoonBadge(
       LanguageScope.of(context).value,
     );
+    final baseColor = comingSoon ? color.withValues(alpha: 0.45) : color;
     final content = Container(
       decoration: BoxDecoration(
-        color: comingSoon ? color.withValues(alpha: 0.45) : color,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.lerp(baseColor, Colors.white, 0.12)!,
+            Color.lerp(baseColor, Colors.black, 0.08)!,
+          ],
+        ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: baseColor.withValues(alpha: 0.35),
+            blurRadius: 14,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -85,14 +94,6 @@ class ModuleTile extends StatelessWidget {
       ),
     );
 
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(28),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(28),
-        onTap: onTap,
-        child: content,
-      ),
-    );
+    return TapScale(onTap: onTap, child: content);
   }
 }

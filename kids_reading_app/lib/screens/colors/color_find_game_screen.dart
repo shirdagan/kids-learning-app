@@ -8,9 +8,12 @@ import '../../i18n/language_controller.dart';
 import '../../models/color_concept.dart';
 import '../../services/feedback_service.dart';
 import '../../services/voice_clip_service.dart';
+import '../../theme/color_contrast.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
+import '../../widgets/round_icon_button.dart';
+import '../../widgets/tap_scale.dart';
 
 /// משחק "מצא את הצבע": האפליקציה אומרת שם צבע, והילד לוחץ על החפץ
 /// בצבע הנכון מבין כמה חפצים על המסך.
@@ -117,92 +120,94 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
     final l = LanguageScope.of(context).value;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF7FF),
-      body: SafeArea(
-        child: ResponsiveCenter(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Material(
-                      color: Colors.white,
-                      shape: const CircleBorder(),
-                      elevation: 4,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF3F8FF), Color(0xFFE3EEFC)],
+          ),
+        ),
+        child: SafeArea(
+          child: ResponsiveCenter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      RoundIconButton(
+                        icon: Icons.home_rounded,
+                        iconColor: const Color(0xFF4FB6E8),
                         onTap: () => Navigator.of(context).pop(),
-                        child: const Padding(
-                          padding: EdgeInsets.all(14),
-                          child: Icon(
-                            Icons.home_rounded,
-                            color: Color(0xFF4FB6E8),
-                            size: 32,
-                          ),
-                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Material(
-                      color: Colors.white,
-                      shape: const CircleBorder(),
-                      elevation: 4,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
+                      const Spacer(),
+                      RoundIconButton(
+                        icon: Icons.volume_up_rounded,
+                        iconColor: const Color(0xFF4FB6E8),
                         onTap: _askForTarget,
-                        child: const Padding(
-                          padding: EdgeInsets.all(14),
-                          child: Icon(
-                            Icons.volume_up_rounded,
-                            color: Color(0xFF4FB6E8),
-                            size: 32,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  BounceIn(
+                    key: ValueKey('target-${_target.id}'),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            _target.color,
+                            Color.lerp(_target.color, Colors.black, 0.15)!,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFFE3E9F0),
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _target.color.asGlow.withValues(alpha: 0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
+                        ],
+                      ),
+                      child: Text(
+                        AppStrings.findPrompt(l, _target.nameFor(l)),
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          color: _target.color.contrastingForeground,
                         ),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                BounceIn(
-                  key: ValueKey('target-${_target.id}'),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _target.color,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Text(
-                      AppStrings.findPrompt(l, _target.nameFor(l)),
-                      style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
+                  ),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      children: _options.map((option) {
+                        return ShakeOnWrong(
+                          trigger: _shakingId == option.id ? _shakeTrigger : 0,
+                          child: _ColorOptionCard(
+                            concept: option,
+                            onTap: () => _onOptionTap(option),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    children: _options.map((option) {
-                      return ShakeOnWrong(
-                        trigger: _shakingId == option.id ? _shakeTrigger : 0,
-                        child: _ColorOptionCard(
-                          concept: option,
-                          onTap: () => _onOptionTap(option),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -219,20 +224,25 @@ class _ColorOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
-      elevation: 3,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(24),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: ObjectIllustration(
-            shape: concept.shape,
-            color: concept.color,
-            size: 120,
-          ),
+    return TapScale(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(12),
+        child: ObjectIllustration(
+          shape: concept.shape,
+          color: concept.color,
+          size: 120,
         ),
       ),
     );

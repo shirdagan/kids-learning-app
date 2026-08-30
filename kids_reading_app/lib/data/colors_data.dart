@@ -68,4 +68,24 @@ const List<ColorConcept> kColorConcepts = [
     objectEnglishName: 'flower',
     shape: ObjectShape.flower,
   ),
+  ColorConcept(
+    id: 'white',
+    hebrewName: 'לבן',
+    englishName: 'white',
+    color: Color(0xFFFFFFFF),
+    objectHebrewName: 'ענן',
+    objectEnglishName: 'cloud',
+    shape: ObjectShape.cloud,
+  ),
+  ColorConcept(
+    id: 'black',
+    hebrewName: 'שחור',
+    englishName: 'black',
+    // גוון פחם רך במקום שחור מוחלט — קריא באותה מידה ככחור, אך פחות קשה
+    // לעין של פעוט.
+    color: Color(0xFF2B2B2E),
+    objectHebrewName: 'לילה',
+    objectEnglishName: 'night',
+    shape: ObjectShape.moon,
+  ),
 ];

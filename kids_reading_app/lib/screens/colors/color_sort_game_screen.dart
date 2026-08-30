@@ -12,6 +12,7 @@ import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
+import '../../widgets/round_icon_button.dart';
 
 /// משחק מיון: גוררים חפצים צבעוניים לסלסלה בצבע התואם.
 class ColorSortGameScreen extends StatefulWidget {
@@ -121,51 +122,50 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
     final l = LanguageScope.of(context).value;
     final done = _items.isEmpty;
     return Scaffold(
-      backgroundColor: const Color(0xFFEFFAF0),
-      body: SafeArea(
-        child: ResponsiveCenter(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Material(
-                      color: Colors.white,
-                      shape: const CircleBorder(),
-                      elevation: 4,
-                      child: InkWell(
-                        customBorder: const CircleBorder(),
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF2FBF3), Color(0xFFE1F5E4)],
+          ),
+        ),
+        child: SafeArea(
+          child: ResponsiveCenter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      RoundIconButton(
+                        icon: Icons.home_rounded,
+                        iconColor: const Color(0xFF57C468),
                         onTap: () => Navigator.of(context).pop(),
-                        child: const Padding(
-                          padding: EdgeInsets.all(14),
-                          child: Icon(
-                            Icons.home_rounded,
-                            color: Color(0xFF57C468),
-                            size: 32,
-                          ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        AppStrings.sortTitle(l),
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      AppStrings.sortTitle(l),
-                      style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const Spacer(),
-                    const SizedBox(width: 60),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: done
-                      ? _CelebrationView(language: l, onPlayAgain: _startRound)
-                      : _buildBoard(),
-                ),
-              ],
+                      const Spacer(),
+                      const SizedBox(width: 60),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: done
+                        ? _CelebrationView(
+                            language: l,
+                            onPlayAgain: _startRound,
+                          )
+                        : _buildBoard(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -266,25 +266,42 @@ class _BasketTargetState extends State<_BasketTarget> {
         }
       },
       builder: (context, candidateData, rejectedData) {
+        // אייקון הסלסלה תמיד בגוון ניטרלי (לא בצבע הסלסלה עצמו) — כדי
+        // שיישאר גלוי גם כשצבע הסלסלה הוא לבן. הצבע עצמו מיוצג ברצועה
+        // הצבעונית מתחת, עם מסגרת ניטרלית שגם היא נשארת גלויה על לבן.
         return AnimatedScale(
           scale: _hovering ? 1.08 : 1.0,
           duration: const Duration(milliseconds: 150),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.shopping_basket_rounded,
                 size: 56,
-                color: widget.basket.color,
+                color: Color(0xFF6B5B4B),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 6),
               Container(
                 width: 90,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: widget.basket.color,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      widget.basket.color,
+                      Color.lerp(widget.basket.color, Colors.black, 0.12)!,
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white, width: 3),
+                  border: Border.all(color: const Color(0xFFD8CFC3), width: 3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
               ),
             ],
