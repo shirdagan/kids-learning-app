@@ -9,20 +9,32 @@ import 'package:kids_reading_app/screens/colors/color_intro_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_sort_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/colors_menu_screen.dart';
 import 'package:kids_reading_app/services/feedback_service.dart';
-import 'package:kids_reading_app/services/tts_service.dart';
+import 'package:kids_reading_app/services/voice_clip_service.dart';
 
 /// מימוש דמה של שירות הדיבור לצורך בדיקות: לא נוגע בערוצי פלטפורמה
-/// אמיתיים (שלא קיימים בסביבת הבדיקות), רק זוכר מה נאמר.
-class _FakeTtsService implements SpeechService {
+/// אמיתיים (שלא קיימים בסביבת הבדיקות), רק זוכר מה נאמר (טקסט ה-fallback,
+/// בדיוק כמו שהיה נאמר אם אין הקלטה — התנהגות שקולה ל-TTS).
+class _FakeVoiceService implements VoiceService {
   final List<String> spoken = [];
 
   @override
-  Future<void> speak(String text, {AppLanguage language = AppLanguage.hebrew}) async {
-    spoken.add(text);
+  Future<void> speak(
+    String clipKey,
+    String fallbackText, {
+    AppLanguage language = AppLanguage.hebrew,
+  }) async {
+    spoken.add(fallbackText);
   }
 
   @override
-  Future<void> stop() async {}
+  Future<void> speakSequence(
+    List<VoicePhrase> phrases, {
+    AppLanguage language = AppLanguage.hebrew,
+  }) async {
+    for (final phrase in phrases) {
+      spoken.add(phrase.fallbackText);
+    }
+  }
 
   @override
   void dispose() {}
@@ -54,7 +66,10 @@ void main() {
   // את משטח הבדיקה כדי שכל האריחים ייבנו וניתנים לאיתור, בלי scroll.
   setUp(() {
     final binding = TestWidgetsFlutterBinding.ensureInitialized();
-    binding.platformDispatcher.views.first.physicalSize = const Size(1200, 2200);
+    binding.platformDispatcher.views.first.physicalSize = const Size(
+      1200,
+      2200,
+    );
     binding.platformDispatcher.views.first.devicePixelRatio = 1.0;
     addTearDown(binding.platformDispatcher.views.first.resetPhysicalSize);
     addTearDown(binding.platformDispatcher.views.first.resetDevicePixelRatio);
@@ -72,7 +87,9 @@ void main() {
     expect(find.text('חשבון'), findsOneWidget);
   });
 
-  testWidgets('לחיצה על אריח הצבעים פותחת את תפריט מודול הצבעים', (tester) async {
+  testWidgets('לחיצה על אריח הצבעים פותחת את תפריט מודול הצבעים', (
+    tester,
+  ) async {
     await tester.pumpWidget(const KidsReadingApp());
     await tester.pumpAndSettle();
 
@@ -95,38 +112,49 @@ void main() {
     expect(find.textContaining('בדרך'), findsOneWidget);
   });
 
-  testWidgets('מסך היכרות עם צבעים אומר את שם הצבע ומציג נקודות דפדוף', (tester) async {
+  testWidgets('מסך היכרות עם צבעים אומר את שם הצבע ומציג נקודות דפדוף', (
+    tester,
+  ) async {
     // לא pumpAndSettle: לחפץ המוצג יש אנימציית ריחוף אינסופית (GentleFloat)
     // בכוונה, כדי לרמז שאפשר ללחוץ עליו — pumpAndSettle לעולם לא היה נרגע.
-    final tts = _FakeTtsService();
-    await tester.pumpWidget(_wrapWithLanguage(ColorIntroScreen(ttsService: tts)));
+    final voice = _FakeVoiceService();
+    await tester.pumpWidget(
+      _wrapWithLanguage(ColorIntroScreen(voiceService: voice)),
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 800));
 
     expect(find.byType(PageView), findsOneWidget);
-    expect(tts.spoken, isNotEmpty);
-    expect(tts.spoken.first, contains('אדום'));
+    expect(voice.spoken, isNotEmpty);
+    expect(voice.spoken.first, contains('אדום'));
   });
 
-  testWidgets('משחק "מצא את הצבע" מציג ארבע אפשרויות ושואל על צבע', (tester) async {
-    final tts = _FakeTtsService();
+  testWidgets('משחק "מצא את הצבע" מציג ארבע אפשרויות ושואל על צבע', (
+    tester,
+  ) async {
+    final voice = _FakeVoiceService();
     await tester.pumpWidget(
       _wrapWithLanguage(
-        ColorFindGameScreen(ttsService: tts, feedbackService: _FakeFeedbackService()),
+        ColorFindGameScreen(
+          voiceService: voice,
+          feedbackService: _FakeFeedbackService(),
+        ),
       ),
     );
     await tester.pumpAndSettle();
 
     expect(find.textContaining('איפה'), findsWidgets);
     expect(find.byType(GridView), findsOneWidget);
-    expect(tts.spoken, isNotEmpty);
+    expect(voice.spoken, isNotEmpty);
   });
 
-  testWidgets('משחק מיון הצבעים מציג שלוש סלסלות וחפצים לגרירה', (tester) async {
+  testWidgets('משחק מיון הצבעים מציג שלוש סלסלות וחפצים לגרירה', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrapWithLanguage(
         ColorSortGameScreen(
-          ttsService: _FakeTtsService(),
+          voiceService: _FakeVoiceService(),
           feedbackService: _FakeFeedbackService(),
         ),
       ),

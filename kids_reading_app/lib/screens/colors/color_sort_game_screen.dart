@@ -8,17 +8,21 @@ import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
 import '../../models/color_concept.dart';
 import '../../services/feedback_service.dart';
-import '../../services/tts_service.dart';
+import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
 
 /// משחק מיון: גוררים חפצים צבעוניים לסלסלה בצבע התואם.
 class ColorSortGameScreen extends StatefulWidget {
-  const ColorSortGameScreen({super.key, this.ttsService, this.feedbackService});
+  const ColorSortGameScreen({
+    super.key,
+    this.voiceService,
+    this.feedbackService,
+  });
 
   /// נקודות הזרקה לצורך בדיקות.
-  final SpeechService? ttsService;
+  final VoiceService? voiceService;
   final SoundFeedback? feedbackService;
 
   @override
@@ -35,7 +39,7 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
   static const _basketCount = 3;
   static const _itemsPerRound = 6;
 
-  late final SpeechService _tts = widget.ttsService ?? TtsService();
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
   late final SoundFeedback _feedback =
       widget.feedbackService ?? FeedbackService();
   final _random = Random();
@@ -52,7 +56,7 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
 
   @override
   void dispose() {
-    _tts.dispose();
+    _voice.dispose();
     _feedback.dispose();
     super.dispose();
   }
@@ -71,7 +75,11 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
     Future.delayed(const Duration(milliseconds: 400), () {
       if (!mounted) return;
       final language = LanguageScope.of(context).value;
-      _tts.speak(AppStrings.sortIntro(language), language: language);
+      _voice.speak(
+        'sort_intro',
+        AppStrings.sortIntro(language),
+        language: language,
+      );
     });
   }
 
@@ -81,15 +89,25 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
     setState(() => _items.removeWhere((i) => i.id == item.id));
     await _feedback.playSuccess();
     final phrases = AppStrings.praisePhrases(language);
-    final praise = phrases[_random.nextInt(phrases.length)];
-    await _tts.speak(
-      '$praise ${item.concept.nameFor(language)}',
-      language: language,
-    );
+    final praiseIndex = _random.nextInt(phrases.length);
+    await _voice.speakSequence([
+      (
+        clipKey: 'praise_${praiseIndex + 1}',
+        fallbackText: phrases[praiseIndex],
+      ),
+      (
+        clipKey: 'color_name_${item.concept.id}',
+        fallbackText: item.concept.nameFor(language),
+      ),
+    ], language: language);
     if (_items.isEmpty && mounted) {
       await Future.delayed(const Duration(milliseconds: 300));
       if (mounted) {
-        await _tts.speak(AppStrings.sortComplete(language), language: language);
+        await _voice.speak(
+          'sort_complete',
+          AppStrings.sortComplete(language),
+          language: language,
+        );
       }
     }
   }

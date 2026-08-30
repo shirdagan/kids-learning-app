@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/colors_data.dart';
 import '../../i18n/language_controller.dart';
 import '../../models/object_shape.dart';
-import '../../services/tts_service.dart';
+import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
@@ -11,18 +11,18 @@ import '../../widgets/responsive_center.dart';
 /// מסך היכרות עם צבע: מציג צבע אחד עם חפץ מוכר, ואומר את שמו כשלוחצים
 /// עליו. אפשר לדפדף בין הצבעים עם חצים גדולים או החלקה.
 class ColorIntroScreen extends StatefulWidget {
-  const ColorIntroScreen({super.key, this.ttsService});
+  const ColorIntroScreen({super.key, this.voiceService});
 
   /// נקודת הזרקה לצורך בדיקות (מאפשר להחליף במימוש דמה שלא נוגע
   /// בערוצי פלטפורמה אמיתיים).
-  final SpeechService? ttsService;
+  final VoiceService? voiceService;
 
   @override
   State<ColorIntroScreen> createState() => _ColorIntroScreenState();
 }
 
 class _ColorIntroScreenState extends State<ColorIntroScreen> {
-  late final SpeechService _tts = widget.ttsService ?? TtsService();
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
   final _pageController = PageController();
   int _index = 0;
 
@@ -34,7 +34,7 @@ class _ColorIntroScreenState extends State<ColorIntroScreen> {
 
   @override
   void dispose() {
-    _tts.dispose();
+    _voice.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -42,8 +42,10 @@ class _ColorIntroScreenState extends State<ColorIntroScreen> {
   void _speakCurrent() {
     if (!mounted) return;
     final language = LanguageScope.of(context).value;
-    _tts.speak(
-      kColorConcepts[_index].introSpeechFor(language),
+    final concept = kColorConcepts[_index];
+    _voice.speak(
+      'colors_intro_${concept.id}',
+      concept.introSpeechFor(language),
       language: language,
     );
   }

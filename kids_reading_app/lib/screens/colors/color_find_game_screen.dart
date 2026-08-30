@@ -7,7 +7,7 @@ import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
 import '../../models/color_concept.dart';
 import '../../services/feedback_service.dart';
-import '../../services/tts_service.dart';
+import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
@@ -15,10 +15,14 @@ import '../../widgets/responsive_center.dart';
 /// משחק "מצא את הצבע": האפליקציה אומרת שם צבע, והילד לוחץ על החפץ
 /// בצבע הנכון מבין כמה חפצים על המסך.
 class ColorFindGameScreen extends StatefulWidget {
-  const ColorFindGameScreen({super.key, this.ttsService, this.feedbackService});
+  const ColorFindGameScreen({
+    super.key,
+    this.voiceService,
+    this.feedbackService,
+  });
 
   /// נקודות הזרקה לצורך בדיקות.
-  final SpeechService? ttsService;
+  final VoiceService? voiceService;
   final SoundFeedback? feedbackService;
 
   @override
@@ -28,7 +32,7 @@ class ColorFindGameScreen extends StatefulWidget {
 class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   static const _optionsPerRound = 4;
 
-  late final SpeechService _tts = widget.ttsService ?? TtsService();
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
   late final SoundFeedback _feedback =
       widget.feedbackService ?? FeedbackService();
   final _random = Random();
@@ -51,7 +55,7 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
 
   @override
   void dispose() {
-    _tts.dispose();
+    _voice.dispose();
     _feedback.dispose();
     super.dispose();
   }
@@ -72,7 +76,8 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   void _askForTarget() {
     if (!mounted) return;
     final language = LanguageScope.of(context).value;
-    _tts.speak(
+    _voice.speak(
+      'find_prompt_${_target.id}',
       AppStrings.findPrompt(language, _target.nameFor(language)),
       language: language,
     );
@@ -85,11 +90,17 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
       setState(() => _celebrating = true);
       await _feedback.playSuccess();
       final phrases = AppStrings.praisePhrases(language);
-      final praise = phrases[_random.nextInt(phrases.length)];
-      await _tts.speak(
-        '$praise ${_target.nameFor(language)}',
-        language: language,
-      );
+      final praiseIndex = _random.nextInt(phrases.length);
+      await _voice.speakSequence([
+        (
+          clipKey: 'praise_${praiseIndex + 1}',
+          fallbackText: phrases[praiseIndex],
+        ),
+        (
+          clipKey: 'color_name_${_target.id}',
+          fallbackText: _target.nameFor(language),
+        ),
+      ], language: language);
       await Future.delayed(const Duration(milliseconds: 600));
       if (mounted) _newRound();
     } else {
