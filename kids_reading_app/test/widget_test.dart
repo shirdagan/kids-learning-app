@@ -10,6 +10,7 @@ import 'package:kids_reading_app/screens/colors/color_sort_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/colors_menu_screen.dart';
 import 'package:kids_reading_app/services/feedback_service.dart';
 import 'package:kids_reading_app/services/voice_clip_service.dart';
+import 'package:kids_reading_app/widgets/module_tile.dart';
 
 /// מימוש דמה של שירות הדיבור לצורך בדיקות: לא נוגע בערוצי פלטפורמה
 /// אמיתיים (שלא קיימים בסביבת הבדיקות), רק זוכר מה נאמר (טקסט ה-fallback,
@@ -75,9 +76,15 @@ void main() {
     addTearDown(binding.platformDispatcher.views.first.resetDevicePixelRatio);
   });
 
+  // הערה: מסך הבית מציג את בּוּבּוּ, הדמות המובילה, עם אנימציית "נשימה"
+  // אינסופית בכוונה — pumpAndSettle לעולם לא היה נרגע כל עוד המסך הזה
+  // (או מסך שנפתח מעליו, כי הוא נשאר חי מתחתיו) מחובר לעץ, אז משתמשים
+  // ב-pump עם משך זמן קבוע בכל הבדיקות שנוגעות בו.
+
   testWidgets('מסך הבית מציג את כל אריחי המודולים', (tester) async {
     await tester.pumpWidget(const KidsReadingApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
 
     expect(find.text('צבעים'), findsOneWidget);
     expect(find.text('חיות'), findsOneWidget);
@@ -91,10 +98,15 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(const KidsReadingApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
 
-    await tester.tap(find.text('צבעים'));
-    await tester.pumpAndSettle();
+    // קוראים ל-onTap ישירות במקום לדמות הקשה: לאריח יש גם אנימציית
+    // כניסה מדורגת וגם עטיפת TapScale, וזה הרבה יותר יציב מלנחש קואורדינטת
+    // הקשה בדיוק על הריבוע הנכון תוך כדי אנימציה.
+    tester.widget<ModuleTile>(find.widgetWithText(ModuleTile, 'צבעים')).onTap();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.byType(ColorsMenuScreen), findsOneWidget);
     expect(find.text('היכרות עם צבעים'), findsOneWidget);
@@ -104,10 +116,12 @@ void main() {
 
   testWidgets('לחיצה על אריח "בקרוב" פותחת מסך שמור מקום', (tester) async {
     await tester.pumpWidget(const KidsReadingApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
 
-    await tester.tap(find.text('חיות'));
-    await tester.pumpAndSettle();
+    tester.widget<ModuleTile>(find.widgetWithText(ModuleTile, 'חיות')).onTap();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.textContaining('בדרך'), findsOneWidget);
   });
@@ -122,7 +136,7 @@ void main() {
       _wrapWithLanguage(ColorIntroScreen(voiceService: voice)),
     );
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 800));
+    await tester.pump(const Duration(milliseconds: 1500));
 
     expect(find.byType(PageView), findsOneWidget);
     expect(voice.spoken, isNotEmpty);

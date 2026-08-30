@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../i18n/app_language.dart';
 import 'tts_service.dart';
@@ -59,22 +60,31 @@ class VoiceClipService implements VoiceService {
       'audio/voice/${language.localeTag}/$clipKey.m4a';
 
   Future<bool> _tryPlayClip(String assetPath) async {
+    // בדיקה מהירה ומקומית אם ההקלטה בכלל קיימת בחבילת ה-assets, לפני
+    // שמנסים לנגן אותה. כך, כשההקלטה עדיין לא קיימת (המצב הנפוץ כרגע),
+    // נופלים ל-TTS כמעט מיידית — במקום לחכות לטיים-אאוט ארוך על כל
+    // ביטוי (מה שגרם למשחקים "להיתקע" לכמה שניות אחרי כל תשובה).
+    try {
+      await rootBundle.load('assets/$assetPath');
+    } catch (_) {
+      return false;
+    }
+
     try {
       await _player.stop();
       final completer = Completer<void>();
       late final StreamSubscription<void> sub;
       sub = _player.onPlayerComplete.listen((_) {
-        sub.cancel();
         if (!completer.isCompleted) completer.complete();
       });
       await _player.play(AssetSource(assetPath));
-      await completer.future.timeout(
-        const Duration(seconds: 10),
-        onTimeout: () => sub.cancel(),
-      );
+      // אם הניגון עצמו נתקע (למשל שגיאת פלטפורמה) — טיים-אאוט זורק
+      // חריגה, שנתפסת למטה כ"נכשל" ומפעילה TTS, במקום "להצליח" בשקט
+      // בלי שום קול.
+      await completer.future.timeout(const Duration(seconds: 8));
+      await sub.cancel();
       return true;
     } catch (_) {
-      // הקליפ לא קיים (עדיין לא הוקלט) או שאירעה שגיאת ניגון — נופלים ל-TTS.
       return false;
     }
   }

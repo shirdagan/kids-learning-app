@@ -5,6 +5,7 @@ import '../i18n/language_controller.dart';
 import '../navigation/fade_scale_route.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bounce_in.dart';
+import '../widgets/mascot_character.dart';
 import '../widgets/module_tile.dart';
 import '../widgets/responsive_center.dart';
 import 'coming_soon_screen.dart';
@@ -112,6 +113,7 @@ class HomeScreen extends StatelessWidget {
                       _LanguageToggleButton(controller: language),
                     ],
                   ),
+                  const MascotCharacter(size: 110),
                   BounceIn(
                     child: Text(
                       AppStrings.homeTitle(l),

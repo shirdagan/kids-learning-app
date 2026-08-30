@@ -9,8 +9,8 @@ import '../../i18n/language_controller.dart';
 import '../../models/color_concept.dart';
 import '../../services/feedback_service.dart';
 import '../../services/voice_clip_service.dart';
-import '../../widgets/bounce_in.dart';
 import '../../widgets/confetti_burst.dart';
+import '../../widgets/mascot_character.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
@@ -334,7 +334,7 @@ class _CelebrationView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const BounceIn(child: Text('🎉', style: TextStyle(fontSize: 90))),
+          const MascotCharacter(size: 150, celebrateTrigger: 1),
           const SizedBox(height: 16),
           Text(
             AppStrings.celebrationTitle(language),
