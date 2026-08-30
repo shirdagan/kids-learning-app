@@ -37,7 +37,8 @@ class ColorConcept {
   /// הצורה המצוירת שמייצגת את החפץ.
   final ObjectShape shape;
 
-  String nameFor(AppLanguage language) => language.isHebrew ? hebrewName : englishName;
+  String nameFor(AppLanguage language) =>
+      language.isHebrew ? hebrewName : englishName;
 
   String objectNameFor(AppLanguage language) =>
       language.isHebrew ? objectHebrewName : objectEnglishName;

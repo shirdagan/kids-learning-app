@@ -28,7 +28,10 @@ class TtsService implements SpeechService {
 
   /// אומר משפט בקול, בשפה הנתונה (עברית כברירת מחדל).
   @override
-  Future<void> speak(String text, {AppLanguage language = AppLanguage.hebrew}) async {
+  Future<void> speak(
+    String text, {
+    AppLanguage language = AppLanguage.hebrew,
+  }) async {
     await _ensureLanguage(language);
     await _tts.stop();
     await _tts.speak(text);

@@ -7,15 +7,15 @@ extension AppLanguageX on AppLanguage {
 
   /// קוד השפה עבור MaterialApp / flutter_localizations.
   String get localeTag => switch (this) {
-        AppLanguage.hebrew => 'he',
-        AppLanguage.english => 'en',
-      };
+    AppLanguage.hebrew => 'he',
+    AppLanguage.english => 'en',
+  };
 
   /// קוד השפה עבור מנוע ה-Text-to-Speech.
   String get ttsLocale => switch (this) {
-        AppLanguage.hebrew => 'he-IL',
-        AppLanguage.english => 'en-US',
-      };
+    AppLanguage.hebrew => 'he-IL',
+    AppLanguage.english => 'en-US',
+  };
 
   AppLanguage get other =>
       this == AppLanguage.hebrew ? AppLanguage.english : AppLanguage.hebrew;

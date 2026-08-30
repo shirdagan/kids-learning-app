@@ -14,7 +14,8 @@ class BounceIn extends StatefulWidget {
   State<BounceIn> createState() => _BounceInState();
 }
 
-class _BounceInState extends State<BounceIn> with SingleTickerProviderStateMixin {
+class _BounceInState extends State<BounceIn>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 700),
@@ -54,7 +55,8 @@ class GentleFloat extends StatefulWidget {
   State<GentleFloat> createState() => _GentleFloatState();
 }
 
-class _GentleFloatState extends State<GentleFloat> with SingleTickerProviderStateMixin {
+class _GentleFloatState extends State<GentleFloat>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 2),
@@ -90,7 +92,8 @@ class ShakeOnWrong extends StatefulWidget {
   State<ShakeOnWrong> createState() => _ShakeOnWrongState();
 }
 
-class _ShakeOnWrongState extends State<ShakeOnWrong> with SingleTickerProviderStateMixin {
+class _ShakeOnWrongState extends State<ShakeOnWrong>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 400),

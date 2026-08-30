@@ -5,6 +5,7 @@ import '../i18n/language_controller.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bounce_in.dart';
 import '../widgets/module_tile.dart';
+import '../widgets/responsive_center.dart';
 import 'coming_soon_screen.dart';
 import 'colors/colors_menu_screen.dart';
 
@@ -22,104 +23,108 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  const Spacer(),
-                  _LanguageToggleButton(controller: language),
-                ],
-              ),
-              BounceIn(
-                child: Text(
-                  AppStrings.homeTitle(l),
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.primary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 18,
-                  crossAxisSpacing: 18,
-                  childAspectRatio: 1.15,
+          child: ResponsiveCenter(
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    ModuleTile(
-                      label: AppStrings.moduleColors(l),
-                      icon: Icons.palette_rounded,
-                      color: AppTheme.primary,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const ColorsMenuScreen()),
-                      ),
-                    ),
-                    ModuleTile(
-                      label: AppStrings.moduleAnimals(l),
-                      icon: Icons.pets_rounded,
-                      color: const Color(0xFF8D6E63),
-                      comingSoon: true,
-                      onTap: () => _openComingSoon(
-                        context,
-                        title: AppStrings.moduleAnimals(l),
-                        icon: Icons.pets_rounded,
-                        color: const Color(0xFF8D6E63),
-                      ),
-                    ),
-                    ModuleTile(
-                      label: AppStrings.moduleNumbers(l),
-                      icon: Icons.looks_one_rounded,
-                      color: AppTheme.secondary,
-                      comingSoon: true,
-                      onTap: () => _openComingSoon(
-                        context,
-                        title: AppStrings.moduleNumbers(l),
-                        icon: Icons.looks_one_rounded,
-                        color: AppTheme.secondary,
-                      ),
-                    ),
-                    ModuleTile(
-                      label: AppStrings.moduleLetters(l),
-                      icon: Icons.abc_rounded,
-                      color: const Color(0xFF9C6ADE),
-                      comingSoon: true,
-                      onTap: () => _openComingSoon(
-                        context,
-                        title: AppStrings.moduleLetters(l),
-                        icon: Icons.abc_rounded,
-                        color: const Color(0xFF9C6ADE),
-                      ),
-                    ),
-                    ModuleTile(
-                      label: AppStrings.moduleWords(l),
-                      icon: Icons.menu_book_rounded,
-                      color: const Color(0xFFF17DB0),
-                      comingSoon: true,
-                      onTap: () => _openComingSoon(
-                        context,
-                        title: AppStrings.moduleWords(l),
-                        icon: Icons.menu_book_rounded,
-                        color: const Color(0xFFF17DB0),
-                      ),
-                    ),
-                    ModuleTile(
-                      label: AppStrings.moduleMath(l),
-                      icon: Icons.calculate_rounded,
-                      color: AppTheme.success,
-                      comingSoon: true,
-                      onTap: () => _openComingSoon(
-                        context,
-                        title: AppStrings.moduleMath(l),
-                        icon: Icons.calculate_rounded,
-                        color: AppTheme.success,
-                      ),
-                    ),
+                    const Spacer(),
+                    _LanguageToggleButton(controller: language),
                   ],
                 ),
-              ),
-            ],
+                BounceIn(
+                  child: Text(
+                    AppStrings.homeTitle(l),
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 18,
+                    crossAxisSpacing: 18,
+                    childAspectRatio: 1.15,
+                    children: [
+                      ModuleTile(
+                        label: AppStrings.moduleColors(l),
+                        icon: Icons.palette_rounded,
+                        color: AppTheme.primary,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ColorsMenuScreen(),
+                          ),
+                        ),
+                      ),
+                      ModuleTile(
+                        label: AppStrings.moduleAnimals(l),
+                        icon: Icons.pets_rounded,
+                        color: const Color(0xFF8D6E63),
+                        comingSoon: true,
+                        onTap: () => _openComingSoon(
+                          context,
+                          title: AppStrings.moduleAnimals(l),
+                          icon: Icons.pets_rounded,
+                          color: const Color(0xFF8D6E63),
+                        ),
+                      ),
+                      ModuleTile(
+                        label: AppStrings.moduleNumbers(l),
+                        icon: Icons.looks_one_rounded,
+                        color: AppTheme.secondary,
+                        comingSoon: true,
+                        onTap: () => _openComingSoon(
+                          context,
+                          title: AppStrings.moduleNumbers(l),
+                          icon: Icons.looks_one_rounded,
+                          color: AppTheme.secondary,
+                        ),
+                      ),
+                      ModuleTile(
+                        label: AppStrings.moduleLetters(l),
+                        icon: Icons.abc_rounded,
+                        color: const Color(0xFF9C6ADE),
+                        comingSoon: true,
+                        onTap: () => _openComingSoon(
+                          context,
+                          title: AppStrings.moduleLetters(l),
+                          icon: Icons.abc_rounded,
+                          color: const Color(0xFF9C6ADE),
+                        ),
+                      ),
+                      ModuleTile(
+                        label: AppStrings.moduleWords(l),
+                        icon: Icons.menu_book_rounded,
+                        color: const Color(0xFFF17DB0),
+                        comingSoon: true,
+                        onTap: () => _openComingSoon(
+                          context,
+                          title: AppStrings.moduleWords(l),
+                          icon: Icons.menu_book_rounded,
+                          color: const Color(0xFFF17DB0),
+                        ),
+                      ),
+                      ModuleTile(
+                        label: AppStrings.moduleMath(l),
+                        icon: Icons.calculate_rounded,
+                        color: AppTheme.success,
+                        comingSoon: true,
+                        onTap: () => _openComingSoon(
+                          context,
+                          title: AppStrings.moduleMath(l),
+                          icon: Icons.calculate_rounded,
+                          color: AppTheme.success,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -134,7 +139,8 @@ class HomeScreen extends StatelessWidget {
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ComingSoonScreen(title: title, icon: icon, color: color),
+        builder: (_) =>
+            ComingSoonScreen(title: title, icon: icon, color: color),
       ),
     );
   }
@@ -160,11 +166,18 @@ class _LanguageToggleButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.language_rounded, size: 20, color: AppTheme.primary),
+              const Icon(
+                Icons.language_rounded,
+                size: 20,
+                color: AppTheme.primary,
+              ),
               const SizedBox(width: 6),
               Text(
                 AppStrings.languageToggleLabel(controller.value),
-                style: const TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primary),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primary,
+                ),
               ),
             ],
           ),

@@ -23,7 +23,9 @@ class ModuleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final badgeLabel = AppStrings.comingSoonBadge(LanguageScope.of(context).value);
+    final badgeLabel = AppStrings.comingSoonBadge(
+      LanguageScope.of(context).value,
+    );
     final content = Container(
       decoration: BoxDecoration(
         color: comingSoon ? color.withValues(alpha: 0.45) : color,
@@ -61,7 +63,10 @@ class ModuleTile extends StatelessWidget {
               top: 8,
               left: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),

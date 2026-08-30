@@ -6,6 +6,7 @@ import '../../models/object_shape.dart';
 import '../../services/tts_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
+import '../../widgets/responsive_center.dart';
 
 /// מסך היכרות עם צבע: מציג צבע אחד עם חפץ מוכר, ואומר את שמו כשלוחצים
 /// עליו. אפשר לדפדף בין הצבעים עם חצים גדולים או החלקה.
@@ -41,7 +42,10 @@ class _ColorIntroScreenState extends State<ColorIntroScreen> {
   void _speakCurrent() {
     if (!mounted) return;
     final language = LanguageScope.of(context).value;
-    _tts.speak(kColorConcepts[_index].introSpeechFor(language), language: language);
+    _tts.speak(
+      kColorConcepts[_index].introSpeechFor(language),
+      language: language,
+    );
   }
 
   void _goTo(int index) {
@@ -60,77 +64,84 @@ class _ColorIntroScreenState extends State<ColorIntroScreen> {
     return Scaffold(
       backgroundColor: concept.color.withValues(alpha: 0.18),
       body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 16,
-              right: 16,
-              child: _RoundIconButton(
-                icon: Icons.home_rounded,
-                color: concept.color,
-                onTap: () => Navigator.of(context).pop(),
-              ),
-            ),
-            Column(
-              children: [
-                const SizedBox(height: 90),
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: kColorConcepts.length,
-                    onPageChanged: (i) {
-                      setState(() => _index = i);
-                      _speakCurrent();
-                    },
-                    itemBuilder: (context, i) {
-                      final c = kColorConcepts[i];
-                      return _ColorIntroPage(
-                        key: ValueKey(c.id),
-                        color: c.color,
-                        shape: c.shape,
-                        onTapObject: _speakCurrent,
-                      );
-                    },
-                  ),
+        child: ResponsiveCenter(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 16,
+                right: 16,
+                child: _RoundIconButton(
+                  icon: Icons.home_rounded,
+                  color: concept.color,
+                  onTap: () => Navigator.of(context).pop(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _RoundIconButton(
-                        icon: Icons.arrow_forward_ios_rounded,
-                        color: concept.color,
-                        onTap: () => _goTo(_index - 1),
-                        enabled: _index > 0,
-                      ),
-                      Row(
-                        children: List.generate(
-                          kColorConcepts.length,
-                          (i) => AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: i == _index ? 16 : 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: i == _index ? concept.color : concept.color.withValues(alpha: 0.3),
-                              borderRadius: BorderRadius.circular(6),
+              ),
+              Column(
+                children: [
+                  const SizedBox(height: 90),
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: kColorConcepts.length,
+                      onPageChanged: (i) {
+                        setState(() => _index = i);
+                        _speakCurrent();
+                      },
+                      itemBuilder: (context, i) {
+                        final c = kColorConcepts[i];
+                        return _ColorIntroPage(
+                          key: ValueKey(c.id),
+                          color: c.color,
+                          shape: c.shape,
+                          onTapObject: _speakCurrent,
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 24,
+                      horizontal: 24,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _RoundIconButton(
+                          icon: Icons.arrow_forward_ios_rounded,
+                          color: concept.color,
+                          onTap: () => _goTo(_index - 1),
+                          enabled: _index > 0,
+                        ),
+                        Row(
+                          children: List.generate(
+                            kColorConcepts.length,
+                            (i) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: i == _index ? 16 : 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: i == _index
+                                    ? concept.color
+                                    : concept.color.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      _RoundIconButton(
-                        icon: Icons.arrow_back_ios_rounded,
-                        color: concept.color,
-                        onTap: () => _goTo(_index + 1),
-                        enabled: _index < kColorConcepts.length - 1,
-                      ),
-                    ],
+                        _RoundIconButton(
+                          icon: Icons.arrow_back_ios_rounded,
+                          color: concept.color,
+                          onTap: () => _goTo(_index + 1),
+                          enabled: _index < kColorConcepts.length - 1,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -171,7 +182,11 @@ class _ColorIntroPage extends StatelessWidget {
                 ],
               ),
               child: Center(
-                child: ObjectIllustration(shape: shape, color: color, size: 190),
+                child: ObjectIllustration(
+                  shape: shape,
+                  color: color,
+                  size: 190,
+                ),
               ),
             ),
           ),
@@ -205,7 +220,11 @@ class _RoundIconButton extends StatelessWidget {
         onTap: enabled ? onTap : null,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Icon(icon, color: enabled ? color : color.withValues(alpha: 0.4), size: 30),
+          child: Icon(
+            icon,
+            color: enabled ? color : color.withValues(alpha: 0.4),
+            size: 30,
+          ),
         ),
       ),
     );

@@ -10,15 +10,12 @@ import '../../services/feedback_service.dart';
 import '../../services/tts_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
+import '../../widgets/responsive_center.dart';
 
 /// משחק "מצא את הצבע": האפליקציה אומרת שם צבע, והילד לוחץ על החפץ
 /// בצבע הנכון מבין כמה חפצים על המסך.
 class ColorFindGameScreen extends StatefulWidget {
-  const ColorFindGameScreen({
-    super.key,
-    this.ttsService,
-    this.feedbackService,
-  });
+  const ColorFindGameScreen({super.key, this.ttsService, this.feedbackService});
 
   /// נקודות הזרקה לצורך בדיקות.
   final SpeechService? ttsService;
@@ -32,7 +29,8 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   static const _optionsPerRound = 4;
 
   late final SpeechService _tts = widget.ttsService ?? TtsService();
-  late final SoundFeedback _feedback = widget.feedbackService ?? FeedbackService();
+  late final SoundFeedback _feedback =
+      widget.feedbackService ?? FeedbackService();
   final _random = Random();
 
   late List<ColorConcept> _options;
@@ -74,7 +72,10 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   void _askForTarget() {
     if (!mounted) return;
     final language = LanguageScope.of(context).value;
-    _tts.speak(AppStrings.findPrompt(language, _target.nameFor(language)), language: language);
+    _tts.speak(
+      AppStrings.findPrompt(language, _target.nameFor(language)),
+      language: language,
+    );
   }
 
   Future<void> _onOptionTap(ColorConcept option) async {
@@ -85,7 +86,10 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
       await _feedback.playSuccess();
       final phrases = AppStrings.praisePhrases(language);
       final praise = phrases[_random.nextInt(phrases.length)];
-      await _tts.speak('$praise ${_target.nameFor(language)}', language: language);
+      await _tts.speak(
+        '$praise ${_target.nameFor(language)}',
+        language: language,
+      );
       await Future.delayed(const Duration(milliseconds: 600));
       if (mounted) _newRound();
     } else {
@@ -104,78 +108,91 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFEFF7FF),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Material(
-                    color: Colors.white,
-                    shape: const CircleBorder(),
-                    elevation: 4,
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () => Navigator.of(context).pop(),
-                      child: const Padding(
-                        padding: EdgeInsets.all(14),
-                        child: Icon(Icons.home_rounded, color: Color(0xFF4FB6E8), size: 32),
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  Material(
-                    color: Colors.white,
-                    shape: const CircleBorder(),
-                    elevation: 4,
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: _askForTarget,
-                      child: const Padding(
-                        padding: EdgeInsets.all(14),
-                        child: Icon(Icons.volume_up_rounded, color: Color(0xFF4FB6E8), size: 32),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              BounceIn(
-                key: ValueKey('target-${_target.id}'),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: _target.color,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Text(
-                    AppStrings.findPrompt(l, _target.nameFor(l)),
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
+        child: ResponsiveCenter(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Material(
                       color: Colors.white,
+                      shape: const CircleBorder(),
+                      elevation: 4,
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(14),
+                          child: Icon(
+                            Icons.home_rounded,
+                            color: Color(0xFF4FB6E8),
+                            size: 32,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Material(
+                      color: Colors.white,
+                      shape: const CircleBorder(),
+                      elevation: 4,
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: _askForTarget,
+                        child: const Padding(
+                          padding: EdgeInsets.all(14),
+                          child: Icon(
+                            Icons.volume_up_rounded,
+                            color: Color(0xFF4FB6E8),
+                            size: 32,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                BounceIn(
+                  key: ValueKey('target-${_target.id}'),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 28,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _target.color,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Text(
+                      AppStrings.findPrompt(l, _target.nameFor(l)),
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing: 20,
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  children: _options.map((option) {
-                    return ShakeOnWrong(
-                      trigger: _shakingId == option.id ? _shakeTrigger : 0,
-                      child: _ColorOptionCard(
-                        concept: option,
-                        onTap: () => _onOptionTap(option),
-                      ),
-                    );
-                  }).toList(),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    children: _options.map((option) {
+                      return ShakeOnWrong(
+                        trigger: _shakingId == option.id ? _shakeTrigger : 0,
+                        child: _ColorOptionCard(
+                          concept: option,
+                          onTap: () => _onOptionTap(option),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -200,7 +217,11 @@ class _ColorOptionCard extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: ObjectIllustration(shape: concept.shape, color: concept.color, size: 120),
+          child: ObjectIllustration(
+            shape: concept.shape,
+            color: concept.color,
+            size: 120,
+          ),
         ),
       ),
     );

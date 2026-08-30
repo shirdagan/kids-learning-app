@@ -134,8 +134,10 @@ class _ObjectPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     for (var i = 0; i < 8; i++) {
       final angle = (math.pi * 2 / 8) * i;
-      final start = center + Offset(math.cos(angle), math.sin(angle)) * (radius * 1.15);
-      final end = center + Offset(math.cos(angle), math.sin(angle)) * (radius * 1.7);
+      final start =
+          center + Offset(math.cos(angle), math.sin(angle)) * (radius * 1.15);
+      final end =
+          center + Offset(math.cos(angle), math.sin(angle)) * (radius * 1.7);
       canvas.drawLine(start, end, rayPaint);
     }
 
@@ -143,8 +145,16 @@ class _ObjectPainter extends CustomPainter {
 
     // עיניים וחיוך קטן, ידידותי
     final face = Paint()..color = const Color(0xFF7A5230);
-    canvas.drawCircle(center + Offset(-radius * 0.35, -radius * 0.15), radius * 0.08, face);
-    canvas.drawCircle(center + Offset(radius * 0.35, -radius * 0.15), radius * 0.08, face);
+    canvas.drawCircle(
+      center + Offset(-radius * 0.35, -radius * 0.15),
+      radius * 0.08,
+      face,
+    );
+    canvas.drawCircle(
+      center + Offset(radius * 0.35, -radius * 0.15),
+      radius * 0.08,
+      face,
+    );
     final smile = Path()
       ..moveTo(center.dx - radius * 0.35, center.dy + radius * 0.2)
       ..quadraticBezierTo(
@@ -240,11 +250,16 @@ class _ObjectPainter extends CustomPainter {
 
     for (var i = 0; i < 6; i++) {
       final angle = (math.pi * 2 / 6) * i;
-      final petalCenter = center + Offset(math.cos(angle), math.sin(angle)) * petalRadius;
+      final petalCenter =
+          center + Offset(math.cos(angle), math.sin(angle)) * petalRadius;
       canvas.drawCircle(petalCenter, petalRadius * 0.85, fill);
     }
 
-    canvas.drawCircle(center, petalRadius * 0.75, Paint()..color = const Color(0xFFFBCB2E));
+    canvas.drawCircle(
+      center,
+      petalRadius * 0.75,
+      Paint()..color = const Color(0xFFFBCB2E),
+    );
 
     final stem = Paint()
       ..color = const Color(0xFF5CB85C)

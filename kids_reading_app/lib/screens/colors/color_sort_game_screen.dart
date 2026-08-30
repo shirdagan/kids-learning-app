@@ -11,14 +11,11 @@ import '../../services/feedback_service.dart';
 import '../../services/tts_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
+import '../../widgets/responsive_center.dart';
 
 /// משחק מיון: גוררים חפצים צבעוניים לסלסלה בצבע התואם.
 class ColorSortGameScreen extends StatefulWidget {
-  const ColorSortGameScreen({
-    super.key,
-    this.ttsService,
-    this.feedbackService,
-  });
+  const ColorSortGameScreen({super.key, this.ttsService, this.feedbackService});
 
   /// נקודות הזרקה לצורך בדיקות.
   final SpeechService? ttsService;
@@ -39,7 +36,8 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
   static const _itemsPerRound = 6;
 
   late final SpeechService _tts = widget.ttsService ?? TtsService();
-  late final SoundFeedback _feedback = widget.feedbackService ?? FeedbackService();
+  late final SoundFeedback _feedback =
+      widget.feedbackService ?? FeedbackService();
   final _random = Random();
 
   late List<ColorConcept> _baskets;
@@ -84,7 +82,10 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
     await _feedback.playSuccess();
     final phrases = AppStrings.praisePhrases(language);
     final praise = phrases[_random.nextInt(phrases.length)];
-    await _tts.speak('$praise ${item.concept.nameFor(language)}', language: language);
+    await _tts.speak(
+      '$praise ${item.concept.nameFor(language)}',
+      language: language,
+    );
     if (_items.isEmpty && mounted) {
       await Future.delayed(const Duration(milliseconds: 300));
       if (mounted) {
@@ -104,41 +105,50 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFEFFAF0),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Material(
-                    color: Colors.white,
-                    shape: const CircleBorder(),
-                    elevation: 4,
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: () => Navigator.of(context).pop(),
-                      child: const Padding(
-                        padding: EdgeInsets.all(14),
-                        child: Icon(Icons.home_rounded, color: Color(0xFF57C468), size: 32),
+        child: ResponsiveCenter(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Material(
+                      color: Colors.white,
+                      shape: const CircleBorder(),
+                      elevation: 4,
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(14),
+                          child: Icon(
+                            Icons.home_rounded,
+                            color: Color(0xFF57C468),
+                            size: 32,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    AppStrings.sortTitle(l),
-                    style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
-                  ),
-                  const Spacer(),
-                  const SizedBox(width: 60),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: done
-                    ? _CelebrationView(language: l, onPlayAgain: _startRound)
-                    : _buildBoard(),
-              ),
-            ],
+                    const Spacer(),
+                    Text(
+                      AppStrings.sortTitle(l),
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const Spacer(),
+                    const SizedBox(width: 60),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: done
+                      ? _CelebrationView(language: l, onPlayAgain: _startRound)
+                      : _buildBoard(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -187,11 +197,15 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
           height: 150,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _baskets.map((basket) => _BasketTarget(
-                  basket: basket,
-                  onAccept: _onCorrectDrop,
-                  onReject: _onWrongDrop,
-                )).toList(),
+            children: _baskets
+                .map(
+                  (basket) => _BasketTarget(
+                    basket: basket,
+                    onAccept: _onCorrectDrop,
+                    onReject: _onWrongDrop,
+                  ),
+                )
+                .toList(),
           ),
         ),
       ],
@@ -240,7 +254,11 @@ class _BasketTargetState extends State<_BasketTarget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.shopping_basket_rounded, size: 56, color: widget.basket.color),
+              Icon(
+                Icons.shopping_basket_rounded,
+                size: 56,
+                color: widget.basket.color,
+              ),
               const SizedBox(height: 4),
               Container(
                 width: 90,
@@ -271,9 +289,7 @@ class _CelebrationView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const BounceIn(
-            child: Text('🎉', style: TextStyle(fontSize: 90)),
-          ),
+          const BounceIn(child: Text('🎉', style: TextStyle(fontSize: 90))),
           const SizedBox(height: 16),
           Text(
             AppStrings.celebrationTitle(language),
@@ -287,10 +303,17 @@ class _CelebrationView extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               onTap: onPlayAgain,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 18,
+                ),
                 child: Text(
                   AppStrings.playAgain(language),
-                  style: const TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.w700),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),

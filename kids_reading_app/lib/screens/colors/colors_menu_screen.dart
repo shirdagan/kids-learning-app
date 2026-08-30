@@ -4,6 +4,7 @@ import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/bounce_in.dart';
+import '../../widgets/responsive_center.dart';
 import 'color_find_game_screen.dart';
 import 'color_intro_screen.dart';
 import 'color_sort_game_screen.dart';
@@ -21,56 +22,67 @@ class ColorsMenuScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  _HomeButton(onTap: () => Navigator.of(context).pop()),
-                  const Spacer(),
-                ],
-              ),
-              const SizedBox(height: 12),
-              BounceIn(
-                child: Text(
-                  AppStrings.colorsMenuTitle(l),
-                  style: const TextStyle(fontSize: 36, fontWeight: FontWeight.w800),
-                ),
-              ),
-              const SizedBox(height: 32),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          child: ResponsiveCenter(
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    _MenuCard(
-                      label: AppStrings.introMenuItem(l),
-                      icon: Icons.wb_sunny_rounded,
-                      color: AppTheme.primary,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const ColorIntroScreen()),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _MenuCard(
-                      label: AppStrings.findMenuItem(l),
-                      icon: Icons.search_rounded,
-                      color: AppTheme.secondary,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const ColorFindGameScreen()),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _MenuCard(
-                      label: AppStrings.sortMenuItem(l),
-                      icon: Icons.shopping_basket_rounded,
-                      color: AppTheme.success,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const ColorSortGameScreen()),
-                      ),
-                    ),
+                    _HomeButton(onTap: () => Navigator.of(context).pop()),
+                    const Spacer(),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                BounceIn(
+                  child: Text(
+                    AppStrings.colorsMenuTitle(l),
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _MenuCard(
+                        label: AppStrings.introMenuItem(l),
+                        icon: Icons.wb_sunny_rounded,
+                        color: AppTheme.primary,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ColorIntroScreen(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _MenuCard(
+                        label: AppStrings.findMenuItem(l),
+                        icon: Icons.search_rounded,
+                        color: AppTheme.secondary,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ColorFindGameScreen(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _MenuCard(
+                        label: AppStrings.sortMenuItem(l),
+                        icon: Icons.shopping_basket_rounded,
+                        color: AppTheme.success,
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ColorSortGameScreen(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
