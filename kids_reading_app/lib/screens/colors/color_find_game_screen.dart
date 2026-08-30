@@ -10,6 +10,7 @@ import '../../services/feedback_service.dart';
 import '../../services/voice_clip_service.dart';
 import '../../theme/color_contrast.dart';
 import '../../widgets/bounce_in.dart';
+import '../../widgets/confetti_burst.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
@@ -45,6 +46,7 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   int _shakeTrigger = 0;
   String? _shakingId;
   bool _celebrating = false;
+  int _celebrationTrigger = 0;
 
   @override
   void initState() {
@@ -90,7 +92,10 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
     if (_celebrating || !mounted) return;
     final language = LanguageScope.of(context).value;
     if (option.id == _target.id) {
-      setState(() => _celebrating = true);
+      setState(() {
+        _celebrating = true;
+        _celebrationTrigger++;
+      });
       await _feedback.playSuccess();
       final phrases = AppStrings.praisePhrases(language);
       final praiseIndex = _random.nextInt(phrases.length);
@@ -130,84 +135,93 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
         ),
         child: SafeArea(
           child: ResponsiveCenter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Row(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
                     children: [
-                      RoundIconButton(
-                        icon: Icons.home_rounded,
-                        iconColor: const Color(0xFF4FB6E8),
-                        onTap: () => Navigator.of(context).pop(),
-                      ),
-                      const Spacer(),
-                      RoundIconButton(
-                        icon: Icons.volume_up_rounded,
-                        iconColor: const Color(0xFF4FB6E8),
-                        onTap: _askForTarget,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  BounceIn(
-                    key: ValueKey('target-${_target.id}'),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            _target.color,
-                            Color.lerp(_target.color, Colors.black, 0.15)!,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: const Color(0xFFE3E9F0),
-                          width: 2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: _target.color.asGlow.withValues(alpha: 0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
+                      Row(
+                        children: [
+                          RoundIconButton(
+                            icon: Icons.home_rounded,
+                            iconColor: const Color(0xFF4FB6E8),
+                            onTap: () => Navigator.of(context).pop(),
+                          ),
+                          const Spacer(),
+                          RoundIconButton(
+                            icon: Icons.volume_up_rounded,
+                            iconColor: const Color(0xFF4FB6E8),
+                            onTap: _askForTarget,
                           ),
                         ],
                       ),
-                      child: Text(
-                        AppStrings.findPrompt(l, _target.nameFor(l)),
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          color: _target.color.contrastingForeground,
+                      const SizedBox(height: 16),
+                      BounceIn(
+                        key: ValueKey('target-${_target.id}'),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 28,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                _target.color,
+                                Color.lerp(_target.color, Colors.black, 0.15)!,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: const Color(0xFFE3E9F0),
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: _target.color.asGlow.withValues(
+                                  alpha: 0.4,
+                                ),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            AppStrings.findPrompt(l, _target.nameFor(l)),
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              color: _target.color.contrastingForeground,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Expanded(
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 20,
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          children: _options.map((option) {
+                            return ShakeOnWrong(
+                              trigger: _shakingId == option.id
+                                  ? _shakeTrigger
+                                  : 0,
+                              child: _ColorOptionCard(
+                                concept: option,
+                                onTap: () => _onOptionTap(option),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      children: _options.map((option) {
-                        return ShakeOnWrong(
-                          trigger: _shakingId == option.id ? _shakeTrigger : 0,
-                          child: _ColorOptionCard(
-                            concept: option,
-                            onTap: () => _onOptionTap(option),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                ConfettiBurst(trigger: _celebrationTrigger),
+              ],
             ),
           ),
         ),

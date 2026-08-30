@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
+import '../../navigation/fade_scale_route.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/responsive_center.dart';
@@ -56,33 +57,25 @@ class ColorsMenuScreen extends StatelessWidget {
                         label: AppStrings.introMenuItem(l),
                         icon: Icons.wb_sunny_rounded,
                         color: AppTheme.primary,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const ColorIntroScreen(),
-                          ),
-                        ),
+                        onTap: () =>
+                            Navigator.of(context)
+                                .push(fadeScaleRoute(const ColorIntroScreen())),
                       ),
                       const SizedBox(height: 20),
                       _MenuCard(
                         label: AppStrings.findMenuItem(l),
                         icon: Icons.search_rounded,
                         color: AppTheme.secondary,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const ColorFindGameScreen(),
-                          ),
-                        ),
+                        onTap: () => Navigator.of(context)
+                            .push(fadeScaleRoute(const ColorFindGameScreen())),
                       ),
                       const SizedBox(height: 20),
                       _MenuCard(
                         label: AppStrings.sortMenuItem(l),
                         icon: Icons.shopping_basket_rounded,
                         color: AppTheme.success,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const ColorSortGameScreen(),
-                          ),
-                        ),
+                        onTap: () => Navigator.of(context)
+                            .push(fadeScaleRoute(const ColorSortGameScreen())),
                       ),
                     ],
                   ),

@@ -10,6 +10,7 @@ import '../../models/color_concept.dart';
 import '../../services/feedback_service.dart';
 import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
+import '../../widgets/confetti_burst.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
@@ -48,6 +49,7 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
   late List<ColorConcept> _baskets;
   late List<_SortableItem> _items;
   int _nextId = 0;
+  int _celebrationTrigger = 0;
 
   @override
   void initState() {
@@ -87,7 +89,10 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
   Future<void> _onCorrectDrop(_SortableItem item) async {
     if (!mounted) return;
     final language = LanguageScope.of(context).value;
-    setState(() => _items.removeWhere((i) => i.id == item.id));
+    setState(() {
+      _items.removeWhere((i) => i.id == item.id);
+      _celebrationTrigger++;
+    });
     await _feedback.playSuccess();
     final phrases = AppStrings.praisePhrases(language);
     final praiseIndex = _random.nextInt(phrases.length);
@@ -132,40 +137,45 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
         ),
         child: SafeArea(
           child: ResponsiveCenter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Row(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
                     children: [
-                      RoundIconButton(
-                        icon: Icons.home_rounded,
-                        iconColor: const Color(0xFF57C468),
-                        onTap: () => Navigator.of(context).pop(),
+                      Row(
+                        children: [
+                          RoundIconButton(
+                            icon: Icons.home_rounded,
+                            iconColor: const Color(0xFF57C468),
+                            onTap: () => Navigator.of(context).pop(),
+                          ),
+                          const Spacer(),
+                          Text(
+                            AppStrings.sortTitle(l),
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const Spacer(),
+                          const SizedBox(width: 60),
+                        ],
                       ),
-                      const Spacer(),
-                      Text(
-                        AppStrings.sortTitle(l),
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: done
+                            ? _CelebrationView(
+                                language: l,
+                                onPlayAgain: _startRound,
+                              )
+                            : _buildBoard(),
                       ),
-                      const Spacer(),
-                      const SizedBox(width: 60),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: done
-                        ? _CelebrationView(
-                            language: l,
-                            onPlayAgain: _startRound,
-                          )
-                        : _buildBoard(),
-                  ),
-                ],
-              ),
+                ),
+                ConfettiBurst(trigger: _celebrationTrigger),
+              ],
             ),
           ),
         ),

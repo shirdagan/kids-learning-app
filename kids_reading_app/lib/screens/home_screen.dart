@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../i18n/app_strings.dart';
 import '../i18n/language_controller.dart';
+import '../navigation/fade_scale_route.dart';
 import '../theme/app_theme.dart';
 import '../widgets/bounce_in.dart';
 import '../widgets/module_tile.dart';
@@ -18,6 +19,77 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final language = LanguageScope.of(context);
     final l = language.value;
+
+    final tiles = [
+      ModuleTile(
+        label: AppStrings.moduleColors(l),
+        icon: Icons.palette_rounded,
+        color: AppTheme.primary,
+        onTap: () =>
+            Navigator.of(context)
+                .push(fadeScaleRoute(const ColorsMenuScreen())),
+      ),
+      ModuleTile(
+        label: AppStrings.moduleAnimals(l),
+        icon: Icons.pets_rounded,
+        color: const Color(0xFF8D6E63),
+        comingSoon: true,
+        onTap: () => _openComingSoon(
+          context,
+          title: AppStrings.moduleAnimals(l),
+          icon: Icons.pets_rounded,
+          color: const Color(0xFF8D6E63),
+        ),
+      ),
+      ModuleTile(
+        label: AppStrings.moduleNumbers(l),
+        icon: Icons.looks_one_rounded,
+        color: AppTheme.secondary,
+        comingSoon: true,
+        onTap: () => _openComingSoon(
+          context,
+          title: AppStrings.moduleNumbers(l),
+          icon: Icons.looks_one_rounded,
+          color: AppTheme.secondary,
+        ),
+      ),
+      ModuleTile(
+        label: AppStrings.moduleLetters(l),
+        icon: Icons.abc_rounded,
+        color: const Color(0xFF9C6ADE),
+        comingSoon: true,
+        onTap: () => _openComingSoon(
+          context,
+          title: AppStrings.moduleLetters(l),
+          icon: Icons.abc_rounded,
+          color: const Color(0xFF9C6ADE),
+        ),
+      ),
+      ModuleTile(
+        label: AppStrings.moduleWords(l),
+        icon: Icons.menu_book_rounded,
+        color: const Color(0xFFF17DB0),
+        comingSoon: true,
+        onTap: () => _openComingSoon(
+          context,
+          title: AppStrings.moduleWords(l),
+          icon: Icons.menu_book_rounded,
+          color: const Color(0xFFF17DB0),
+        ),
+      ),
+      ModuleTile(
+        label: AppStrings.moduleMath(l),
+        icon: Icons.calculate_rounded,
+        color: AppTheme.success,
+        comingSoon: true,
+        onTap: () => _openComingSoon(
+          context,
+          title: AppStrings.moduleMath(l),
+          icon: Icons.calculate_rounded,
+          color: AppTheme.success,
+        ),
+      ),
+    ];
 
     return Scaffold(
       body: DecoratedBox(
@@ -57,77 +129,14 @@ class HomeScreen extends StatelessWidget {
                       mainAxisSpacing: 18,
                       crossAxisSpacing: 18,
                       childAspectRatio: 1.15,
+                      // כל אריח "קופץ" פנימה בתורו, בפער קטן, במקום
+                      // שכולם יופיעו יחד בבת אחת.
                       children: [
-                        ModuleTile(
-                          label: AppStrings.moduleColors(l),
-                          icon: Icons.palette_rounded,
-                          color: AppTheme.primary,
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const ColorsMenuScreen(),
-                            ),
+                        for (final (i, tile) in tiles.indexed)
+                          BounceIn(
+                            delay: Duration(milliseconds: 60 * i),
+                            child: tile,
                           ),
-                        ),
-                        ModuleTile(
-                          label: AppStrings.moduleAnimals(l),
-                          icon: Icons.pets_rounded,
-                          color: const Color(0xFF8D6E63),
-                          comingSoon: true,
-                          onTap: () => _openComingSoon(
-                            context,
-                            title: AppStrings.moduleAnimals(l),
-                            icon: Icons.pets_rounded,
-                            color: const Color(0xFF8D6E63),
-                          ),
-                        ),
-                        ModuleTile(
-                          label: AppStrings.moduleNumbers(l),
-                          icon: Icons.looks_one_rounded,
-                          color: AppTheme.secondary,
-                          comingSoon: true,
-                          onTap: () => _openComingSoon(
-                            context,
-                            title: AppStrings.moduleNumbers(l),
-                            icon: Icons.looks_one_rounded,
-                            color: AppTheme.secondary,
-                          ),
-                        ),
-                        ModuleTile(
-                          label: AppStrings.moduleLetters(l),
-                          icon: Icons.abc_rounded,
-                          color: const Color(0xFF9C6ADE),
-                          comingSoon: true,
-                          onTap: () => _openComingSoon(
-                            context,
-                            title: AppStrings.moduleLetters(l),
-                            icon: Icons.abc_rounded,
-                            color: const Color(0xFF9C6ADE),
-                          ),
-                        ),
-                        ModuleTile(
-                          label: AppStrings.moduleWords(l),
-                          icon: Icons.menu_book_rounded,
-                          color: const Color(0xFFF17DB0),
-                          comingSoon: true,
-                          onTap: () => _openComingSoon(
-                            context,
-                            title: AppStrings.moduleWords(l),
-                            icon: Icons.menu_book_rounded,
-                            color: const Color(0xFFF17DB0),
-                          ),
-                        ),
-                        ModuleTile(
-                          label: AppStrings.moduleMath(l),
-                          icon: Icons.calculate_rounded,
-                          color: AppTheme.success,
-                          comingSoon: true,
-                          onTap: () => _openComingSoon(
-                            context,
-                            title: AppStrings.moduleMath(l),
-                            icon: Icons.calculate_rounded,
-                            color: AppTheme.success,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -147,10 +156,7 @@ class HomeScreen extends StatelessWidget {
     required Color color,
   }) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            ComingSoonScreen(title: title, icon: icon, color: color),
-      ),
+      fadeScaleRoute(ComingSoonScreen(title: title, icon: icon, color: color)),
     );
   }
 }
