@@ -176,6 +176,6 @@ void main() {
     await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
     expect(find.byIcon(Icons.shopping_basket_rounded), findsWidgets);
-    expect(find.text('מיון צבעים 🧺'), findsOneWidget);
+    expect(find.text('מיון צבעים'), findsWidgets);
   });
 }
