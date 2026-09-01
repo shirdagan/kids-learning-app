@@ -1,12 +1,12 @@
 {
-    "name": "kids_reading_app",
-    "short_name": "kids_reading_app",
+    "name": "בואו נלמד",
+    "short_name": "בואו נלמד",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FFFBF0",
+    "theme_color": "#FF7A59",
+    "description": "אפליקציית לימוד לילדים בעברית — צבעים, חיות, מספרים, אותיות ועוד.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
