@@ -1,0 +1,17 @@
+# הגדרות פרסום ל-Netlify: מתקינים Flutter על שרתי הבנייה של Netlify עצמם
+# (יש להם גישה מלאה לאינטרנט, בניגוד לסביבת הפיתוח הזו) ובונים את גרסת
+# הווב בכל push לענף המחובר - כדי שהלינק יישאר קבוע ויתעדכן לבד.
+
+[build]
+  base = "kids_reading_app"
+  publish = "build/web"
+  command = """
+    git clone https://github.com/flutter/flutter.git --depth 1 -b stable /tmp/flutter && \
+    export PATH="$PATH:/tmp/flutter/bin" && \
+    flutter config --enable-web && \
+    flutter pub get && \
+    flutter build web --release
+  """
+
+[build.environment]
+  FLUTTER_WEB_USE_SKIA = "true"
