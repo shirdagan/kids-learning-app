@@ -4,7 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kids_reading_app/app.dart';
 import 'package:kids_reading_app/i18n/app_language.dart';
 import 'package:kids_reading_app/i18n/language_controller.dart';
+import 'package:kids_reading_app/screens/animals/animal_find_game_screen.dart';
 import 'package:kids_reading_app/screens/animals/animal_intro_screen.dart';
+import 'package:kids_reading_app/screens/animals/animals_menu_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_find_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_intro_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_sort_game_screen.dart';
@@ -138,7 +140,7 @@ void main() {
     expect(find.textContaining('בדרך'), findsOneWidget);
   });
 
-  testWidgets('לחיצה על אריח החיות פותחת את מסך קולות החיות', (tester) async {
+  testWidgets('לחיצה על אריח החיות פותחת את תפריט מודול החיות', (tester) async {
     await tester.pumpWidget(const KidsReadingApp());
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1500));
@@ -147,7 +149,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.byType(AnimalIntroScreen), findsOneWidget);
+    expect(find.byType(AnimalsMenuScreen), findsOneWidget);
+    expect(find.text('קולות של חיות'), findsOneWidget);
+    expect(find.text('מצא את החיה'), findsOneWidget);
   });
 
   testWidgets('מסך היכרות עם צבעים אומר את שם הצבע ומציג נקודות דפדוף', (
@@ -197,6 +201,25 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('איפה'), findsWidgets);
+    expect(find.byType(GridView), findsOneWidget);
+    expect(voice.spoken, isNotEmpty);
+  });
+
+  testWidgets('משחק "מצא את החיה" משמיע קול ומציג ארבע אפשרויות', (
+    tester,
+  ) async {
+    final voice = _FakeVoiceService();
+    await tester.pumpWidget(
+      _wrapWithLanguage(
+        AnimalFindGameScreen(
+          voiceService: voice,
+          feedbackService: _FakeFeedbackService(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('איזו חיה'), findsWidgets);
     expect(find.byType(GridView), findsOneWidget);
     expect(voice.spoken, isNotEmpty);
   });

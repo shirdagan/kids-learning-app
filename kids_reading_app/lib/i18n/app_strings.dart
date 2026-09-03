@@ -40,6 +40,12 @@ class AppStrings {
       l.isHebrew ? 'חיות' : 'Animals';
   static String animalSoundsMenuItem(AppLanguage l) =>
       l.isHebrew ? 'קולות של חיות' : 'Animal Sounds';
+  static String findAnimalMenuItem(AppLanguage l) =>
+      l.isHebrew ? 'מצא את החיה' : 'Find the Animal';
+
+  static String whichAnimalPrompt(AppLanguage l) => l.isHebrew
+      ? 'איזו חיה עושה את הקול הזה?'
+      : 'Which animal made that sound?';
 
   static String findPrompt(AppLanguage l, String colorName) =>
       l.isHebrew ? 'איפה $colorName?' : 'Where is $colorName?';

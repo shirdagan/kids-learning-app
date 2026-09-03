@@ -8,7 +8,7 @@ import '../widgets/bounce_in.dart';
 import '../widgets/mascot_character.dart';
 import '../widgets/module_tile.dart';
 import '../widgets/responsive_center.dart';
-import 'animals/animal_intro_screen.dart';
+import 'animals/animals_menu_screen.dart';
 import 'coming_soon_screen.dart';
 import 'colors/colors_menu_screen.dart';
 
@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
         color: const Color(0xFF8D6E63),
         onTap: () =>
             Navigator.of(context)
-                .push(fadeScaleRoute(const AnimalIntroScreen())),
+                .push(fadeScaleRoute(const AnimalsMenuScreen())),
       ),
       ModuleTile(
         label: AppStrings.moduleNumbers(l),
