@@ -373,18 +373,17 @@ class _AnimalPainter extends CustomPainter {
     final w = size.width, h = size.height;
     final center = Offset(w * 0.5, h * 0.48);
 
-    // צמר - בסיס עגול עם קו מתאר, ומעליו טבעת בליטות פרוותיות שכל
-    // אחת מהן ממוסגרת בעצמה - כדי שהצורה תיראה "ממוסגרת" ומוגדרת
-    // בבירור על רקע הכרטיס הלבן, לא נבלעת בו.
+    // צמר - לבן מלא (לא קרם עמום) עם קו מתאר אפרפר בכל פקעת, כדי
+    // שהצמר עצמו יבלוט בבירור על רקע הכרטיס הלבן.
     final base = Path()
       ..addOval(Rect.fromCircle(center: center, radius: w * 0.40));
-    canvas.drawPath(base, Paint()..color = const Color(0xFFEFE8D8));
+    canvas.drawPath(base, Paint()..color = Colors.white);
     canvas.drawPath(
       base,
       Paint()
-        ..color = const Color(0xFFD8C7A0)
+        ..color = const Color(0xFFC9C2B4)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.015,
+        ..strokeWidth = w * 0.016,
     );
     _fluffRing(
       canvas,
@@ -392,45 +391,38 @@ class _AnimalPainter extends CustomPainter {
       w * 0.30,
       w * 0.13,
       12,
-      const Color(0xFFFBF7EE),
-      const Color(0xFFD8C7A0),
+      Colors.white,
+      const Color(0xFFC9C2B4),
     );
 
-    // אוזניים - מאחורי כתם הפנים, נמוכות וכלפי הצדדים.
-    final earPaint = Paint()..color = const Color(0xFFD8C7A0);
+    // אוזניים וכתם פנים - חום עז וברור, בניגוד חד לצמר הלבן (כמו
+    // "כבשה פנים-שחורות" קלאסית) - זה מה שהיה חסר בגרסה הקודמת,
+    // שם הכול היה בגוני קרם דומים מדי וקרס לכתם אחיד.
+    final facePaint = Paint()..color = const Color(0xFF8D6E52);
     canvas.save();
-    canvas.translate(w * 0.28, h * 0.54);
+    canvas.translate(w * 0.27, h * 0.54);
     canvas.rotate(-0.4);
     canvas.drawOval(
-      Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.22),
-      earPaint,
+      Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.24),
+      facePaint,
     );
     canvas.restore();
     canvas.save();
-    canvas.translate(w * 0.72, h * 0.54);
+    canvas.translate(w * 0.73, h * 0.54);
     canvas.rotate(0.4);
     canvas.drawOval(
-      Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.22),
-      earPaint,
+      Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.24),
+      facePaint,
     );
     canvas.restore();
 
-    // כתם פנים, עם קו מתאר משלו כדי שיבלוט מהצמר שסביבו.
-    final patch = Path()
-      ..addOval(
-        Rect.fromCenter(
-          center: center + Offset(0, h * 0.02),
-          width: w * 0.38,
-          height: h * 0.34,
-        ),
-      );
-    canvas.drawPath(patch, Paint()..color = const Color(0xFFEADFC8));
-    canvas.drawPath(
-      patch,
-      Paint()
-        ..color = const Color(0xFFC9B98F)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.012,
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(0, h * 0.02),
+        width: w * 0.40,
+        height: h * 0.36,
+      ),
+      facePaint,
     );
 
     _eyes(canvas, size, y: 0.46);
@@ -440,9 +432,9 @@ class _AnimalPainter extends CustomPainter {
         ..moveTo(w * 0.46, h * 0.58)
         ..quadraticBezierTo(w * 0.5, h * 0.61, w * 0.54, h * 0.58),
       Paint()
-        ..color = _dark
+        ..color = Colors.white
         ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.018
+        ..strokeWidth = w * 0.02
         ..strokeCap = StrokeCap.round,
     );
   }
@@ -535,8 +527,8 @@ class _AnimalPainter extends CustomPainter {
     _fluffRing(
       canvas,
       center,
-      w * 0.28,
-      w * 0.15,
+      w * 0.30,
+      w * 0.14,
       12,
       const Color(0xFFC97A2E),
       const Color(0xFFA85F1E),
@@ -544,15 +536,15 @@ class _AnimalPainter extends CustomPainter {
     _fluffRing(
       canvas,
       center,
-      w * 0.30,
-      w * 0.12,
+      w * 0.32,
+      w * 0.11,
       12,
       const Color(0xFFDA8E3E),
       const Color(0xFFC97A2E),
     );
     canvas.drawCircle(
       center,
-      w * 0.26,
+      w * 0.28,
       Paint()..color = const Color(0xFFEFB35C),
     );
     // אוזניים עגולות קטנות שמציצות מקצה הרעמה.
@@ -560,7 +552,10 @@ class _AnimalPainter extends CustomPainter {
     canvas.drawCircle(Offset(w * 0.34, h * 0.28), w * 0.07, earPaint);
     canvas.drawCircle(Offset(w * 0.66, h * 0.28), w * 0.07, earPaint);
 
-    _eyes(canvas, size, y: 0.46);
+    // עיניים קרובות יותר זו לזו מברירת המחדל, כדי שיישארו בבירור
+    // בתוך העיגול המלא של הפנים ולא ייגעו ברעמה הפרוותית (שגרם
+    // קודם למראה "פוזל").
+    _eyes(canvas, size, y: 0.46, spread: 0.14);
 
     canvas.drawPath(
       Path()
