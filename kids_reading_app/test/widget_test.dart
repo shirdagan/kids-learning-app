@@ -213,9 +213,15 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.byType(HebrewLetterDetailScreen), findsOneWidget);
+      // חמש כרטיסיות הניקוד של א, אחת מוצגת היא "אַבָּא".
+      expect(find.text('אַבָּא'), findsOneWidget);
+      expect(voice.spoken, isEmpty);
+
+      _tapGridTileWithText(tester, 'אַבָּא');
+      await tester.pump();
+
       expect(voice.spoken, isNotEmpty);
-      expect(voice.spoken.first, contains('אָלֶף'));
-      expect(voice.spoken.first, contains('אַרְיֵה'));
+      expect(voice.spoken.first, contains('אַבָּא'));
     },
   );
 
