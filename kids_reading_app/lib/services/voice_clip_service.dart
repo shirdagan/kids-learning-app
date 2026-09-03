@@ -72,7 +72,7 @@ class VoiceClipService implements VoiceService {
     String fallbackText, {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
-    final played = await _tryPlayClip('audio/animal_sounds/$soundKey.m4a');
+    final played = await _tryPlayClip('audio/animal_sounds/$soundKey.mp3');
     if (!played) {
       await _tts.speak(fallbackText, language: language);
     }

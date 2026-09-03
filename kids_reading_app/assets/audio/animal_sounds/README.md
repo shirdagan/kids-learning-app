@@ -1,14 +1,14 @@
 # קולות חיות אמיתיים (במקום TTS)
 
-כל קובץ כאן הוא קול חיה אמיתי (לא דיבור!) בפורמט `.m4a`, בשם התואם
+כל קובץ כאן הוא קול חיה אמיתי (לא דיבור!) בפורמט `.mp3`, בשם התואם
 בדיוק ל-`id` של החיה שמוגדר ב-`lib/data/animals_data.dart`:
 
-- `assets/audio/animal_sounds/dog.m4a`
-- `assets/audio/animal_sounds/cat.m4a`
-- `assets/audio/animal_sounds/cow.m4a`
-- `assets/audio/animal_sounds/duck.m4a`
-- `assets/audio/animal_sounds/sheep.m4a`
-- `assets/audio/animal_sounds/horse.m4a`
+- `assets/audio/animal_sounds/dog.mp3`
+- `assets/audio/animal_sounds/cat.mp3`
+- `assets/audio/animal_sounds/cow.mp3`
+- `assets/audio/animal_sounds/duck.mp3`
+- `assets/audio/animal_sounds/sheep.mp3`
+- `assets/audio/animal_sounds/horse.mp3`
 
 בניגוד להקלטות הקול של מודול הצבעים (`assets/audio/voice/`), הקבצים
 כאן **אינם תלויי שפה** — קול פרה נשמע אותו דבר בעברית ובאנגלית, אז יש
