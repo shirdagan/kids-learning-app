@@ -711,4 +711,131 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
       ),
     ],
   ),
+  HebrewLetterConcept(
+    id: 'lamed',
+    letter: 'ל',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'לַ',
+        word: 'לַיְלָה',
+        wordPlain: 'לילה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.nightSky, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'לֵ',
+        word: 'לֵב',
+        wordPlain: 'לב',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.heart, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'לִי',
+        word: 'לִימוֹן',
+        wordPlain: 'לימון',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.lemon, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'לוֹ',
+        word: 'לוֹחַ',
+        wordPlain: 'לוח',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.board, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'לוּ',
+        word: 'לוּל',
+        wordPlain: 'לול',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.coop, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'mem',
+    letter: 'מ',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'מָ',
+        word: 'מָגֵן',
+        wordPlain: 'מגן',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.shield, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'מֶ',
+        word: 'מֶלֶך',
+        wordPlain: 'מלך',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.crown, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'מִי',
+        word: 'מִטָּה',
+        wordPlain: 'מיטה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.bed, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'מוֹ',
+        word: 'מוֹנִית',
+        wordPlain: 'מונית',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.taxi, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'מוּ',
+        word: 'מוּסִיקָה',
+        wordPlain: 'מוסיקה',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.musicNote,
+          size: size,
+        ),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'nun',
+    letter: 'נ',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'נָ',
+        word: 'נָהָר',
+        wordPlain: 'נהר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.stream, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'נֶ',
+        word: 'נֶמֶר',
+        wordPlain: 'נמר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.leopard, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'נִי',
+        word: 'נִמְלָה',
+        wordPlain: 'נמלה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.ant, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'נוֹ',
+        word: 'נוֹצָה',
+        wordPlain: 'נוצה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.feather, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'נוּ',
+        word: 'נוּרָה',
+        wordPlain: 'נורה',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.lightbulb,
+          size: size,
+        ),
+      ),
+    ],
+  ),
 ];
