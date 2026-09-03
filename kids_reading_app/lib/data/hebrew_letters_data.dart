@@ -1,6 +1,12 @@
+import 'package:flutter/material.dart';
+
+import '../models/animal_shape.dart';
 import '../models/hebrew_letter_concept.dart';
 import '../models/letter_word_shape.dart';
+import '../models/object_shape.dart';
+import '../widgets/animal_illustration.dart';
 import '../widgets/letter_word_illustration.dart';
+import '../widgets/object_illustration.dart';
 
 /// רשימת האותיות העבריות שנלמדות במסלול העברי של מודול האותיות. לכל
 /// אות מוצגות חמש הדוגמאות (פתח/קמץ, צירי/סגול, חיריק, חולם,
@@ -215,6 +221,95 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
           shape: LetterWordShape.laughingFace,
           size: size,
         ),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'vav',
+    letter: 'ו',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'וָ',
+        word: 'וָרוֹד',
+        wordPlain: 'ורוד',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.heart, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'וֶ',
+        word: 'וֶרֶד',
+        wordPlain: 'ורד',
+        illustrationBuilder: (size) => ObjectIllustration(
+          shape: ObjectShape.flower,
+          color: const Color(0xFFE8639B),
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'וִי',
+        word: 'וִילוֹן',
+        wordPlain: 'וילון',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.curtain, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'וֹ',
+        word: 'וֹלְט',
+        wordPlain: 'וולט',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.lightning,
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'וּ',
+        word: 'וּפָרָה',
+        wordPlain: 'ופרה',
+        illustrationBuilder: (size) =>
+            AnimalIllustration(shape: AnimalShape.cow, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'zayin',
+    letter: 'ז',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'זַ',
+        word: 'זַיִת',
+        wordPlain: 'זית',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.olive, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'זֶ',
+        word: 'זֶמֶר',
+        wordPlain: 'זמר',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.musicNote,
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'זִי',
+        word: 'זִיקוּק',
+        wordPlain: 'זיקוק',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.firework, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'זוֹ',
+        word: 'זוֹהַר',
+        wordPlain: 'זוהר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.star, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'זוּ',
+        word: 'זוּג',
+        wordPlain: 'זוג',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.mittens, size: size),
       ),
     ],
   ),

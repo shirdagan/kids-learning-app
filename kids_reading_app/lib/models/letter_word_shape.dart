@@ -27,4 +27,12 @@ enum LetterWordShape {
   hippo,
   guardian,
   laughingFace,
+  heart,
+  curtain,
+  lightning,
+  olive,
+  musicNote,
+  firework,
+  star,
+  mittens,
 }
