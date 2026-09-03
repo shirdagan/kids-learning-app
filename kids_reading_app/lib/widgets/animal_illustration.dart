@@ -371,66 +371,77 @@ class _AnimalPainter extends CustomPainter {
 
   void _paintSheep(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
-    final center = Offset(w * 0.5, h * 0.48);
+    final center = Offset(w * 0.5, h * 0.5);
 
-    // צמר - לבן מלא (לא קרם עמום) עם קו מתאר אפרפר בכל פקעת, כדי
-    // שהצמר עצמו יבלוט בבירור על רקע הכרטיס הלבן.
-    final base = Path()
-      ..addOval(Rect.fromCircle(center: center, radius: w * 0.40));
-    canvas.drawPath(base, Paint()..color = Colors.white);
+    // צמר - צורה אחת, מלאה ומתומללת (לא עיגולים נפרדים): שישה "אונות"
+    // גדולות ומעוגלות, ממוזגות לקו מתאר רציף אחד, בגוון אפור-קרם
+    // אמיתי (לא לבן, שהיה כמעט בלתי-נראה על כרטיס לבן).
+    const lobes = 6;
+    final rBase = w * 0.40, bump = w * 0.07;
+    final wool = Path();
+    for (var i = 0; i < lobes; i++) {
+      final a = (math.pi * 2 / lobes) * i - math.pi / 2;
+      if (i == 0) {
+        final x = center.dx + rBase * math.cos(a) + bump * math.cos(a - 1.4);
+        final y = center.dy + rBase * math.sin(a) + bump * math.sin(a - 1.4);
+        wool.moveTo(x, y);
+      }
+      final aNext = (math.pi * 2 / lobes) * (i + 1) - math.pi / 2;
+      final controlAngle = a + math.pi / lobes;
+      final cx = center.dx + (rBase + bump * 1.6) * math.cos(controlAngle);
+      final cy = center.dy + (rBase + bump * 1.6) * math.sin(controlAngle);
+      final ex =
+          center.dx + rBase * math.cos(aNext) + bump * math.cos(aNext - 1.4);
+      final ey =
+          center.dy + rBase * math.sin(aNext) + bump * math.sin(aNext - 1.4);
+      wool.quadraticBezierTo(cx, cy, ex, ey);
+    }
+    wool.close();
+    canvas.drawPath(wool, Paint()..color = const Color(0xFFE9E4D8));
     canvas.drawPath(
-      base,
+      wool,
       Paint()
-        ..color = const Color(0xFFC9C2B4)
+        ..color = const Color(0xFFB8AF9B)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.016,
-    );
-    _fluffRing(
-      canvas,
-      center,
-      w * 0.30,
-      w * 0.13,
-      12,
-      Colors.white,
-      const Color(0xFFC9C2B4),
+        ..strokeWidth = w * 0.02
+        ..strokeJoin = StrokeJoin.round,
     );
 
-    // אוזניים וכתם פנים - חום עז וברור, בניגוד חד לצמר הלבן (כמו
-    // "כבשה פנים-שחורות" קלאסית) - זה מה שהיה חסר בגרסה הקודמת,
-    // שם הכול היה בגוני קרם דומים מדי וקרס לכתם אחיד.
+    // אוזניים וכתם פנים - חום עז וברור, בניגוד חד לצמר (כמו "כבשה
+    // פנים-שחורות" קלאסית) - הפרטים האלה כן עבדו טוב בגרסה הקודמת.
     final facePaint = Paint()..color = const Color(0xFF8D6E52);
     canvas.save();
-    canvas.translate(w * 0.27, h * 0.54);
+    canvas.translate(w * 0.25, h * 0.56);
     canvas.rotate(-0.4);
     canvas.drawOval(
-      Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.24),
+      Rect.fromCenter(center: Offset.zero, width: w * 0.15, height: h * 0.26),
       facePaint,
     );
     canvas.restore();
     canvas.save();
-    canvas.translate(w * 0.73, h * 0.54);
+    canvas.translate(w * 0.75, h * 0.56);
     canvas.rotate(0.4);
     canvas.drawOval(
-      Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.24),
+      Rect.fromCenter(center: Offset.zero, width: w * 0.15, height: h * 0.26),
       facePaint,
     );
     canvas.restore();
 
     canvas.drawOval(
       Rect.fromCenter(
-        center: center + Offset(0, h * 0.02),
-        width: w * 0.40,
-        height: h * 0.36,
+        center: center + Offset(0, h * 0.04),
+        width: w * 0.46,
+        height: h * 0.40,
       ),
       facePaint,
     );
 
-    _eyes(canvas, size, y: 0.46);
+    _eyes(canvas, size, y: 0.48);
 
     canvas.drawPath(
       Path()
-        ..moveTo(w * 0.46, h * 0.58)
-        ..quadraticBezierTo(w * 0.5, h * 0.61, w * 0.54, h * 0.58),
+        ..moveTo(w * 0.46, h * 0.60)
+        ..quadraticBezierTo(w * 0.5, h * 0.63, w * 0.54, h * 0.60),
       Paint()
         ..color = Colors.white
         ..style = PaintingStyle.stroke
