@@ -430,42 +430,39 @@ class _AnimalPainter extends CustomPainter {
     // עיניים על הצמר עצמו (כמו בכל שאר החיות), לא בתוך כתם פנים נפרד.
     _eyes(canvas, size, y: 0.46);
 
-    // כתם חטם קטן ותחתון בלבד - סביב האף והפה, באותו יחס שיש לכלב
-    // ולפרה בין הפרווה שלהם לכתם החטם הבהיר, לא כתם פנים ענק.
+    // כתם חטם קטן וצר בלבד - לכבשה אין חטם עגול כמו לחזיר/פרה (לא זוג
+    // נחיריים עגולים בולטים). רק אף קטן ובודד ופה פשוט.
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(w * 0.5, h * 0.67),
-        width: w * 0.34,
-        height: h * 0.24,
+        center: Offset(w * 0.5, h * 0.65),
+        width: w * 0.22,
+        height: h * 0.18,
       ),
       tanPaint,
     );
-    final nostril = Paint()..color = _dark;
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.46, h * 0.66),
-        width: w * 0.036,
-        height: h * 0.05,
-      ),
-      nostril,
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.47, h * 0.63)
+        ..lineTo(w * 0.53, h * 0.63)
+        ..lineTo(w * 0.5, h * 0.665)
+        ..close(),
+      Paint()..color = _dark,
     );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.54, h * 0.66),
-        width: w * 0.036,
-        height: h * 0.05,
-      ),
-      nostril,
+    final linePaint = Paint()
+      ..color = _dark
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.014
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(w * 0.5, h * 0.665),
+      Offset(w * 0.5, h * 0.685),
+      linePaint,
     );
     canvas.drawPath(
       Path()
-        ..moveTo(w * 0.46, h * 0.71)
-        ..quadraticBezierTo(w * 0.5, h * 0.74, w * 0.54, h * 0.71),
-      Paint()
-        ..color = _dark
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.015
-        ..strokeCap = StrokeCap.round,
+        ..moveTo(w * 0.47, h * 0.71)
+        ..quadraticBezierTo(w * 0.5, h * 0.735, w * 0.53, h * 0.71),
+      linePaint,
     );
   }
 
