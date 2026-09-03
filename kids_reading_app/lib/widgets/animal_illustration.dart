@@ -52,6 +52,8 @@ class _AnimalPainter extends CustomPainter {
 
   /// טבעת "פרוותית" - עיגולים חופפים סביב מרכז, לטקסטורת צמר/רעמה
   /// (כבשה, אריה) שנראית תלתלית ורכה, בלי להיראות כמו "שמש" עם קרניים.
+  /// כל בליטה מקבלת גם קו מתאר עדין ([outline]) כדי שהצורה כולה תיראה
+  /// "ממוסגרת" ומוגדרת בבירור, ולא תיבלע ברקע הכרטיס הלבן.
   void _fluffRing(
     Canvas canvas,
     Offset center,
@@ -59,15 +61,18 @@ class _AnimalPainter extends CustomPainter {
     double rBump,
     int count,
     Color color,
+    Color outline,
   ) {
-    final paint = Paint()..color = color;
+    final fill = Paint()..color = color;
+    final stroke = Paint()
+      ..color = outline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = rBump * 0.16;
     for (var i = 0; i < count; i++) {
       final a = (math.pi * 2 / count) * i;
-      canvas.drawCircle(
-        center + Offset(rRing * math.cos(a), rRing * math.sin(a)),
-        rBump,
-        paint,
-      );
+      final c = center + Offset(rRing * math.cos(a), rRing * math.sin(a));
+      canvas.drawCircle(c, rBump, fill);
+      canvas.drawCircle(c, rBump, stroke);
     }
   }
 
@@ -330,46 +335,66 @@ class _AnimalPainter extends CustomPainter {
 
   void _paintDuck(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
-    final feather = Paint()..color = const Color(0xFFFBCB2E);
+    final headCenter = Offset(w * 0.5, h * 0.40);
+    const headR = 0.30;
 
-    canvas.drawCircle(Offset(w * 0.5, h * 0.42), w * 0.32, feather);
-
-    // מקור שבולט בבירור מתחת לראש (לא שוכב שטוח בתוכו) - חתיכת
-    // "טרפז" מעוגל, בדיוק כמו ציור ברווז קלאסי.
-    final bill = Path()
-      ..moveTo(w * 0.28, h * 0.58)
-      ..quadraticBezierTo(w * 0.24, h * 0.66, w * 0.30, h * 0.72)
-      ..quadraticBezierTo(w * 0.40, h * 0.78, w * 0.60, h * 0.78)
-      ..quadraticBezierTo(w * 0.80, h * 0.78, w * 0.72, h * 0.66)
-      ..quadraticBezierTo(w * 0.76, h * 0.58, w * 0.5, h * 0.60)
-      ..close();
-    canvas.drawPath(bill, Paint()..color = const Color(0xFFF3902F));
-    canvas.drawPath(
-      Path()
-        ..moveTo(w * 0.31, h * 0.70)
-        ..quadraticBezierTo(w * 0.5, h * 0.75, w * 0.71, h * 0.70),
-      Paint()
-        ..color = const Color(0xFFCB6E1B)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.014
-        ..strokeCap = StrokeCap.round,
+    // ראש קטן יותר, ליד חלקו העליון של הכרטיס - כך שנשאר מקום ברור
+    // מתחתיו למקור לתלות בלי לחפוף לתוך הפנים.
+    canvas.drawCircle(
+      headCenter,
+      w * headR,
+      Paint()..color = const Color(0xFFFBCB2E),
     );
 
-    _eyes(canvas, size, spread: 0.16, y: 0.36, r: 0.05);
+    // מקור: "מדף" שטוח שתלוי מתחת לראש - החלק העליון גוון מעט כהה
+    // יותר מהתחתון, כדי להפריד ויזואלית בלי צורך בקו נוסף.
+    final billTopY = headCenter.dy + w * headR * 0.62;
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, billTopY),
+        width: w * 0.52,
+        height: h * 0.18,
+      ),
+      Paint()..color = const Color(0xFFFBAE3C),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, billTopY + h * 0.05),
+        width: w * 0.44,
+        height: h * 0.14,
+      ),
+      Paint()..color = const Color(0xFFF3902F),
+    );
+
+    _eyes(canvas, size, spread: 0.15, y: 0.36, r: 0.048);
   }
 
   void _paintSheep(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final center = Offset(w * 0.5, h * 0.48);
 
-    // צמר - טבעת בליטות פרוותיות סביב הפנים (אותה שפה חזותית כמו
-    // רעמת האריה) - קריא כתלתלי-רך, לא כענן שטוח או עיגולים מפוזרים.
-    canvas.drawCircle(
-      center,
-      w * 0.40,
-      Paint()..color = const Color(0xFFEFE8D8),
+    // צמר - בסיס עגול עם קו מתאר, ומעליו טבעת בליטות פרוותיות שכל
+    // אחת מהן ממוסגרת בעצמה - כדי שהצורה תיראה "ממוסגרת" ומוגדרת
+    // בבירור על רקע הכרטיס הלבן, לא נבלעת בו.
+    final base = Path()
+      ..addOval(Rect.fromCircle(center: center, radius: w * 0.40));
+    canvas.drawPath(base, Paint()..color = const Color(0xFFEFE8D8));
+    canvas.drawPath(
+      base,
+      Paint()
+        ..color = const Color(0xFFD8C7A0)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.015,
     );
-    _fluffRing(canvas, center, w * 0.30, w * 0.13, 12, const Color(0xFFFBF7EE));
+    _fluffRing(
+      canvas,
+      center,
+      w * 0.30,
+      w * 0.13,
+      12,
+      const Color(0xFFFBF7EE),
+      const Color(0xFFD8C7A0),
+    );
 
     // אוזניים - מאחורי כתם הפנים, נמוכות וכלפי הצדדים.
     final earPaint = Paint()..color = const Color(0xFFD8C7A0);
@@ -390,14 +415,22 @@ class _AnimalPainter extends CustomPainter {
     );
     canvas.restore();
 
-    // פנים חומות-בהירות.
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(0, h * 0.02),
-        width: w * 0.38,
-        height: h * 0.34,
-      ),
-      Paint()..color = const Color(0xFFEADFC8),
+    // כתם פנים, עם קו מתאר משלו כדי שיבלוט מהצמר שסביבו.
+    final patch = Path()
+      ..addOval(
+        Rect.fromCenter(
+          center: center + Offset(0, h * 0.02),
+          width: w * 0.38,
+          height: h * 0.34,
+        ),
+      );
+    canvas.drawPath(patch, Paint()..color = const Color(0xFFEADFC8));
+    canvas.drawPath(
+      patch,
+      Paint()
+        ..color = const Color(0xFFC9B98F)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.012,
     );
 
     _eyes(canvas, size, y: 0.46);
@@ -417,46 +450,47 @@ class _AnimalPainter extends CustomPainter {
   void _paintHorse(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
 
-    // רעמה - גוש רציף אחד, צמוד לקצה השמאלי-אחורי של הראש (לא
-    // "מרחפת" בצד, כמו שקרה בגרסה הקודמת).
-    final mane = Path()
-      ..moveTo(w * 0.44, h * 0.08)
-      ..quadraticBezierTo(w * 0.22, h * 0.10, w * 0.22, h * 0.32)
-      ..quadraticBezierTo(w * 0.20, h * 0.52, w * 0.30, h * 0.68)
-      ..quadraticBezierTo(w * 0.34, h * 0.76, w * 0.40, h * 0.72)
-      ..quadraticBezierTo(w * 0.32, h * 0.56, w * 0.34, h * 0.36)
-      ..quadraticBezierTo(w * 0.36, h * 0.18, w * 0.5, h * 0.10)
-      ..close();
-    canvas.drawPath(mane, Paint()..color = const Color(0xFF6B4226));
-
-    // פנים מוארכות - הפרופורציה שהופכת את זה לסוס ולא לחתלתול עגול.
+    // פנים רחבות (לא צרות) - עדיין מוארכות אנכית כדי שיישאר "סוס"
+    // ולא "חתלתול".
     final face = Path()
-      ..moveTo(w * 0.5, h * 0.08)
-      ..quadraticBezierTo(w * 0.74, h * 0.08, w * 0.76, h * 0.34)
-      ..quadraticBezierTo(w * 0.78, h * 0.56, w * 0.68, h * 0.76)
-      ..quadraticBezierTo(w * 0.60, h * 0.94, w * 0.5, h * 0.94)
-      ..quadraticBezierTo(w * 0.40, h * 0.94, w * 0.34, h * 0.78)
-      ..quadraticBezierTo(w * 0.28, h * 0.58, w * 0.30, h * 0.36)
-      ..quadraticBezierTo(w * 0.30, h * 0.10, w * 0.5, h * 0.08)
+      ..moveTo(w * 0.5, h * 0.06)
+      ..quadraticBezierTo(w * 0.82, h * 0.06, w * 0.84, h * 0.34)
+      ..quadraticBezierTo(w * 0.86, h * 0.58, w * 0.72, h * 0.78)
+      ..quadraticBezierTo(w * 0.62, h * 0.96, w * 0.5, h * 0.96)
+      ..quadraticBezierTo(w * 0.38, h * 0.96, w * 0.28, h * 0.78)
+      ..quadraticBezierTo(w * 0.14, h * 0.58, w * 0.16, h * 0.34)
+      ..quadraticBezierTo(w * 0.18, h * 0.06, w * 0.5, h * 0.06)
       ..close();
     canvas.drawPath(face, Paint()..color = const Color(0xFFB97A4A));
+
+    // רעמה - מצוירת מעל הפנים (לא מתחתן), נשענת על הקצה השמאלי הרחב
+    // יותר, כדי שתישאר גלויה בבירור ולא תיחבא מתחת לפנים.
+    final mane = Path()
+      ..moveTo(w * 0.46, h * 0.06)
+      ..quadraticBezierTo(w * 0.14, h * 0.08, w * 0.10, h * 0.32)
+      ..quadraticBezierTo(w * 0.08, h * 0.54, w * 0.20, h * 0.72)
+      ..quadraticBezierTo(w * 0.24, h * 0.80, w * 0.32, h * 0.76)
+      ..quadraticBezierTo(w * 0.22, h * 0.58, w * 0.24, h * 0.36)
+      ..quadraticBezierTo(w * 0.26, h * 0.16, w * 0.5, h * 0.08)
+      ..close();
+    canvas.drawPath(mane, Paint()..color = const Color(0xFF6B4226));
 
     // אוזניים - מרוחקות זו מזו, כל אחת בזווית משלה, לא נפגשות בנקודה
     // אחת (מה שיצר קודם מראה של פפיון).
     final earPaint = Paint()..color = const Color(0xFFB97A4A);
     canvas.drawPath(
       Path()
-        ..moveTo(w * 0.38, h * 0.12)
-        ..lineTo(w * 0.33, -h * 0.01)
-        ..lineTo(w * 0.47, h * 0.08)
+        ..moveTo(w * 0.36, h * 0.10)
+        ..lineTo(w * 0.30, -h * 0.02)
+        ..lineTo(w * 0.46, h * 0.06)
         ..close(),
       earPaint,
     );
     canvas.drawPath(
       Path()
-        ..moveTo(w * 0.62, h * 0.12)
-        ..lineTo(w * 0.67, -h * 0.01)
-        ..lineTo(w * 0.55, h * 0.07)
+        ..moveTo(w * 0.64, h * 0.10)
+        ..lineTo(w * 0.70, -h * 0.02)
+        ..lineTo(w * 0.54, h * 0.05)
         ..close(),
       earPaint,
     );
@@ -465,18 +499,18 @@ class _AnimalPainter extends CustomPainter {
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(w * 0.5, h * 0.72),
-        width: w * 0.2,
+        width: w * 0.22,
         height: h * 0.44,
       ),
       Paint()..color = const Color(0xFFD9A876),
     );
 
-    _eyes(canvas, size, spread: 0.17, y: 0.42);
+    _eyes(canvas, size, spread: 0.19, y: 0.40);
 
     final nostril = Paint()..color = _dark;
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(w * 0.43, h * 0.84),
+        center: Offset(w * 0.42, h * 0.84),
         width: w * 0.05,
         height: h * 0.06,
       ),
@@ -484,7 +518,7 @@ class _AnimalPainter extends CustomPainter {
     );
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(w * 0.57, h * 0.84),
+        center: Offset(w * 0.58, h * 0.84),
         width: w * 0.05,
         height: h * 0.06,
       ),
@@ -498,8 +532,24 @@ class _AnimalPainter extends CustomPainter {
 
     // רעמה - שתי שכבות חופפות של בליטות פרוותיות (כמו כדור פרווה רך),
     // במקום קרני שמש חדות שנראו כמו... שמש, לא אריה.
-    _fluffRing(canvas, center, w * 0.28, w * 0.15, 12, const Color(0xFFC97A2E));
-    _fluffRing(canvas, center, w * 0.30, w * 0.12, 12, const Color(0xFFDA8E3E));
+    _fluffRing(
+      canvas,
+      center,
+      w * 0.28,
+      w * 0.15,
+      12,
+      const Color(0xFFC97A2E),
+      const Color(0xFFA85F1E),
+    );
+    _fluffRing(
+      canvas,
+      center,
+      w * 0.30,
+      w * 0.12,
+      12,
+      const Color(0xFFDA8E3E),
+      const Color(0xFFC97A2E),
+    );
     canvas.drawCircle(
       center,
       w * 0.26,
