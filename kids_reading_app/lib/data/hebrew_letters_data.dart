@@ -5,6 +5,7 @@ import '../models/hebrew_letter_concept.dart';
 import '../models/letter_word_shape.dart';
 import '../models/object_shape.dart';
 import '../widgets/animal_illustration.dart';
+import '../widgets/ball_illustration.dart';
 import '../widgets/letter_word_illustration.dart';
 import '../widgets/object_illustration.dart';
 
@@ -310,6 +311,128 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
         wordPlain: 'זוג',
         illustrationBuilder: (size) =>
             LetterWordIllustration(shape: LetterWordShape.mittens, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'kaf',
+    letter: 'כ',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'כַּ',
+        word: 'כַּדּוּר',
+        wordPlain: 'כדור',
+        illustrationBuilder: (size) => BallIllustration(size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'כֶּ',
+        word: 'כֶּלֶב',
+        wordPlain: 'כלב',
+        illustrationBuilder: (size) =>
+            AnimalIllustration(shape: AnimalShape.dog, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'כִּ',
+        word: 'כִּבְשָׂה',
+        wordPlain: 'כבשה',
+        illustrationBuilder: (size) =>
+            AnimalIllustration(shape: AnimalShape.sheep, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'כּוֹ',
+        word: 'כּוֹכָב',
+        wordPlain: 'כוכב',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.star, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'כּוּ',
+        word: 'כּוּרְסָה',
+        wordPlain: 'כורסה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.chair, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'het',
+    letter: 'ח',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'חָ',
+        word: 'חָתוּל',
+        wordPlain: 'חתול',
+        illustrationBuilder: (size) =>
+            AnimalIllustration(shape: AnimalShape.cat, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'חֶ',
+        word: 'חֶבֶל',
+        wordPlain: 'חבל',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.rope, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'חִי',
+        word: 'חִיפּוּשִׁית',
+        wordPlain: 'חיפושית',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.ladybug, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'חוֹ',
+        word: 'חוֹף',
+        wordPlain: 'חוף',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.beach, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'חוּ',
+        word: 'חוּט',
+        wordPlain: 'חוט',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.thread, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'samekh',
+    letter: 'ס',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'סַ',
+        word: 'סַבָּא',
+        wordPlain: 'סבא',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.grandpa, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'סֵ',
+        word: 'סֵפֶר',
+        wordPlain: 'ספר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.book, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'סִי',
+        word: 'סִיר',
+        wordPlain: 'סיר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.pot, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'סוֹ',
+        word: 'סוֹלְלָה',
+        wordPlain: 'סוללה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.battery, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'סוּ',
+        word: 'סוּס',
+        wordPlain: 'סוס',
+        illustrationBuilder: (size) =>
+            AnimalIllustration(shape: AnimalShape.horse, size: size),
       ),
     ],
   ),

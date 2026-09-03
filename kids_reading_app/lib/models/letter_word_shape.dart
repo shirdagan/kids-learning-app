@@ -35,4 +35,13 @@ enum LetterWordShape {
   firework,
   star,
   mittens,
+  chair,
+  rope,
+  ladybug,
+  beach,
+  thread,
+  grandpa,
+  book,
+  pot,
+  battery,
 }

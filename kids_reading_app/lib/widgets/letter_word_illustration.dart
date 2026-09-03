@@ -101,6 +101,24 @@ class _LetterWordPainter extends CustomPainter {
         _paintStar(canvas, size);
       case LetterWordShape.mittens:
         _paintMittens(canvas, size);
+      case LetterWordShape.chair:
+        _paintChair(canvas, size);
+      case LetterWordShape.rope:
+        _paintRope(canvas, size);
+      case LetterWordShape.ladybug:
+        _paintLadybug(canvas, size);
+      case LetterWordShape.beach:
+        _paintBeach(canvas, size);
+      case LetterWordShape.thread:
+        _paintThread(canvas, size);
+      case LetterWordShape.grandpa:
+        _paintGrandpa(canvas, size);
+      case LetterWordShape.book:
+        _paintBook(canvas, size);
+      case LetterWordShape.pot:
+        _paintPot(canvas, size);
+      case LetterWordShape.battery:
+        _paintBattery(canvas, size);
     }
   }
 
@@ -1352,6 +1370,307 @@ class _LetterWordPainter extends CustomPainter {
         Paint()..color = Colors.white,
       );
     }
+  }
+
+  void _paintChair(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final wood = Paint()..color = const Color(0xFFB07A3F);
+    // מושב.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.2, h * 0.44, w * 0.6, h * 0.12),
+        Radius.circular(w * 0.03),
+      ),
+      wood,
+    );
+    // משענת.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.24, h * 0.12, w * 0.5, h * 0.32),
+        Radius.circular(w * 0.05),
+      ),
+      Paint()..color = const Color(0xFFD9A05B),
+    );
+    // רגליים.
+    final leg = Paint()
+      ..color = wood.color
+      ..strokeWidth = w * 0.05
+      ..strokeCap = StrokeCap.round;
+    for (final dx in [0.26, 0.74]) {
+      canvas.drawLine(Offset(w * dx, h * 0.56), Offset(w * dx, h * 0.94), leg);
+    }
+  }
+
+  void _paintRope(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final path = Path()
+      ..moveTo(w * 0.08, h * 0.3)
+      ..cubicTo(w * 0.3, h * 0.05, w * 0.7, h * 0.05, w * 0.92, h * 0.3)
+      ..cubicTo(w * 0.7, h * 0.85, w * 0.3, h * 0.85, w * 0.08, h * 0.3);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = const Color(0xFFE8863A)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.05
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawCircle(
+      Offset(w * 0.08, h * 0.3),
+      w * 0.06,
+      Paint()..color = const Color(0xFF7A5230),
+    );
+    canvas.drawCircle(
+      Offset(w * 0.92, h * 0.3),
+      w * 0.06,
+      Paint()..color = const Color(0xFF7A5230),
+    );
+  }
+
+  void _paintLadybug(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final center = Offset(w * 0.5, h * 0.55);
+    final radius = w * 0.34;
+    canvas.drawCircle(center, radius, Paint()..color = const Color(0xFFE24B4B));
+    canvas.drawLine(
+      Offset(center.dx, center.dy - radius),
+      Offset(center.dx, center.dy + radius),
+      Paint()
+        ..color = const Color(0xFF3A2E2E)
+        ..strokeWidth = w * 0.02,
+    );
+    canvas.drawCircle(
+      Offset(center.dx, center.dy - radius * 1.14),
+      radius * 0.42,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    final dot = Paint()..color = const Color(0xFF3A2E2E);
+    for (final o in [
+      Offset(-0.4, -0.2),
+      Offset(0.35, -0.1),
+      Offset(-0.15, 0.35),
+      Offset(0.3, 0.35),
+    ]) {
+      canvas.drawCircle(
+        center + Offset(radius * o.dx, radius * o.dy),
+        radius * 0.13,
+        dot,
+      );
+    }
+    for (final dx in [-0.15, 0.15]) {
+      canvas.drawLine(
+        Offset(center.dx + radius * dx, center.dy - radius * 1.35),
+        Offset(center.dx + radius * dx * 1.6, center.dy - radius * 1.6),
+        Paint()
+          ..color = const Color(0xFF3A2E2E)
+          ..strokeWidth = w * 0.012
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+  }
+
+  void _paintBeach(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h * 0.62),
+      Paint()..color = const Color(0xFFBEE3F8),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(0, h * 0.6, w, h * 0.4),
+      Paint()..color = const Color(0xFFF3E0C4),
+    );
+    canvas.drawArc(
+      Rect.fromLTWH(w * 0.08, h * 0.5, w * 0.3, h * 0.16),
+      math.pi,
+      math.pi,
+      false,
+      Paint()
+        ..color = const Color(0xFF4FB6E8)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.025
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawCircle(
+      Offset(w * 0.72, h * 0.22),
+      w * 0.12,
+      Paint()..color = const Color(0xFFFBCB2E),
+    );
+  }
+
+  void _paintThread(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final center = Offset(w * 0.5, h * 0.5);
+    canvas.drawOval(
+      Rect.fromCenter(center: center, width: w * 0.4, height: h * 0.7),
+      Paint()..color = const Color(0xFFB9C4CC),
+    );
+    final wrap = Paint()
+      ..color = const Color(0xFFE24B4B)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.025;
+    for (final dy in [-0.18, -0.02, 0.14]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(0, h * dy),
+          width: w * 0.4,
+          height: h * 0.14,
+        ),
+        wrap,
+      );
+    }
+    canvas.drawLine(
+      Offset(w * 0.7, h * 0.6),
+      Offset(w * 0.9, h * 0.9),
+      Paint()
+        ..color = const Color(0xFFE24B4B)
+        ..strokeWidth = w * 0.02
+        ..strokeCap = StrokeCap.round,
+    );
+  }
+
+  void _paintGrandpa(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final skin = Paint()..color = const Color(0xFFF3C6A0);
+    final headCenter = Offset(w * 0.5, h * 0.34);
+    final headRadius = w * 0.24;
+
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.28, h * 0.98)
+        ..quadraticBezierTo(w * 0.3, h * 0.58, w * 0.5, h * 0.54)
+        ..quadraticBezierTo(w * 0.7, h * 0.58, w * 0.72, h * 0.98)
+        ..close(),
+      Paint()..color = const Color(0xFF8B9D77),
+    );
+
+    canvas.drawCircle(headCenter, headRadius, skin);
+
+    // שיער אפור בצדדים בלבד (קרחת).
+    final hair = Paint()..color = const Color(0xFFD9D4CC);
+    canvas.drawArc(
+      Rect.fromCircle(center: headCenter, radius: headRadius * 1.05),
+      math.pi * 1.15,
+      math.pi * 0.7,
+      true,
+      hair,
+    );
+
+    // משקפיים.
+    final glasses = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = headRadius * 0.06;
+    for (final dx in [-0.35, 0.35]) {
+      canvas.drawCircle(
+        headCenter + Offset(headRadius * dx, headRadius * 0.05),
+        headRadius * 0.22,
+        glasses,
+      );
+    }
+    canvas.drawLine(
+      headCenter + Offset(-headRadius * 0.13, headRadius * 0.05),
+      headCenter + Offset(headRadius * 0.13, headRadius * 0.05),
+      glasses,
+    );
+
+    // שפם.
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: headCenter + Offset(0, headRadius * 0.32),
+        width: headRadius * 0.6,
+        height: headRadius * 0.16,
+      ),
+      Paint()..color = const Color(0xFFD9D4CC),
+    );
+  }
+
+  void _paintBook(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.14, h * 0.16, w * 0.72, h * 0.68),
+        Radius.circular(w * 0.04),
+      ),
+      Paint()..color = const Color(0xFF4FB6E8),
+    );
+    canvas.drawLine(
+      Offset(w * 0.5, h * 0.16),
+      Offset(w * 0.5, h * 0.84),
+      Paint()
+        ..color = Colors.white.withValues(alpha: 0.6)
+        ..strokeWidth = w * 0.015,
+    );
+    final page = Paint()..color = Colors.white.withValues(alpha: 0.7);
+    for (final dy in [0.32, 0.44, 0.56]) {
+      for (final side in [-1, 1]) {
+        canvas.drawLine(
+          Offset(w * 0.5 + side * w * 0.06, h * dy),
+          Offset(w * 0.5 + side * w * 0.28, h * dy),
+          Paint()
+            ..color = page.color
+            ..strokeWidth = w * 0.012,
+        );
+      }
+    }
+  }
+
+  void _paintPot(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTWH(w * 0.2, h * 0.4, w * 0.6, h * 0.42),
+        bottomLeft: Radius.circular(w * 0.06),
+        bottomRight: Radius.circular(w * 0.06),
+      ),
+      Paint()..color = const Color(0xFFB9C4CC),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.4),
+        width: w * 0.6,
+        height: h * 0.08,
+      ),
+      Paint()..color = const Color(0xFF8B96A0),
+    );
+    final handle = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.035
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(w * 0.18, h * 0.5),
+      Offset(w * 0.02, h * 0.5),
+      handle,
+    );
+    canvas.drawLine(
+      Offset(w * 0.82, h * 0.5),
+      Offset(w * 0.98, h * 0.5),
+      handle,
+    );
+  }
+
+  void _paintBattery(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.26, h * 0.14, w * 0.48, h * 0.76),
+        Radius.circular(w * 0.05),
+      ),
+      Paint()..color = const Color(0xFF6FB65C),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.42, h * 0.05, w * 0.16, h * 0.1),
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    final bolt = Path()
+      ..moveTo(w * 0.55, h * 0.32)
+      ..lineTo(w * 0.42, h * 0.58)
+      ..lineTo(w * 0.5, h * 0.58)
+      ..lineTo(w * 0.45, h * 0.84)
+      ..lineTo(w * 0.62, h * 0.52)
+      ..lineTo(w * 0.53, h * 0.52)
+      ..close();
+    canvas.drawPath(bolt, Paint()..color = Colors.white);
   }
 
   @override
