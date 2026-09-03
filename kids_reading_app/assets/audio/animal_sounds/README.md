@@ -1,14 +1,20 @@
 # קולות חיות אמיתיים (במקום TTS)
 
-כל קובץ כאן הוא קול חיה אמיתי (לא דיבור!) בפורמט `.mp3`, בשם התואם
-בדיוק ל-`id` של החיה שמוגדר ב-`lib/data/animals_data.dart`:
+כל קובץ כאן הוא קול חיה אמיתי (לא דיבור!), בשם התואם בדיוק ל-`id` של
+החיה שמוגדר ב-`lib/data/animals_data.dart`:
 
-- `assets/audio/animal_sounds/dog.mp3`
-- `assets/audio/animal_sounds/cat.mp3`
-- `assets/audio/animal_sounds/cow.mp3`
-- `assets/audio/animal_sounds/duck.mp3`
-- `assets/audio/animal_sounds/sheep.mp3`
-- `assets/audio/animal_sounds/horse.mp3`
+- `assets/audio/animal_sounds/dog.<סיומת>`
+- `assets/audio/animal_sounds/cat.<סיומת>`
+- `assets/audio/animal_sounds/cow.<סיומת>`
+- `assets/audio/animal_sounds/duck.<סיומת>`
+- `assets/audio/animal_sounds/sheep.<סיומת>`
+- `assets/audio/animal_sounds/horse.<סיומת>`
+- `assets/audio/animal_sounds/lion.<סיומת>`
+
+**כל פורמט אודיו נפוץ עובד** — mp3, wav, m4a או ogg. אין צורך להמיר
+קבצים: פשוט שולחים את הקובץ באיזה פורמט שהוא יצא (למשל מקליטים
+בטלפון), והאפליקציה מנסה את כל הסיומות האלה אוטומטית לפי סדר עדיפות
+(mp3 קודם, אחר כך wav, m4a, ogg).
 
 בניגוד להקלטות הקול של מודול הצבעים (`assets/audio/voice/`), הקבצים
 כאן **אינם תלויי שפה** — קול פרה נשמע אותו דבר בעברית ובאנגלית, אז יש

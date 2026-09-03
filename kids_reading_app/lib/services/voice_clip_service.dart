@@ -66,16 +66,21 @@ class VoiceClipService implements VoiceService {
     }
   }
 
+  /// סיומות אודיו שמנסים בסדר הזה עבור קולות חיות - כדי שאפשר יהיה
+  /// להוסיף הקלטה בכל פורמט נפוץ (מה שהמכשיר של המקליט/ת מפיק) בלי
+  /// להמיר קבצים באופן ידני.
+  static const _soundExtensions = ['mp3', 'wav', 'm4a', 'ogg'];
+
   @override
   Future<void> playSound(
     String soundKey,
     String fallbackText, {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
-    final played = await _tryPlayClip('audio/animal_sounds/$soundKey.mp3');
-    if (!played) {
-      await _tts.speak(fallbackText, language: language);
+    for (final ext in _soundExtensions) {
+      if (await _tryPlayClip('audio/animal_sounds/$soundKey.$ext')) return;
     }
+    await _tts.speak(fallbackText, language: language);
   }
 
   String _assetPath(String clipKey, AppLanguage language) =>
