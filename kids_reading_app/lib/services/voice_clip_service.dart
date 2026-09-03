@@ -19,6 +19,16 @@ abstract class VoiceService {
     AppLanguage language,
   });
   Future<void> speakSequence(List<VoicePhrase> phrases, {AppLanguage language});
+
+  /// כמו [speak], אבל עבור קול אפקט (כמו קול חיה אמיתי) שאינו תלוי שפה:
+  /// מנסה להשמיע הקלטה מ-`assets/audio/animal_sounds/<soundKey>`, ואם
+  /// היא לא קיימת עדיין נופל חזרה ל-TTS שאומר את [fallbackText].
+  Future<void> playSound(
+    String soundKey,
+    String fallbackText, {
+    AppLanguage language,
+  });
+
   void dispose();
 }
 
@@ -53,6 +63,18 @@ class VoiceClipService implements VoiceService {
   }) async {
     for (final phrase in phrases) {
       await speak(phrase.clipKey, phrase.fallbackText, language: language);
+    }
+  }
+
+  @override
+  Future<void> playSound(
+    String soundKey,
+    String fallbackText, {
+    AppLanguage language = AppLanguage.hebrew,
+  }) async {
+    final played = await _tryPlayClip('audio/animal_sounds/$soundKey.m4a');
+    if (!played) {
+      await _tts.speak(fallbackText, language: language);
     }
   }
 

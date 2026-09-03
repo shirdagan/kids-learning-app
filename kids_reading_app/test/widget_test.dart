@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kids_reading_app/app.dart';
 import 'package:kids_reading_app/i18n/app_language.dart';
 import 'package:kids_reading_app/i18n/language_controller.dart';
+import 'package:kids_reading_app/screens/animals/animal_intro_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_find_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_intro_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_sort_game_screen.dart';
@@ -35,6 +36,15 @@ class _FakeVoiceService implements VoiceService {
     for (final phrase in phrases) {
       spoken.add(phrase.fallbackText);
     }
+  }
+
+  @override
+  Future<void> playSound(
+    String soundKey,
+    String fallbackText, {
+    AppLanguage language = AppLanguage.hebrew,
+  }) async {
+    spoken.add(fallbackText);
   }
 
   @override
@@ -119,11 +129,25 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1500));
 
-    tester.widget<ModuleTile>(find.widgetWithText(ModuleTile, 'חיות')).onTap();
+    tester
+        .widget<ModuleTile>(find.widgetWithText(ModuleTile, 'מספרים'))
+        .onTap();
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.textContaining('בדרך'), findsOneWidget);
+  });
+
+  testWidgets('לחיצה על אריח החיות פותחת את מסך קולות החיות', (tester) async {
+    await tester.pumpWidget(const KidsReadingApp());
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
+
+    tester.widget<ModuleTile>(find.widgetWithText(ModuleTile, 'חיות')).onTap();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.byType(AnimalIntroScreen), findsOneWidget);
   });
 
   testWidgets('מסך היכרות עם צבעים אומר את שם הצבע ומציג נקודות דפדוף', (
@@ -141,6 +165,21 @@ void main() {
     expect(find.byType(PageView), findsOneWidget);
     expect(voice.spoken, isNotEmpty);
     expect(voice.spoken.first, contains('אדום'));
+  });
+
+  testWidgets('מסך קולות חיות משמיע את קול החיה ומציג נקודות דפדוף', (
+    tester,
+  ) async {
+    final voice = _FakeVoiceService();
+    await tester.pumpWidget(
+      _wrapWithLanguage(AnimalIntroScreen(voiceService: voice)),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
+
+    expect(find.byType(PageView), findsOneWidget);
+    expect(voice.spoken, isNotEmpty);
+    expect(voice.spoken.first, contains('כלב'));
   });
 
   testWidgets('משחק "מצא את הצבע" מציג ארבע אפשרויות ושואל על צבע', (

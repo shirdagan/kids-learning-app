@@ -36,6 +36,11 @@ class AppStrings {
   static String sortMenuItem(AppLanguage l) =>
       l.isHebrew ? 'מיון צבעים' : 'Sort the Colors';
 
+  static String animalsMenuTitle(AppLanguage l) =>
+      l.isHebrew ? 'חיות' : 'Animals';
+  static String animalSoundsMenuItem(AppLanguage l) =>
+      l.isHebrew ? 'קולות של חיות' : 'Animal Sounds';
+
   static String findPrompt(AppLanguage l, String colorName) =>
       l.isHebrew ? 'איפה $colorName?' : 'Where is $colorName?';
 
