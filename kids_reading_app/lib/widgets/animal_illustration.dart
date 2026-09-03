@@ -50,6 +50,27 @@ class _AnimalPainter extends CustomPainter {
     }
   }
 
+  /// טבעת "פרוותית" - עיגולים חופפים סביב מרכז, לטקסטורת צמר/רעמה
+  /// (כבשה, אריה) שנראית תלתלית ורכה, בלי להיראות כמו "שמש" עם קרניים.
+  void _fluffRing(
+    Canvas canvas,
+    Offset center,
+    double rRing,
+    double rBump,
+    int count,
+    Color color,
+  ) {
+    final paint = Paint()..color = color;
+    for (var i = 0; i < count; i++) {
+      final a = (math.pi * 2 / count) * i;
+      canvas.drawCircle(
+        center + Offset(rRing * math.cos(a), rRing * math.sin(a)),
+        rBump,
+        paint,
+      );
+    }
+  }
+
   /// עיניים פשוטות ואחידות: שני עיגולים שחורים עם הבהוב אור קטן, כמו
   /// אצל בּוּבּוּ - כדי שכל החיות ירגישו כאילו הן שייכות לאותה משפחה.
   void _eyes(
@@ -311,62 +332,49 @@ class _AnimalPainter extends CustomPainter {
     final w = size.width, h = size.height;
     final feather = Paint()..color = const Color(0xFFFBCB2E);
 
-    canvas.drawCircle(Offset(w * 0.5, h * 0.46), w * 0.34, feather);
+    canvas.drawCircle(Offset(w * 0.5, h * 0.42), w * 0.32, feather);
 
-    // מקור: אליפסה שטוחה וממורכזת עם קו פה, פרופורציה קלאסית של
-    // ברווז - לא צורת יד מוזרה בצד כמו בגרסה הקודמת.
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.5, h * 0.70),
-        width: w * 0.48,
-        height: h * 0.22,
-      ),
-      Paint()..color = const Color(0xFFF3902F),
-    );
-    canvas.drawLine(
-      Offset(w * 0.29, h * 0.70),
-      Offset(w * 0.71, h * 0.70),
+    // מקור שבולט בבירור מתחת לראש (לא שוכב שטוח בתוכו) - חתיכת
+    // "טרפז" מעוגל, בדיוק כמו ציור ברווז קלאסי.
+    final bill = Path()
+      ..moveTo(w * 0.28, h * 0.58)
+      ..quadraticBezierTo(w * 0.24, h * 0.66, w * 0.30, h * 0.72)
+      ..quadraticBezierTo(w * 0.40, h * 0.78, w * 0.60, h * 0.78)
+      ..quadraticBezierTo(w * 0.80, h * 0.78, w * 0.72, h * 0.66)
+      ..quadraticBezierTo(w * 0.76, h * 0.58, w * 0.5, h * 0.60)
+      ..close();
+    canvas.drawPath(bill, Paint()..color = const Color(0xFFF3902F));
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.31, h * 0.70)
+        ..quadraticBezierTo(w * 0.5, h * 0.75, w * 0.71, h * 0.70),
       Paint()
         ..color = const Color(0xFFCB6E1B)
+        ..style = PaintingStyle.stroke
         ..strokeWidth = w * 0.014
         ..strokeCap = StrokeCap.round,
     );
 
-    _eyes(canvas, size, spread: 0.16, y: 0.42, r: 0.05);
+    _eyes(canvas, size, spread: 0.16, y: 0.36, r: 0.05);
   }
 
   void _paintSheep(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
+    final center = Offset(w * 0.5, h * 0.48);
 
-    // צמר - צורת "ענן" מתולתלת אחת (כמו שכבר עובד יפה לאיור הענן של
-    // מודול הצבעים) במקום עיגולים מפוזרים שיצרו מראה לא אחיד.
-    final wool = Path()
-      ..moveTo(w * 0.22, h * 0.56)
-      ..quadraticBezierTo(w * 0.06, h * 0.56, w * 0.08, h * 0.40)
-      ..quadraticBezierTo(w * 0.08, h * 0.22, w * 0.28, h * 0.24)
-      ..quadraticBezierTo(w * 0.32, h * 0.06, w * 0.5, h * 0.06)
-      ..quadraticBezierTo(w * 0.68, h * 0.06, w * 0.72, h * 0.24)
-      ..quadraticBezierTo(w * 0.92, h * 0.22, w * 0.92, h * 0.40)
-      ..quadraticBezierTo(w * 0.94, h * 0.56, w * 0.78, h * 0.56)
-      ..quadraticBezierTo(w * 0.82, h * 0.70, w * 0.62, h * 0.70)
-      ..lineTo(w * 0.38, h * 0.70)
-      ..quadraticBezierTo(w * 0.18, h * 0.70, w * 0.22, h * 0.56)
-      ..close();
-    canvas.drawPath(wool, Paint()..color = const Color(0xFFFBF7EE));
-    canvas.drawPath(
-      wool,
-      Paint()
-        ..color = const Color(0xFFDCD2BE)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.018
-        ..strokeJoin = StrokeJoin.round,
+    // צמר - טבעת בליטות פרוותיות סביב הפנים (אותה שפה חזותית כמו
+    // רעמת האריה) - קריא כתלתלי-רך, לא כענן שטוח או עיגולים מפוזרים.
+    canvas.drawCircle(
+      center,
+      w * 0.40,
+      Paint()..color = const Color(0xFFEFE8D8),
     );
+    _fluffRing(canvas, center, w * 0.30, w * 0.13, 12, const Color(0xFFFBF7EE));
 
-    // אוזניים - גוון כהה יותר מהצמר, כדי שייראו בבירור על רקע הצמר
-    // הבהיר, מצוירות לפני כתם הפנים כדי שיחפוף מעט לקצה הפנימי שלהן.
+    // אוזניים - מאחורי כתם הפנים, נמוכות וכלפי הצדדים.
     final earPaint = Paint()..color = const Color(0xFFD8C7A0);
     canvas.save();
-    canvas.translate(w * 0.23, h * 0.5);
+    canvas.translate(w * 0.28, h * 0.54);
     canvas.rotate(-0.4);
     canvas.drawOval(
       Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.22),
@@ -374,7 +382,7 @@ class _AnimalPainter extends CustomPainter {
     );
     canvas.restore();
     canvas.save();
-    canvas.translate(w * 0.77, h * 0.5);
+    canvas.translate(w * 0.72, h * 0.54);
     canvas.rotate(0.4);
     canvas.drawOval(
       Rect.fromCenter(center: Offset.zero, width: w * 0.14, height: h * 0.22),
@@ -385,22 +393,24 @@ class _AnimalPainter extends CustomPainter {
     // פנים חומות-בהירות.
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(w * 0.5, h * 0.5),
+        center: center + Offset(0, h * 0.02),
         width: w * 0.38,
         height: h * 0.34,
       ),
       Paint()..color = const Color(0xFFEADFC8),
     );
 
-    _eyes(canvas, size, y: 0.48);
+    _eyes(canvas, size, y: 0.46);
 
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.5, h * 0.6),
-        width: w * 0.07,
-        height: h * 0.04,
-      ),
-      Paint()..color = _dark,
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.46, h * 0.58)
+        ..quadraticBezierTo(w * 0.5, h * 0.61, w * 0.54, h * 0.58),
+      Paint()
+        ..color = _dark
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.018
+        ..strokeCap = StrokeCap.round,
     );
   }
 
@@ -486,37 +496,19 @@ class _AnimalPainter extends CustomPainter {
     final w = size.width, h = size.height;
     final center = Offset(w * 0.5, h * 0.5);
 
-    // רעמה - חוד משולשים סביב הראש, בסגנון "שמש" חמוד ומוכר לילדים.
-    final manePaint = Paint()..color = const Color(0xFFC97A2E);
-    const spikes = 14;
-    for (var i = 0; i < spikes; i++) {
-      final a = (math.pi * 2 / spikes) * i;
-      const r1 = 0.24, r2 = 0.42;
-      final a0 = a - 0.14, a1 = a + 0.14;
-      canvas.drawPath(
-        Path()
-          ..moveTo(
-            center.dx + w * r1 * math.cos(a0),
-            center.dy + w * r1 * math.sin(a0),
-          )
-          ..lineTo(
-            center.dx + w * r2 * math.cos(a),
-            center.dy + w * r2 * math.sin(a),
-          )
-          ..lineTo(
-            center.dx + w * r1 * math.cos(a1),
-            center.dy + w * r1 * math.sin(a1),
-          )
-          ..close(),
-        manePaint,
-      );
-    }
-
+    // רעמה - שתי שכבות חופפות של בליטות פרוותיות (כמו כדור פרווה רך),
+    // במקום קרני שמש חדות שנראו כמו... שמש, לא אריה.
+    _fluffRing(canvas, center, w * 0.28, w * 0.15, 12, const Color(0xFFC97A2E));
+    _fluffRing(canvas, center, w * 0.30, w * 0.12, 12, const Color(0xFFDA8E3E));
     canvas.drawCircle(
       center,
-      w * 0.27,
+      w * 0.26,
       Paint()..color = const Color(0xFFEFB35C),
     );
+    // אוזניים עגולות קטנות שמציצות מקצה הרעמה.
+    final earPaint = Paint()..color = const Color(0xFFEFB35C);
+    canvas.drawCircle(Offset(w * 0.34, h * 0.28), w * 0.07, earPaint);
+    canvas.drawCircle(Offset(w * 0.66, h * 0.28), w * 0.07, earPaint);
 
     _eyes(canvas, size, y: 0.46);
 
