@@ -47,6 +47,13 @@ class AppStrings {
   static String chooseAnimalTitle(AppLanguage l) =>
       l.isHebrew ? 'בחרו חיה' : 'Choose an animal';
 
+  static String lettersMenuTitle(AppLanguage l) =>
+      l.isHebrew ? 'אותיות' : 'Letters';
+  static String hebrewLettersMenuItem(AppLanguage l) =>
+      l.isHebrew ? 'אותיות בעברית' : 'Hebrew Letters';
+  static String englishLettersMenuItem(AppLanguage l) =>
+      l.isHebrew ? 'אותיות באנגלית' : 'English Letters';
+
   static String whichAnimalPrompt(AppLanguage l) => l.isHebrew
       ? 'איזו חיה עושה את הקול הזה?'
       : 'Which animal made that sound?';

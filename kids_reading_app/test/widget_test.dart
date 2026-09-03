@@ -13,6 +13,11 @@ import 'package:kids_reading_app/screens/colors/color_find_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_intro_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_sort_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/colors_menu_screen.dart';
+import 'package:kids_reading_app/screens/letters/english_letter_detail_screen.dart';
+import 'package:kids_reading_app/screens/letters/english_letters_screen.dart';
+import 'package:kids_reading_app/screens/letters/hebrew_letter_detail_screen.dart';
+import 'package:kids_reading_app/screens/letters/hebrew_letters_screen.dart';
+import 'package:kids_reading_app/screens/letters/letters_menu_screen.dart';
 import 'package:kids_reading_app/services/feedback_service.dart';
 import 'package:kids_reading_app/services/voice_clip_service.dart';
 import 'package:kids_reading_app/widgets/module_tile.dart';
@@ -170,6 +175,74 @@ void main() {
     expect(find.text('קולות של חיות'), findsOneWidget);
     expect(find.text('מצא את החיה'), findsOneWidget);
   });
+
+  testWidgets('לחיצה על אריח האותיות פותחת את תפריט מודול האותיות', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const KidsReadingApp());
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
+
+    tester
+        .widget<ModuleTile>(find.widgetWithText(ModuleTile, 'אותיות'))
+        .onTap();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.byType(LettersMenuScreen), findsOneWidget);
+    expect(find.text('אותיות בעברית'), findsOneWidget);
+    expect(find.text('אותיות באנגלית'), findsOneWidget);
+  });
+
+  testWidgets(
+    'מסך אותיות בעברית מציג רשת אותיות, ולחיצה על א נכנסת למסך האות עם ניקוד',
+    (tester) async {
+      final voice = _FakeVoiceService();
+      await tester.pumpWidget(
+        _wrapWithLanguage(HebrewLettersScreen(voiceService: voice)),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
+
+      expect(find.byType(GridView), findsOneWidget);
+      expect(find.text('א'), findsOneWidget);
+      expect(find.text('ב'), findsOneWidget);
+
+      _tapGridTileWithText(tester, 'א');
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byType(HebrewLetterDetailScreen), findsOneWidget);
+      expect(voice.spoken, isNotEmpty);
+      expect(voice.spoken.first, contains('אָלֶף'));
+      expect(voice.spoken.first, contains('אַרְיֵה'));
+    },
+  );
+
+  testWidgets(
+    'מסך English Letters מציג רשת אותיות, ולחיצה על B נכנסת למסך האות',
+    (tester) async {
+      final voice = _FakeVoiceService();
+      await tester.pumpWidget(
+        _wrapWithLanguage(EnglishLettersScreen(voiceService: voice)),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
+
+      expect(find.byType(GridView), findsOneWidget);
+      expect(find.text('A'), findsOneWidget);
+      expect(find.text('B'), findsOneWidget);
+      expect(find.text('C'), findsOneWidget);
+
+      _tapGridTileWithText(tester, 'B');
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byType(EnglishLetterDetailScreen), findsOneWidget);
+      expect(voice.spoken, isNotEmpty);
+      expect(voice.spoken.first, equals('B is for Ball'));
+    },
+  );
 
   testWidgets(
     'מסך היכרות עם צבעים מציג רשת של כל הצבעים, ולחיצה נכנסת למסך צבע בודד',

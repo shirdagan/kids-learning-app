@@ -11,6 +11,7 @@ import '../widgets/responsive_center.dart';
 import 'animals/animals_menu_screen.dart';
 import 'coming_soon_screen.dart';
 import 'colors/colors_menu_screen.dart';
+import 'letters/letters_menu_screen.dart';
 
 /// מסך הפתיחה: כפתורים גדולים לכל מודול לימוד. רק מודול הצבעים פעיל
 /// כרגע, שאר המודולים מסומנים "בקרוב" ומובילים למסך שמור מקום.
@@ -55,13 +56,9 @@ class HomeScreen extends StatelessWidget {
         label: AppStrings.moduleLetters(l),
         icon: Icons.abc_rounded,
         color: const Color(0xFF9C6ADE),
-        comingSoon: true,
-        onTap: () => _openComingSoon(
-          context,
-          title: AppStrings.moduleLetters(l),
-          icon: Icons.abc_rounded,
-          color: const Color(0xFF9C6ADE),
-        ),
+        onTap: () =>
+            Navigator.of(context)
+                .push(fadeScaleRoute(const LettersMenuScreen())),
       ),
       ModuleTile(
         label: AppStrings.moduleWords(l),
