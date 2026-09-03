@@ -89,4 +89,133 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
       ),
     ],
   ),
+  HebrewLetterConcept(
+    id: 'gimel',
+    letter: 'ג',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'גַּ',
+        word: 'גַּלְגַּל',
+        wordPlain: 'גלגל',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.wheel, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'גֶּ',
+        word: 'גֶּזֶר',
+        wordPlain: 'גזר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.carrot, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'גִּ',
+        word: 'גִּיטָרָה',
+        wordPlain: 'גיטרה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.guitar, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'גּוֹ',
+        word: 'גּוֹזָל',
+        wordPlain: 'גוזל',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.babyBird, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'גּוּ',
+        word: 'גּוּר',
+        wordPlain: 'גור',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.cub, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'dalet',
+    letter: 'ד',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'דָּ',
+        word: 'דָּג',
+        wordPlain: 'דג',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.fish, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'דֶּ',
+        word: 'דֶּלֶת',
+        wordPlain: 'דלת',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.door, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'דִּי',
+        word: 'דִּינוֹזָאוּר',
+        wordPlain: 'דינוזאור',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.dinosaur, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'דּוֹ',
+        word: 'דּוֹב',
+        wordPlain: 'דוב',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.bear, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'דּוּ',
+        word: 'דּוּבִּי',
+        wordPlain: 'דובי',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.teddyBear,
+          size: size,
+        ),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'hey',
+    letter: 'ה',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'הַ',
+        word: 'הַר',
+        wordPlain: 'הר',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.mountain, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'הֶ',
+        word: 'הֶגֶה',
+        wordPlain: 'הגה',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.steeringWheel,
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'הִי',
+        word: 'הִיפּוֹפּוֹטָם',
+        wordPlain: 'היפופוטם',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.hippo, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'הוֹ',
+        word: 'הוֹרֶה',
+        wordPlain: 'הורה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.guardian, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'הוּ',
+        word: 'הוּמוֹר',
+        wordPlain: 'הומור',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.laughingFace,
+          size: size,
+        ),
+      ),
+    ],
+  ),
 ];
