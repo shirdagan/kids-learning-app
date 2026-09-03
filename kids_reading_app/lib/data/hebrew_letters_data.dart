@@ -436,4 +436,142 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
       ),
     ],
   ),
+  HebrewLetterConcept(
+    id: 'pe',
+    letter: 'פ',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'פָּ',
+        word: 'פָּרָה',
+        wordPlain: 'פרה',
+        illustrationBuilder: (size) =>
+            AnimalIllustration(shape: AnimalShape.cow, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'פֶּ',
+        word: 'פֶּרַח',
+        wordPlain: 'פרח',
+        illustrationBuilder: (size) => ObjectIllustration(
+          shape: ObjectShape.flower,
+          color: const Color(0xFFE8639B),
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'פִּי',
+        word: 'פִּיל',
+        wordPlain: 'פיל',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.elephant, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'פּוֹ',
+        word: 'פּוֹנִי',
+        wordPlain: 'פוני',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.pony, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'פּוּ',
+        word: 'פּוּמָה',
+        wordPlain: 'פומה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.puma, size: size),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'tav',
+    letter: 'ת',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'תַּ',
+        word: 'תַּפּוּחַ',
+        wordPlain: 'תפוח',
+        illustrationBuilder: (size) => ObjectIllustration(
+          shape: ObjectShape.apple,
+          color: const Color(0xFFE24B4B),
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'תֵּ',
+        word: 'תֵּה',
+        wordPlain: 'תה',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.teacup, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'תִּי',
+        word: 'תִּיק',
+        wordPlain: 'תיק',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.backpack, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'תּוֹ',
+        word: 'תּוֹלַעַת',
+        wordPlain: 'תולעת',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.worm, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'תּוּ',
+        word: 'תּוּת',
+        wordPlain: 'תות',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.strawberry,
+          size: size,
+        ),
+      ),
+    ],
+  ),
+  HebrewLetterConcept(
+    id: 'shin',
+    letter: 'ש',
+    vowelForms: [
+      HebrewVowelForm(
+        symbol: 'שָׁ',
+        word: 'שָׁעוֹן',
+        wordPlain: 'שעון',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.clock, size: size),
+      ),
+      HebrewVowelForm(
+        symbol: 'שֶׁ',
+        word: 'שֶׁמֶש',
+        wordPlain: 'שמש',
+        illustrationBuilder: (size) => ObjectIllustration(
+          shape: ObjectShape.sun,
+          color: const Color(0xFFFBCB2E),
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'שִׁי',
+        word: 'שִׁיר',
+        wordPlain: 'שיר',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.musicNote,
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'שׁוֹ',
+        word: 'שׁוֹקוֹלָד',
+        wordPlain: 'שוקולד',
+        illustrationBuilder: (size) => LetterWordIllustration(
+          shape: LetterWordShape.chocolate,
+          size: size,
+        ),
+      ),
+      HebrewVowelForm(
+        symbol: 'שׁוּ',
+        word: 'שׁוּעָל',
+        wordPlain: 'שועל',
+        illustrationBuilder: (size) =>
+            LetterWordIllustration(shape: LetterWordShape.fox, size: size),
+      ),
+    ],
+  ),
 ];

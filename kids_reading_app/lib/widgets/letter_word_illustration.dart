@@ -119,6 +119,26 @@ class _LetterWordPainter extends CustomPainter {
         _paintPot(canvas, size);
       case LetterWordShape.battery:
         _paintBattery(canvas, size);
+      case LetterWordShape.elephant:
+        _paintElephant(canvas, size);
+      case LetterWordShape.pony:
+        _paintPony(canvas, size);
+      case LetterWordShape.puma:
+        _paintPuma(canvas, size);
+      case LetterWordShape.teacup:
+        _paintTeacup(canvas, size);
+      case LetterWordShape.backpack:
+        _paintBackpack(canvas, size);
+      case LetterWordShape.worm:
+        _paintWorm(canvas, size);
+      case LetterWordShape.strawberry:
+        _paintStrawberry(canvas, size);
+      case LetterWordShape.clock:
+        _paintClock(canvas, size);
+      case LetterWordShape.chocolate:
+        _paintChocolate(canvas, size);
+      case LetterWordShape.fox:
+        _paintFox(canvas, size);
     }
   }
 
@@ -1671,6 +1691,437 @@ class _LetterWordPainter extends CustomPainter {
       ..lineTo(w * 0.53, h * 0.52)
       ..close();
     canvas.drawPath(bolt, Paint()..color = Colors.white);
+  }
+
+  void _paintElephant(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final skin = Paint()..color = const Color(0xFFB9C4CC);
+    final center = Offset(w * 0.46, h * 0.5);
+    canvas.drawCircle(center, w * 0.3, skin);
+    canvas.drawCircle(center + Offset(-w * 0.32, -h * 0.02), w * 0.2, skin);
+
+    // תא.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.2, h * 0.52)
+        ..quadraticBezierTo(w * 0.06, h * 0.6, w * 0.1, h * 0.78)
+        ..quadraticBezierTo(w * 0.14, h * 0.9, w * 0.22, h * 0.86)
+        ..quadraticBezierTo(w * 0.16, h * 0.72, w * 0.26, h * 0.58)
+        ..close(),
+      skin,
+    );
+
+    // אוזן.
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(w * 0.18, -h * 0.02),
+        width: w * 0.32,
+        height: h * 0.4,
+      ),
+      Paint()..color = const Color(0xFFD7DEE3),
+    );
+
+    canvas.drawCircle(
+      center + Offset(-w * 0.34, -h * 0.06),
+      w * 0.03,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(w * 0.02, h * 0.28),
+        width: w * 0.1,
+        height: h * 0.14,
+      ),
+      Paint()..color = Colors.white,
+    );
+  }
+
+  void _paintPony(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final coat = Paint()..color = const Color(0xFFEBB3A0);
+    final center = Offset(w * 0.5, h * 0.58);
+    canvas.drawCircle(center, w * 0.3, coat);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(0, -h * 0.36),
+        width: w * 0.18,
+        height: h * 0.28,
+      ),
+      coat,
+    );
+    for (final dx in [-0.16, 0.16]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(w * dx, -h * 0.5),
+          width: w * 0.1,
+          height: h * 0.16,
+        ),
+        coat,
+      );
+    }
+    // רעמה צבעונית.
+    final maneColors = [
+      const Color(0xFFE8639B),
+      const Color(0xFF9C6ADE),
+      const Color(0xFF4FB6E8),
+    ];
+    for (var i = 0; i < 3; i++) {
+      canvas.drawCircle(
+        center + Offset(-w * 0.16 + w * 0.1 * i, -h * 0.58),
+        w * 0.06,
+        Paint()..color = maneColors[i],
+      );
+    }
+    canvas.drawCircle(
+      center + Offset(-w * 0.08, -h * 0.36),
+      w * 0.025,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(0, -h * 0.24),
+        width: w * 0.08,
+        height: h * 0.06,
+      ),
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+  }
+
+  void _paintPuma(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final fur = Paint()..color = const Color(0xFFD9A05B);
+    final center = Offset(w * 0.5, h * 0.56);
+    canvas.drawCircle(center, w * 0.32, fur);
+    for (final dx in [-0.7, 0.7]) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(center.dx + w * dx * 0.42, center.dy - w * 0.24)
+          ..lineTo(center.dx + w * dx * 0.24, center.dy - w * 0.5)
+          ..lineTo(center.dx + w * dx * 0.06, center.dy - w * 0.26)
+          ..close(),
+        fur,
+      );
+    }
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(0, w * 0.1),
+        width: w * 0.32,
+        height: h * 0.2,
+      ),
+      Paint()..color = const Color(0xFFF3E0C4),
+    );
+    final eyePaint = Paint()..color = const Color(0xFF3A2E2E);
+    canvas.drawCircle(
+      center + Offset(-w * 0.13, -h * 0.02),
+      w * 0.03,
+      eyePaint,
+    );
+    canvas.drawCircle(center + Offset(w * 0.13, -h * 0.02), w * 0.03, eyePaint);
+    // שפמפם.
+    final whisker = Paint()
+      ..color = const Color(0xFF7A5230)
+      ..strokeWidth = w * 0.01
+      ..strokeCap = StrokeCap.round;
+    for (final dy in [0.1, 0.16]) {
+      canvas.drawLine(
+        center + Offset(-w * 0.1, h * dy),
+        center + Offset(-w * 0.36, h * dy - h * 0.02),
+        whisker,
+      );
+      canvas.drawLine(
+        center + Offset(w * 0.1, h * dy),
+        center + Offset(w * 0.36, h * dy - h * 0.02),
+        whisker,
+      );
+    }
+  }
+
+  void _paintTeacup(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTWH(w * 0.2, h * 0.44, w * 0.5, h * 0.34),
+        bottomLeft: Radius.circular(w * 0.2),
+        bottomRight: Radius.circular(w * 0.2),
+      ),
+      Paint()..color = Colors.white,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.45, h * 0.44),
+        width: w * 0.5,
+        height: h * 0.1,
+      ),
+      Paint()..color = const Color(0xFF8B5E3C),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.45, h * 0.44),
+        width: w * 0.4,
+        height: h * 0.06,
+      ),
+      Paint()..color = const Color(0xFFDBA463),
+    );
+    canvas.drawArc(
+      Rect.fromLTWH(w * 0.6, h * 0.5, w * 0.24, h * 0.2),
+      -math.pi / 2.4,
+      math.pi * 1.3,
+      false,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.05,
+    );
+    // אדים.
+    final steam = Paint()
+      ..color = const Color(0xFFB9C4CC)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.02
+      ..strokeCap = StrokeCap.round;
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.35, h * 0.36)
+        ..quadraticBezierTo(w * 0.28, h * 0.24, w * 0.35, h * 0.14),
+      steam,
+    );
+  }
+
+  void _paintBackpack(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.2, h * 0.28, w * 0.6, h * 0.62),
+        Radius.circular(w * 0.14),
+      ),
+      Paint()..color = const Color(0xFF4FB6E8),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.32, h * 0.1, w * 0.36, h * 0.28),
+        Radius.circular(w * 0.1),
+      ),
+      Paint()..color = const Color(0xFF2F92BE),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.32, h * 0.46, w * 0.36, h * 0.24),
+        Radius.circular(w * 0.05),
+      ),
+      Paint()..color = const Color(0xFF2F92BE),
+    );
+    for (final dx in [0.3, 0.7]) {
+      canvas.drawLine(
+        Offset(w * dx, h * 0.02),
+        Offset(w * dx, h * 0.3),
+        Paint()
+          ..color = const Color(0xFF2F92BE)
+          ..strokeWidth = w * 0.045
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+  }
+
+  void _paintWorm(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final colors = [const Color(0xFF6FB65C), const Color(0xFF9CCB6B)];
+    final segments = [
+      Offset(0.22, 0.7),
+      Offset(0.32, 0.5),
+      Offset(0.46, 0.62),
+      Offset(0.58, 0.42),
+      Offset(0.72, 0.5),
+    ];
+    for (var i = 0; i < segments.length; i++) {
+      canvas.drawCircle(
+        Offset(w * segments[i].dx, h * segments[i].dy),
+        w * 0.13,
+        Paint()..color = colors[i % 2],
+      );
+    }
+    canvas.drawCircle(
+      Offset(w * 0.19, h * 0.68),
+      w * 0.02,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    // אנטנות.
+    final antenna = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..strokeWidth = w * 0.012
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(w * 0.14, h * 0.62),
+      Offset(w * 0.08, h * 0.54),
+      antenna,
+    );
+  }
+
+  void _paintStrawberry(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final body = Path()
+      ..moveTo(w * 0.5, h * 0.92)
+      ..cubicTo(w * 0.14, h * 0.72, w * 0.16, h * 0.34, w * 0.5, h * 0.3)
+      ..cubicTo(w * 0.84, h * 0.34, w * 0.86, h * 0.72, w * 0.5, h * 0.92)
+      ..close();
+    canvas.drawPath(body, Paint()..color = const Color(0xFFE24B4B));
+
+    final seed = Paint()..color = const Color(0xFFFBCB2E);
+    for (final o in [
+      Offset(-0.14, 0.1),
+      Offset(0.1, 0.05),
+      Offset(-0.05, 0.3),
+      Offset(0.16, 0.28),
+      Offset(0, 0.5),
+      Offset(-0.16, 0.45),
+    ]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(w * (0.5 + o.dx), h * (0.5 + o.dy)),
+          width: w * 0.03,
+          height: h * 0.05,
+        ),
+        seed,
+      );
+    }
+
+    final leaf = Paint()..color = const Color(0xFF5CB85C);
+    for (final dx in [-0.14, 0.0, 0.14]) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(w * 0.5, h * 0.3)
+          ..lineTo(w * (0.5 + dx), h * 0.14)
+          ..lineTo(w * (0.5 + dx * 0.4), h * 0.3)
+          ..close(),
+        leaf,
+      );
+    }
+  }
+
+  void _paintClock(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final center = Offset(w * 0.5, h * 0.54);
+    final radius = w * 0.36;
+    canvas.drawCircle(center, radius, Paint()..color = Colors.white);
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = const Color(0xFF3A2E2E)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.03,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.42, h * 0.06, w * 0.16, h * 0.08),
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    for (final dx in [-0.18, 0.18]) {
+      canvas.drawLine(
+        Offset(center.dx + w * dx, center.dy - radius * 1.05),
+        Offset(w * 0.5, h * 0.1),
+        Paint()
+          ..color = const Color(0xFF3A2E2E)
+          ..strokeWidth = w * 0.02,
+      );
+    }
+    final hand = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..strokeWidth = w * 0.03
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(center, center + Offset(0, -radius * 0.55), hand);
+    canvas.drawLine(center, center + Offset(radius * 0.4, radius * 0.1), hand);
+  }
+
+  void _paintChocolate(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.14, h * 0.2, w * 0.72, h * 0.6),
+        Radius.circular(w * 0.05),
+      ),
+      Paint()..color = const Color(0xFF6B4226),
+    );
+    final line = Paint()
+      ..color = const Color(0xFF3A2416)
+      ..strokeWidth = w * 0.015;
+    for (var i = 1; i < 3; i++) {
+      canvas.drawLine(
+        Offset(w * (0.14 + 0.72 * i / 3), h * 0.2),
+        Offset(w * (0.14 + 0.72 * i / 3), h * 0.8),
+        line,
+      );
+    }
+    canvas.drawLine(Offset(w * 0.14, h * 0.5), Offset(w * 0.86, h * 0.5), line);
+    canvas.drawOval(
+      Rect.fromLTWH(w * 0.18, h * 0.24, w * 0.14, h * 0.08),
+      Paint()..color = Colors.white.withValues(alpha: 0.2),
+    );
+  }
+
+  void _paintFox(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final fur = Paint()..color = const Color(0xFFE8863A);
+    final center = Offset(w * 0.5, h * 0.56);
+    canvas.drawPath(
+      Path()
+        ..moveTo(center.dx, center.dy - w * 0.3)
+        ..lineTo(center.dx - w * 0.3, center.dy - w * 0.02)
+        ..quadraticBezierTo(
+          center.dx - w * 0.3,
+          center.dy + w * 0.28,
+          center.dx,
+          center.dy + w * 0.32,
+        )
+        ..quadraticBezierTo(
+          center.dx + w * 0.3,
+          center.dy + w * 0.28,
+          center.dx + w * 0.3,
+          center.dy - w * 0.02,
+        )
+        ..close(),
+      fur,
+    );
+    for (final dx in [-0.66, 0.66]) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(center.dx + w * dx * 0.5, center.dy - w * 0.22)
+          ..lineTo(center.dx + w * dx * 0.7, center.dy - w * 0.5)
+          ..lineTo(center.dx + w * dx * 0.28, center.dy - w * 0.28)
+          ..close(),
+        fur,
+      );
+    }
+    canvas.drawPath(
+      Path()
+        ..moveTo(center.dx - w * 0.14, center.dy + w * 0.06)
+        ..quadraticBezierTo(
+          center.dx,
+          center.dy + w * 0.26,
+          center.dx + w * 0.14,
+          center.dy + w * 0.06,
+        )
+        ..quadraticBezierTo(
+          center.dx,
+          center.dy + w * 0.16,
+          center.dx - w * 0.14,
+          center.dy + w * 0.06,
+        )
+        ..close(),
+      Paint()..color = Colors.white,
+    );
+    canvas.drawCircle(
+      center + Offset(0, w * 0.1),
+      w * 0.025,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    canvas.drawCircle(
+      center + Offset(-w * 0.1, -w * 0.02),
+      w * 0.025,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    canvas.drawCircle(
+      center + Offset(w * 0.1, -w * 0.02),
+      w * 0.025,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
   }
 
   @override
