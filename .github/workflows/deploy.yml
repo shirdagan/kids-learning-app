@@ -1,0 +1,62 @@
+# פרסום אוטומטי ל-GitHub Pages בכל push לענף הפיתוח.
+# בניגוד ל-Netlify, ל-GitHub Actions יש דקות בנייה ללא הגבלה בריפו
+# ציבורי - אין חשש מ"credits" שנגמרים.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [claude/learning-app-children-rg02ds]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# רק deploy אחד בו-זמנית; לא מבטלים deploy שכבר באמצע כדי שהאתר
+# תמיד יסתיים במצב עקבי.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        working-directory: kids_reading_app
+        run: flutter pub get
+
+      - name: Run tests
+        working-directory: kids_reading_app
+        run: flutter test
+
+      - name: Build web
+        working-directory: kids_reading_app
+        # base-href חייב להתאים לשם הריפו, כי GitHub Pages מגיש ריפו
+        # פרויקט מתחת לנתיב /<repo-name>/ ולא מהשורש.
+        run: flutter build web --release --base-href /kids-learning-app/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: kids_reading_app/build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
