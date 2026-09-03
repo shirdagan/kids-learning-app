@@ -33,10 +33,6 @@ migrate_working_dir/
 /build/
 /coverage/
 
-# Flutter SDK שמשוכפל ונשמר במטמון על ידי netlify.toml (ראו שורש הריפו) -
-# לא אמור להיות כאן מלכתחילה, אבל ליתר ביטחון.
-/flutter_sdk/
-
 # Symbolication related
 app.*.symbols
 

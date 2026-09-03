@@ -1,29 +1,14 @@
 # הגדרות פרסום ל-Netlify: מתקינים Flutter על שרתי הבנייה של Netlify עצמם
 # (יש להם גישה מלאה לאינטרנט, בניגוד לסביבת הפיתוח הזו) ובונים את גרסת
 # הווב בכל push לענף המחובר - כדי שהלינק יישאר קבוע ויתעדכן לבד.
-#
-# חיסכון ב-credits: משתמשים בפלאגין netlify-plugin-cache כדי לשמור את
-# ה-Flutter SDK בין בניות (ולא להוריד/לשכפל אותו מחדש בכל push - זה מה
-# שצרך הכי הרבה זמן בנייה עד עכשיו). ה-clone עצמו (git shallow clone,
-# ~240MB) עדיין הכי קטן וזול בהשוואה לחלופות - נבדק ידנית מול ארכיון
-# ה-SDK הקומפל-מראש (~1.5GB, גדול משמעותית).
-
-[[plugins]]
-  package = "netlify-plugin-cache"
-  [plugins.inputs]
-    # יחסי לשורש הריפו (לא לתיקיית ה-base) - ה-build command רץ מתוך
-    # kids_reading_app/ ומשכפל את Flutter לשם, אז זה הנתיב המלא הנכון.
-    paths = ["kids_reading_app/flutter_sdk"]
 
 [build]
   base = "kids_reading_app"
   publish = "build/web"
   command = """
-    if [ ! -x flutter_sdk/bin/flutter ]; then
-      git clone https://github.com/flutter/flutter.git --depth 1 -b stable flutter_sdk
-    fi && \
-    export PATH="$PATH:$(pwd)/flutter_sdk/bin" && \
-    flutter config --enable-web --no-analytics && \
+    git clone https://github.com/flutter/flutter.git --depth 1 -b stable /tmp/flutter && \
+    export PATH="$PATH:/tmp/flutter/bin" && \
+    flutter config --enable-web && \
     flutter pub get && \
     flutter build web --release
   """
