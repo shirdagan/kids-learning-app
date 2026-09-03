@@ -411,6 +411,39 @@ class _AnimalPainter extends CustomPainter {
         ..strokeJoin = StrokeJoin.round,
     );
 
+    // תלתלים: בלי שום רמז לתלתול, הכתם החלק נראה כמו ראש של חייזר
+    // במקום צמר - כל תלתול הוא קשת פתוחה (כמו "6"), מפוזרים סביב
+    // היקף הצמר, לא מעל הפנים.
+    final curlPaint = Paint()
+      ..color = const Color(0xFFD9D0BC)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.016
+      ..strokeCap = StrokeCap.round;
+    const curlSpots = [
+      (0.30, 0.20, 1.1),
+      (0.5, 0.11, 2.4),
+      (0.70, 0.20, 4.2),
+      (0.16, 0.38, 0.3),
+      (0.84, 0.38, 3.6),
+      (0.20, 0.62, 5.2),
+      (0.80, 0.62, 1.7),
+      (0.32, 0.82, 2.0),
+      (0.68, 0.82, 4.6),
+    ];
+    for (final (fx, fy, rot) in curlSpots) {
+      canvas.save();
+      canvas.translate(w * fx, h * fy);
+      canvas.rotate(rot);
+      canvas.drawArc(
+        Rect.fromCircle(center: Offset.zero, radius: w * 0.045),
+        0.15 * math.pi,
+        1.7 * math.pi,
+        false,
+        curlPaint,
+      );
+      canvas.restore();
+    }
+
     // אוזניים - גוון קרם כהה יותר מהצמר, אבל לא ניגוד חד (כמו היחס
     // בין פרוות הכלב לאוזניים שלו).
     final tanPaint = Paint()..color = const Color(0xFFD8CBAE);
@@ -473,33 +506,43 @@ class _AnimalPainter extends CustomPainter {
   void _paintHorse(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
 
-    // פנים רחבות (לא צרות) - עדיין מוארכות אנכית כדי שיישאר "סוס"
-    // ולא "חתלתול".
+    // רעמה - פס דק שרץ לאורך קו המתאר של הראש (לא בלוב גדול בצד אחד),
+    // מצוירת ראשונה, מתחת לפנים, כדי שתיראה כמו רצועת שיער סביב הראש.
+    final maneStrip = Path()
+      ..moveTo(w * 0.5, h * 0.03)
+      ..quadraticBezierTo(w * 0.20, h * 0.05, w * 0.13, h * 0.34)
+      ..quadraticBezierTo(w * 0.10, h * 0.58, w * 0.24, h * 0.80)
+      ..quadraticBezierTo(w * 0.30, h * 0.90, w * 0.36, h * 0.86)
+      ..quadraticBezierTo(w * 0.24, h * 0.62, w * 0.27, h * 0.36)
+      ..quadraticBezierTo(w * 0.30, h * 0.14, w * 0.5, h * 0.10)
+      ..close();
+    canvas.drawPath(maneStrip, Paint()..color = const Color(0xFF6B4226));
+
+    // פנים - מוארכות ורחבות מספיק, בתוך קו הרעמה כך שנשארת רצועה דקה
+    // גלויה מסביב (לא בלוב מנותק בצד אחד, כמו שהיה קודם).
     final face = Path()
-      ..moveTo(w * 0.5, h * 0.06)
-      ..quadraticBezierTo(w * 0.82, h * 0.06, w * 0.84, h * 0.34)
-      ..quadraticBezierTo(w * 0.86, h * 0.58, w * 0.72, h * 0.78)
-      ..quadraticBezierTo(w * 0.62, h * 0.96, w * 0.5, h * 0.96)
-      ..quadraticBezierTo(w * 0.38, h * 0.96, w * 0.28, h * 0.78)
-      ..quadraticBezierTo(w * 0.14, h * 0.58, w * 0.16, h * 0.34)
-      ..quadraticBezierTo(w * 0.18, h * 0.06, w * 0.5, h * 0.06)
+      ..moveTo(w * 0.5, h * 0.08)
+      ..quadraticBezierTo(w * 0.80, h * 0.08, w * 0.82, h * 0.35)
+      ..quadraticBezierTo(w * 0.84, h * 0.58, w * 0.70, h * 0.78)
+      ..quadraticBezierTo(w * 0.60, h * 0.94, w * 0.5, h * 0.94)
+      ..quadraticBezierTo(w * 0.40, h * 0.94, w * 0.30, h * 0.78)
+      ..quadraticBezierTo(w * 0.19, h * 0.58, w * 0.20, h * 0.36)
+      ..quadraticBezierTo(w * 0.21, h * 0.10, w * 0.5, h * 0.08)
       ..close();
     canvas.drawPath(face, Paint()..color = const Color(0xFFB97A4A));
 
-    // רעמה - מצוירת מעל הפנים (לא מתחתן), נשענת על הקצה השמאלי הרחב
-    // יותר, כדי שתישאר גלויה בבירור ולא תיחבא מתחת לפנים.
-    final mane = Path()
-      ..moveTo(w * 0.46, h * 0.06)
-      ..quadraticBezierTo(w * 0.14, h * 0.08, w * 0.10, h * 0.32)
-      ..quadraticBezierTo(w * 0.08, h * 0.54, w * 0.20, h * 0.72)
-      ..quadraticBezierTo(w * 0.24, h * 0.80, w * 0.32, h * 0.76)
-      ..quadraticBezierTo(w * 0.22, h * 0.58, w * 0.24, h * 0.36)
-      ..quadraticBezierTo(w * 0.26, h * 0.16, w * 0.5, h * 0.08)
+    // בלורית (forelock) - ציצת שיער משולשת בין האוזניים, יורדת עד
+    // אמצע המצח. זה הרמז הכי ברור ומוכר ל"סוס" בציור פשוט.
+    final forelock = Path()
+      ..moveTo(w * 0.5, h * 0.08)
+      ..quadraticBezierTo(w * 0.42, h * 0.14, w * 0.44, h * 0.26)
+      ..quadraticBezierTo(w * 0.5, h * 0.22, w * 0.56, h * 0.26)
+      ..quadraticBezierTo(w * 0.58, h * 0.14, w * 0.5, h * 0.08)
       ..close();
-    canvas.drawPath(mane, Paint()..color = const Color(0xFF6B4226));
+    canvas.drawPath(forelock, Paint()..color = const Color(0xFF6B4226));
 
     // אוזניים - מרוחקות זו מזו, כל אחת בזווית משלה, לא נפגשות בנקודה
-    // אחת (מה שיצר קודם מראה של פפיון).
+    // אחת (מה שיצר קודם מראה של פפיון), עם תוך-אוזן בהיר.
     final earPaint = Paint()..color = const Color(0xFFB97A4A);
     canvas.drawPath(
       Path()
@@ -517,6 +560,23 @@ class _AnimalPainter extends CustomPainter {
         ..close(),
       earPaint,
     );
+    final innerEarPaint = Paint()..color = const Color(0xFFE0B084);
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.37, h * 0.09)
+        ..lineTo(w * 0.335, h * 0.00)
+        ..lineTo(w * 0.43, h * 0.055)
+        ..close(),
+      innerEarPaint,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.63, h * 0.09)
+        ..lineTo(w * 0.665, h * 0.00)
+        ..lineTo(w * 0.57, h * 0.045)
+        ..close(),
+      innerEarPaint,
+    );
 
     // כתם בהיר לאורך האף, עד הנחיריים.
     canvas.drawOval(
@@ -528,7 +588,7 @@ class _AnimalPainter extends CustomPainter {
       Paint()..color = const Color(0xFFD9A876),
     );
 
-    _eyes(canvas, size, spread: 0.19, y: 0.40);
+    _eyes(canvas, size, spread: 0.19, y: 0.42);
 
     final nostril = Paint()..color = _dark;
     canvas.drawOval(
