@@ -371,13 +371,13 @@ class _AnimalPainter extends CustomPainter {
 
   void _paintSheep(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
-    final center = Offset(w * 0.5, h * 0.5);
+    final center = Offset(w * 0.5, h * 0.48);
 
-    // צמר - צורה אחת, מלאה ומתומללת (לא עיגולים נפרדים): שישה "אונות"
-    // גדולות ומעוגלות, ממוזגות לקו מתאר רציף אחד, בגוון אפור-קרם
-    // אמיתי (לא לבן, שהיה כמעט בלתי-נראה על כרטיס לבן).
-    const lobes = 6;
-    final rBase = w * 0.40, bump = w * 0.07;
+    // צמר - הצורה הדומיננטית (כמו צבע הפרווה הראשי בכל שאר החיות),
+    // לא מכווצת על ידי כתם פנים ענק: שבע "אונות" גדולות ומעוגלות,
+    // ממוזגות לקו מתאר רציף אחד בגוון קרם אמיתי.
+    const lobes = 7;
+    final rBase = w * 0.42, bump = w * 0.065;
     final wool = Path();
     for (var i = 0; i < lobes; i++) {
       final a = (math.pi * 2 / lobes) * i - math.pi / 2;
@@ -397,55 +397,74 @@ class _AnimalPainter extends CustomPainter {
       wool.quadraticBezierTo(cx, cy, ex, ey);
     }
     wool.close();
-    canvas.drawPath(wool, Paint()..color = const Color(0xFFE9E4D8));
+    canvas.drawPath(wool, Paint()..color = const Color(0xFFF5F1E6));
     canvas.drawPath(
       wool,
       Paint()
-        ..color = const Color(0xFFB8AF9B)
+        ..color = const Color(0xFFC7BFAC)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.02
+        ..strokeWidth = w * 0.018
         ..strokeJoin = StrokeJoin.round,
     );
 
-    // אוזניים וכתם פנים - חום עז וברור, בניגוד חד לצמר (כמו "כבשה
-    // פנים-שחורות" קלאסית) - הפרטים האלה כן עבדו טוב בגרסה הקודמת.
-    final facePaint = Paint()..color = const Color(0xFF8D6E52);
+    // אוזניים - גוון קרם כהה יותר מהצמר, אבל לא ניגוד חד (כמו היחס
+    // בין פרוות הכלב לאוזניים שלו).
+    final tanPaint = Paint()..color = const Color(0xFFD8CBAE);
     canvas.save();
-    canvas.translate(w * 0.25, h * 0.56);
+    canvas.translate(w * 0.24, h * 0.56);
     canvas.rotate(-0.4);
     canvas.drawOval(
       Rect.fromCenter(center: Offset.zero, width: w * 0.15, height: h * 0.26),
-      facePaint,
+      tanPaint,
     );
     canvas.restore();
     canvas.save();
-    canvas.translate(w * 0.75, h * 0.56);
+    canvas.translate(w * 0.76, h * 0.56);
     canvas.rotate(0.4);
     canvas.drawOval(
       Rect.fromCenter(center: Offset.zero, width: w * 0.15, height: h * 0.26),
-      facePaint,
+      tanPaint,
     );
     canvas.restore();
 
+    // עיניים על הצמר עצמו (כמו בכל שאר החיות), לא בתוך כתם פנים נפרד.
+    _eyes(canvas, size, y: 0.46);
+
+    // כתם חטם קטן ותחתון בלבד - סביב האף והפה, באותו יחס שיש לכלב
+    // ולפרה בין הפרווה שלהם לכתם החטם הבהיר, לא כתם פנים ענק.
     canvas.drawOval(
       Rect.fromCenter(
-        center: center + Offset(0, h * 0.04),
-        width: w * 0.46,
-        height: h * 0.40,
+        center: Offset(w * 0.5, h * 0.67),
+        width: w * 0.34,
+        height: h * 0.24,
       ),
-      facePaint,
+      tanPaint,
     );
-
-    _eyes(canvas, size, y: 0.48);
-
+    final nostril = Paint()..color = _dark;
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.46, h * 0.66),
+        width: w * 0.036,
+        height: h * 0.05,
+      ),
+      nostril,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.54, h * 0.66),
+        width: w * 0.036,
+        height: h * 0.05,
+      ),
+      nostril,
+    );
     canvas.drawPath(
       Path()
-        ..moveTo(w * 0.46, h * 0.60)
-        ..quadraticBezierTo(w * 0.5, h * 0.63, w * 0.54, h * 0.60),
+        ..moveTo(w * 0.46, h * 0.71)
+        ..quadraticBezierTo(w * 0.5, h * 0.74, w * 0.54, h * 0.71),
       Paint()
-        ..color = Colors.white
+        ..color = _dark
         ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.02
+        ..strokeWidth = w * 0.015
         ..strokeCap = StrokeCap.round,
     );
   }
