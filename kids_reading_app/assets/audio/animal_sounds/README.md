@@ -10,6 +10,8 @@
 - `assets/audio/animal_sounds/sheep.<סיומת>`
 - `assets/audio/animal_sounds/horse.<סיומת>`
 - `assets/audio/animal_sounds/lion.<סיומת>`
+- `assets/audio/animal_sounds/pig.<סיומת>`
+- `assets/audio/animal_sounds/chicken.<סיומת>`
 
 **כל פורמט אודיו נפוץ עובד** — mp3, wav, m4a או ogg. אין צורך להמיר
 קבצים: פשוט שולחים את הקובץ באיזה פורמט שהוא יצא (למשל מקליטים

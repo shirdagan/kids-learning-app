@@ -69,4 +69,22 @@ const List<AnimalConcept> kAnimalConcepts = [
     shape: AnimalShape.lion,
     themeColor: Color(0xFFEFB35C),
   ),
+  AnimalConcept(
+    id: 'pig',
+    hebrewName: 'חזיר',
+    englishName: 'pig',
+    hebrewSoundWord: 'אוינק אוינק',
+    englishSoundWord: 'oink oink',
+    shape: AnimalShape.pig,
+    themeColor: Color(0xFFF6AFC5),
+  ),
+  AnimalConcept(
+    id: 'chicken',
+    hebrewName: 'תרנגולת',
+    englishName: 'chicken',
+    hebrewSoundWord: 'קוקוריקו',
+    englishSoundWord: 'cock-a-doodle-doo',
+    shape: AnimalShape.chicken,
+    themeColor: Color(0xFFE24B4B),
+  ),
 ];

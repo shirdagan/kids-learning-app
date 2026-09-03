@@ -47,6 +47,10 @@ class _AnimalPainter extends CustomPainter {
         _paintHorse(canvas, size);
       case AnimalShape.lion:
         _paintLion(canvas, size);
+      case AnimalShape.pig:
+        _paintPig(canvas, size);
+      case AnimalShape.chicken:
+        _paintChicken(canvas, size);
     }
   }
 
@@ -609,6 +613,109 @@ class _AnimalPainter extends CustomPainter {
         ..moveTo(w * 0.5, h * 0.64)
         ..quadraticBezierTo(w * 0.56, h * 0.7, w * 0.6, h * 0.66),
       smilePaint,
+    );
+  }
+
+  void _paintPig(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final body = const Color(0xFFF6AFC5);
+    final darker = const Color(0xFFF093B0);
+
+    canvas.drawCircle(
+      Offset(w * 0.5, h * 0.52),
+      w * 0.36,
+      Paint()..color = body,
+    );
+
+    // אוזניים - משולשים מעוגלים בחלק העליון.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.26, h * 0.30)
+        ..lineTo(w * 0.20, h * 0.10)
+        ..lineTo(w * 0.40, h * 0.22)
+        ..close(),
+      Paint()..color = darker,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.74, h * 0.30)
+        ..lineTo(w * 0.80, h * 0.10)
+        ..lineTo(w * 0.60, h * 0.22)
+        ..close(),
+      Paint()..color = darker,
+    );
+
+    _eyes(canvas, size, y: 0.44);
+
+    // החטם - התכונה המזהה של חזיר: עיגול גדול עם שני נחיריים אליפטיים.
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.68),
+        width: w * 0.38,
+        height: h * 0.30,
+      ),
+      Paint()..color = darker,
+    );
+    final nostril = Paint()..color = const Color(0xFFB85C78);
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.43, h * 0.68),
+        width: w * 0.06,
+        height: h * 0.1,
+      ),
+      nostril,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.57, h * 0.68),
+        width: w * 0.06,
+        height: h * 0.1,
+      ),
+      nostril,
+    );
+
+    // לחיים.
+    final blush = Paint()..color = const Color(0x59F17DB0);
+    canvas.drawCircle(Offset(w * 0.24, h * 0.56), w * 0.06, blush);
+    canvas.drawCircle(Offset(w * 0.76, h * 0.56), w * 0.06, blush);
+  }
+
+  void _paintChicken(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final center = Offset(w * 0.5, h * 0.52);
+
+    canvas.drawCircle(
+      center,
+      w * 0.34,
+      Paint()..color = const Color(0xFFFFF6E0),
+    );
+
+    // כרבולת - שלוש בליטות אדומות מחוברות בחלק העליון.
+    final comb = Paint()..color = const Color(0xFFE24B4B);
+    for (final dx in [-0.11, 0.0, 0.11]) {
+      canvas.drawCircle(Offset(w * (0.5 + dx), h * 0.20), w * 0.075, comb);
+    }
+
+    _eyes(canvas, size, y: 0.48, spread: 0.16);
+
+    // מקור - משולש כתום קטן וממורכז.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.5, h * 0.58)
+        ..lineTo(w * 0.59, h * 0.63)
+        ..lineTo(w * 0.5, h * 0.68)
+        ..close(),
+      Paint()..color = const Color(0xFFF3902F),
+    );
+
+    // כרבולת תחתונה (התלתלה שמתחת למקור).
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.73),
+        width: w * 0.07,
+        height: h * 0.1,
+      ),
+      comb,
     );
   }
 
