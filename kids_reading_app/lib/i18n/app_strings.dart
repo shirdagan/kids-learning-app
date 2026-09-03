@@ -31,6 +31,8 @@ class AppStrings {
       l.isHebrew ? 'צבעים' : 'Colors';
   static String introMenuItem(AppLanguage l) =>
       l.isHebrew ? 'היכרות עם צבעים' : 'Meet the Colors';
+  static String chooseColorTitle(AppLanguage l) =>
+      l.isHebrew ? 'בחרו צבע' : 'Choose a color';
   static String findMenuItem(AppLanguage l) =>
       l.isHebrew ? 'מצא את הצבע' : 'Find the Color';
   static String sortMenuItem(AppLanguage l) =>
@@ -42,6 +44,8 @@ class AppStrings {
       l.isHebrew ? 'קולות של חיות' : 'Animal Sounds';
   static String findAnimalMenuItem(AppLanguage l) =>
       l.isHebrew ? 'מצא את החיה' : 'Find the Animal';
+  static String chooseAnimalTitle(AppLanguage l) =>
+      l.isHebrew ? 'בחרו חיה' : 'Choose an animal';
 
   static String whichAnimalPrompt(AppLanguage l) => l.isHebrew
       ? 'איזו חיה עושה את הקול הזה?'

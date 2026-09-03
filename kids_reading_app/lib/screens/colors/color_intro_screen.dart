@@ -1,162 +1,85 @@
 import 'package:flutter/material.dart';
 
 import '../../data/colors_data.dart';
+import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
-import '../../models/object_shape.dart';
+import '../../models/color_concept.dart';
+import '../../navigation/fade_scale_route.dart';
 import '../../services/voice_clip_service.dart';
 import '../../theme/color_contrast.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/object_illustration.dart';
 import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
+import '../../widgets/tap_scale.dart';
+import 'color_detail_screen.dart';
 
-/// מסך היכרות עם צבע: מציג צבע אחד עם חפץ מוכר, ואומר את שמו כשלוחצים
-/// עליו. אפשר לדפדף בין הצבעים עם חצים גדולים או החלקה.
-class ColorIntroScreen extends StatefulWidget {
+/// מסך "היכרות עם צבעים": מציג את כל הצבעים ביחד ברשת אחת, כדי
+/// שהילד/ה יבחרו בעצמם לאיזה צבע להיכנס - במקום לדפדף אחד-אחד.
+class ColorIntroScreen extends StatelessWidget {
   const ColorIntroScreen({super.key, this.voiceService});
 
-  /// נקודת הזרקה לצורך בדיקות (מאפשר להחליף במימוש דמה שלא נוגע
-  /// בערוצי פלטפורמה אמיתיים).
+  /// נקודת הזרקה לצורך בדיקות (מועברת הלאה למסך הצבע הבודד).
   final VoiceService? voiceService;
 
   @override
-  State<ColorIntroScreen> createState() => _ColorIntroScreenState();
-}
-
-class _ColorIntroScreenState extends State<ColorIntroScreen> {
-  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
-  final _pageController = PageController();
-  int _index = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _speakCurrent());
-  }
-
-  @override
-  void dispose() {
-    _voice.dispose();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  void _speakCurrent() {
-    if (!mounted) return;
-    final language = LanguageScope.of(context).value;
-    final concept = kColorConcepts[_index];
-    _voice.speak(
-      'colors_intro_${concept.id}',
-      concept.introSpeechFor(language),
-      language: language,
-    );
-  }
-
-  void _goTo(int index) {
-    if (index < 0 || index >= kColorConcepts.length) return;
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final concept = kColorConcepts[_index];
+    final l = LanguageScope.of(context).value;
 
     return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.lerp(concept.color, Colors.white, 0.78)!,
-              Color.lerp(concept.color, Colors.white, 0.58)!,
-            ],
-          ),
-        ),
-        child: SafeArea(
+      backgroundColor: const Color(0xFFFFFDF7),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
           child: ResponsiveCenter(
-            child: Stack(
+            child: Column(
               children: [
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: RoundIconButton(
-                    icon: Icons.home_rounded,
-                    iconColor: concept.color.asAccent,
-                    onTap: () => Navigator.of(context).pop(),
+                Row(
+                  children: [
+                    RoundIconButton(
+                      icon: Icons.home_rounded,
+                      iconColor: const Color(0xFF3A2E2E),
+                      onTap: () => Navigator.of(context).pop(),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                BounceIn(
+                  child: Text(
+                    AppStrings.chooseColorTitle(l),
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-                Column(
-                  children: [
-                    const SizedBox(height: 90),
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: kColorConcepts.length,
-                        onPageChanged: (i) {
-                          setState(() => _index = i);
-                          _speakCurrent();
-                        },
-                        itemBuilder: (context, i) {
-                          final c = kColorConcepts[i];
-                          return _ColorIntroPage(
-                            key: ValueKey(c.id),
-                            color: c.color,
-                            shape: c.shape,
-                            onTapObject: _speakCurrent,
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 24,
-                        horizontal: 24,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          RoundIconButton(
-                            icon: Icons.arrow_forward_ios_rounded,
-                            iconColor: concept.color.asAccent,
-                            onTap: () => _goTo(_index - 1),
-                            enabled: _index > 0,
-                          ),
-                          Row(
-                            children: List.generate(
-                              kColorConcepts.length,
-                              (i) => AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                ),
-                                width: i == _index ? 16 : 10,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  color: i == _index
-                                      ? concept.color.asAccent
-                                      : concept.color.asAccent.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                  borderRadius: BorderRadius.circular(6),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.85,
+                    children: [
+                      for (final (i, concept) in kColorConcepts.indexed)
+                        BounceIn(
+                          delay: Duration(milliseconds: 40 * i),
+                          child: _ColorGridTile(
+                            concept: concept,
+                            label: concept.nameFor(l),
+                            onTap: () => Navigator.of(context).push(
+                              fadeScaleRoute(
+                                ColorDetailScreen(
+                                  concept: concept,
+                                  voiceService: voiceService,
                                 ),
                               ),
                             ),
                           ),
-                          RoundIconButton(
-                            icon: Icons.arrow_back_ios_rounded,
-                            iconColor: concept.color.asAccent,
-                            onTap: () => _goTo(_index + 1),
-                            enabled: _index < kColorConcepts.length - 1,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -167,49 +90,52 @@ class _ColorIntroScreenState extends State<ColorIntroScreen> {
   }
 }
 
-class _ColorIntroPage extends StatelessWidget {
-  const _ColorIntroPage({
-    super.key,
-    required this.color,
-    required this.shape,
-    required this.onTapObject,
+class _ColorGridTile extends StatelessWidget {
+  const _ColorGridTile({
+    required this.concept,
+    required this.label,
+    required this.onTap,
   });
 
-  final Color color;
-  final ObjectShape shape;
-  final VoidCallback onTapObject;
+  final ColorConcept concept;
+  final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: onTapObject,
-        child: BounceIn(
-          child: GentleFloat(
-            child: Container(
-              width: 260,
-              height: 260,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: color.asGlow.withValues(alpha: 0.4),
-                    blurRadius: 30,
-                    spreadRadius: 4,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: ObjectIllustration(
-                  shape: shape,
-                  color: color,
-                  size: 190,
+    return TapScale(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 88,
+            height: 88,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: concept.color.asGlow.withValues(alpha: 0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
                 ),
+              ],
+            ),
+            child: Center(
+              child: ObjectIllustration(
+                shape: concept.shape,
+                color: concept.color,
+                size: 62,
               ),
             ),
           ),
-        ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ],
       ),
     );
   }

@@ -4,9 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kids_reading_app/app.dart';
 import 'package:kids_reading_app/i18n/app_language.dart';
 import 'package:kids_reading_app/i18n/language_controller.dart';
+import 'package:kids_reading_app/screens/animals/animal_detail_screen.dart';
 import 'package:kids_reading_app/screens/animals/animal_find_game_screen.dart';
 import 'package:kids_reading_app/screens/animals/animal_intro_screen.dart';
 import 'package:kids_reading_app/screens/animals/animals_menu_screen.dart';
+import 'package:kids_reading_app/screens/colors/color_detail_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_find_game_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_intro_screen.dart';
 import 'package:kids_reading_app/screens/colors/color_sort_game_screen.dart';
@@ -14,6 +16,21 @@ import 'package:kids_reading_app/screens/colors/colors_menu_screen.dart';
 import 'package:kids_reading_app/services/feedback_service.dart';
 import 'package:kids_reading_app/services/voice_clip_service.dart';
 import 'package:kids_reading_app/widgets/module_tile.dart';
+import 'package:kids_reading_app/widgets/tap_scale.dart';
+
+/// לוחצים על אריח ברשת (כבשה/צבע ברשת "בחרו...") על ידי קריאה ישירה
+/// ל-onTap של ה-TapScale שעוטף אותו, במקום לדמות הקשה בקואורדינטה -
+/// לאריחי הרשת יש גם אנימציית כניסה מדורגת, וזה הופך ניחוש קואורדינטות
+/// ללא יציב (בדיוק כמו ש-ModuleTile כבר טופל למטה).
+void _tapGridTileWithText(WidgetTester tester, String text) {
+  tester
+      .widget<TapScale>(
+        find
+            .ancestor(of: find.text(text), matching: find.byType(TapScale))
+            .first,
+      )
+      .onTap();
+}
 
 /// מימוש דמה של שירות הדיבור לצורך בדיקות: לא נוגע בערוצי פלטפורמה
 /// אמיתיים (שלא קיימים בסביבת הבדיקות), רק זוכר מה נאמר (טקסט ה-fallback,
@@ -154,37 +171,54 @@ void main() {
     expect(find.text('מצא את החיה'), findsOneWidget);
   });
 
-  testWidgets('מסך היכרות עם צבעים אומר את שם הצבע ומציג נקודות דפדוף', (
-    tester,
-  ) async {
-    // לא pumpAndSettle: לחפץ המוצג יש אנימציית ריחוף אינסופית (GentleFloat)
-    // בכוונה, כדי לרמז שאפשר ללחוץ עליו — pumpAndSettle לעולם לא היה נרגע.
-    final voice = _FakeVoiceService();
-    await tester.pumpWidget(
-      _wrapWithLanguage(ColorIntroScreen(voiceService: voice)),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 1500));
+  testWidgets(
+    'מסך היכרות עם צבעים מציג רשת של כל הצבעים, ולחיצה נכנסת למסך צבע בודד',
+    (tester) async {
+      // לא pumpAndSettle: למסך הצבע הבודד יש אנימציית ריחוף אינסופית
+      // (GentleFloat) בכוונה — pumpAndSettle לעולם לא היה נרגע.
+      final voice = _FakeVoiceService();
+      await tester.pumpWidget(
+        _wrapWithLanguage(ColorIntroScreen(voiceService: voice)),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
 
-    expect(find.byType(PageView), findsOneWidget);
-    expect(voice.spoken, isNotEmpty);
-    expect(voice.spoken.first, contains('אדום'));
-  });
+      expect(find.byType(GridView), findsOneWidget);
+      expect(find.text('אדום'), findsOneWidget);
+      expect(find.text('כחול'), findsOneWidget);
 
-  testWidgets('מסך קולות חיות משמיע את קול החיה ומציג נקודות דפדוף', (
-    tester,
-  ) async {
-    final voice = _FakeVoiceService();
-    await tester.pumpWidget(
-      _wrapWithLanguage(AnimalIntroScreen(voiceService: voice)),
-    );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 1500));
+      _tapGridTileWithText(tester, 'אדום');
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.byType(PageView), findsOneWidget);
-    expect(voice.spoken, isNotEmpty);
-    expect(voice.spoken.first, contains('כלב'));
-  });
+      expect(find.byType(ColorDetailScreen), findsOneWidget);
+      expect(voice.spoken, isNotEmpty);
+      expect(voice.spoken.first, contains('אדום'));
+    },
+  );
+
+  testWidgets(
+    'מסך קולות חיות מציג רשת של כל החיות, ולחיצה משמיעה את קול החיה',
+    (tester) async {
+      final voice = _FakeVoiceService();
+      await tester.pumpWidget(
+        _wrapWithLanguage(AnimalIntroScreen(voiceService: voice)),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
+
+      expect(find.byType(GridView), findsOneWidget);
+      expect(find.text('כלב'), findsOneWidget);
+
+      _tapGridTileWithText(tester, 'כלב');
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byType(AnimalDetailScreen), findsOneWidget);
+      expect(voice.spoken, isNotEmpty);
+      expect(voice.spoken.first, contains('כלב'));
+    },
+  );
 
   testWidgets('משחק "מצא את הצבע" מציג ארבע אפשרויות ושואל על צבע', (
     tester,
