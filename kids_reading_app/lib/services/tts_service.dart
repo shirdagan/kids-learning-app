@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -13,9 +15,43 @@ abstract class SpeechService {
 
 /// עוטף את מנוע הדיבור (Text-to-Speech) ומגדיר אותו לדבר בשפה
 /// המבוקשת (עברית או אנגלית), בקצב איטי וברור המתאים לילדים קטנים.
+///
+/// חשוב: מנוע ה-TTS עצמו ([FlutterTts]) והמצב שלו הם **סטטיים ומשותפים**
+/// לכל המופעים של המחלקה הזו, במקום שכל מסך שיוצר [TtsService] משלו
+/// יקבל מופע נפרד. הסיבה: ב-Flutter Web, ה-plugin של flutter_tts רושם
+/// handler יחיד על ה-MethodChannel המשותף (בקונסטרוקטור של FlutterTts) -
+/// אם כל מסך יוצר FlutterTts() חדש משלו, כל מסך "גונב" את ההאזנה
+/// לאירועים (onStart/onComplete/onError) מהמסך שקדם לו, וגם דוחס מחדש
+/// את קצב/גובה/ווליום הדיבור בכל ניווט. עם מנוע אחד משותף, כל האפליקציה
+/// מדברת דרך אותו "צינור" באופן עקבי, בלי קשר לכמה מסכים נכנסו ויצאו.
 class TtsService implements SpeechService {
-  final FlutterTts _tts = FlutterTts();
-  bool _staticOptionsSet = false;
+  static final FlutterTts _tts = FlutterTts();
+  static bool _staticOptionsSet = false;
+  static bool _handlersConfigured = false;
+  static bool _speaking = false;
+  static Completer<void>? _idleWaiter;
+
+  TtsService() {
+    _configureHandlersOnce();
+  }
+
+  static void _configureHandlersOnce() {
+    if (_handlersConfigured) return;
+    _handlersConfigured = true;
+    _tts.setStartHandler(() => _speaking = true);
+    _tts.setCompletionHandler(_markIdle);
+    _tts.setCancelHandler(_markIdle);
+    _tts.setErrorHandler((message) {
+      debugPrint('TtsService: speech error: $message');
+      _markIdle();
+    });
+  }
+
+  static void _markIdle() {
+    _speaking = false;
+    _idleWaiter?.complete();
+    _idleWaiter = null;
+  }
 
   /// קודי שפה חלופיים לנסות אם הקוד ה"תקני" לא נמצא בין הקולות הזמינים.
   /// עברית, בפרט, מופיעה בכמה מנועי דיבור/דפדפנים תחת הקוד הישן "iw"
@@ -62,12 +98,24 @@ class TtsService implements SpeechService {
       await _tts.awaitSpeakCompletion(true);
       _staticOptionsSet = true;
     }
-    await _tts.stop();
+
     // חשוב: על דפדפנים מבוססי-Chromium יש תקלה ידועה ב-Web Speech API
-    // שבה קריאה ל-speak() מיד אחרי cancel() (מה ש-stop() עושה) נבלעת
-    // בשקט - אין שגיאה, אבל גם אין קול. השהיה קצרה בין השניים "משחררת"
-    // את התור הפנימי של הדפדפן ופותרת את זה.
-    await Future<void>.delayed(const Duration(milliseconds: 60));
+    // שבה speak() שנקרא בזמן שדיבור קודם עדיין "רץ" (גם אם קוראים
+    // stop()/cancel() ממש לפני) נבלע בשקט - אין שגיאה, אבל גם אין קול,
+    // כי הביטול עצמו מסתיים באופן א-סינכרוני. לכן, אם משהו עדיין מדבר,
+    // מבטלים ואז ממתינים בפועל לאירוע שמאשר שהמנוע התפנה (עם רשת ביטחון
+    // קצרה, למקרה שהאירוע לא יגיע) - במקום סתם להמר על השהיה קבועה.
+    if (_speaking) {
+      final waiter = Completer<void>();
+      _idleWaiter = waiter;
+      await _tts.stop();
+      await waiter.future.timeout(
+        const Duration(milliseconds: 500),
+        onTimeout: () {},
+      );
+      _speaking = false;
+    }
+
     try {
       await _tts.speak(text);
     } catch (error) {
@@ -82,6 +130,8 @@ class TtsService implements SpeechService {
 
   @override
   void dispose() {
-    _tts.stop();
+    // המנוע משותף לכל האפליקציה (ראו למעלה) - לא עוצרים אותו כאן, כי
+    // מסך אחר עשוי עדיין להשתמש בו. עצירה אמיתית קורית רק כשבאמת
+    // רוצים להשתיק דיבור (למשל בניווט הביתה).
   }
 }
