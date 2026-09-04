@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../i18n/app_language.dart';
 import '../i18n/app_strings.dart';
 import '../i18n/language_controller.dart';
 import '../navigation/fade_scale_route.dart';
@@ -11,7 +12,8 @@ import '../widgets/responsive_center.dart';
 import 'animals/animals_menu_screen.dart';
 import 'coming_soon_screen.dart';
 import 'colors/colors_menu_screen.dart';
-import 'letters/letters_menu_screen.dart';
+import 'letters/english_letters_screen.dart';
+import 'letters/hebrew_letters_screen.dart';
 
 /// מסך הפתיחה: כפתורים גדולים לכל מודול לימוד. רק מודול הצבעים פעיל
 /// כרגע, שאר המודולים מסומנים "בקרוב" ומובילים למסך שמור מקום.
@@ -56,9 +58,16 @@ class HomeScreen extends StatelessWidget {
         label: AppStrings.moduleLetters(l),
         icon: Icons.abc_rounded,
         color: const Color(0xFF9C6ADE),
-        onTap: () =>
-            Navigator.of(context)
-                .push(fadeScaleRoute(const LettersMenuScreen())),
+        // מסלול האותיות תלוי לגמרי בשפת האפליקציה הנוכחית: כשהשפה
+        // עברית נכנסים ישר לאלף-בית, וכשהיא אנגלית נכנסים ישר ל-ABC -
+        // בלי מסך בחירה, כי זה כבר לא באמת בחירה חופשית של המשתמש.
+        onTap: () => Navigator.of(context).push(
+          fadeScaleRoute(
+            l == AppLanguage.hebrew
+                ? const HebrewLettersScreen()
+                : const EnglishLettersScreen(),
+          ),
+        ),
       ),
       ModuleTile(
         label: AppStrings.moduleWords(l),

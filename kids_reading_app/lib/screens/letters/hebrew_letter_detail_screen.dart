@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../../i18n/app_language.dart';
 import '../../models/hebrew_letter_concept.dart';
+import '../../navigation/fade_scale_route.dart';
 import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
 import '../../widgets/tap_scale.dart';
+import 'hebrew_vowel_form_detail_screen.dart';
 
 /// מסך אות עברית בודדת: מציג את האות עצמה גדולה, בלי שם מופשט - ומתחתיה
 /// חמש כרטיסיות, אחת לכל תנועה מלאה (פתח/קמץ, צירי/סגול, חיריק, חולם,
 /// קובוץ/שורוק), כל אחת עם מילה אמיתית מנוקדת ואיור. לחיצה על כרטיסיה
-/// משמיעה את התנועה ואת המילה.
-class HebrewLetterDetailScreen extends StatefulWidget {
+/// נכנסת למסך גדול של המילה הזו (ושם היא נאמרת בקול).
+class HebrewLetterDetailScreen extends StatelessWidget {
   const HebrewLetterDetailScreen({
     super.key,
     required this.concept,
@@ -23,33 +24,7 @@ class HebrewLetterDetailScreen extends StatefulWidget {
   final VoiceService? voiceService;
 
   @override
-  State<HebrewLetterDetailScreen> createState() =>
-      _HebrewLetterDetailScreenState();
-}
-
-class _HebrewLetterDetailScreenState extends State<HebrewLetterDetailScreen> {
-  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
-
-  @override
-  void dispose() {
-    _voice.dispose();
-    super.dispose();
-  }
-
-  void _speak(HebrewVowelForm form) {
-    if (!mounted) return;
-    // מסלול האותיות העבריות תמיד דובר עברית, בלי קשר למתג השפה הכללי
-    // של האפליקציה - האותיות עצמן לא "מתורגמות".
-    _voice.speak(
-      'letters_he_${widget.concept.id}_${form.symbol}',
-      form.spoken,
-      language: AppLanguage.hebrew,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final concept = widget.concept;
     const accent = Color(0xFF9C6ADE);
 
     return Directionality(
@@ -107,7 +82,7 @@ class _HebrewLetterDetailScreenState extends State<HebrewLetterDetailScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'לחצו על ניקוד כדי לשמוע',
+                    'בחרו ניקוד כדי להיכנס',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -127,7 +102,16 @@ class _HebrewLetterDetailScreenState extends State<HebrewLetterDetailScreen> {
                             delay: Duration(milliseconds: 60 * i),
                             child: _VowelCard(
                               form: form,
-                              onTap: () => _speak(form),
+                              onTap: () => Navigator.of(context).push(
+                                fadeScaleRoute(
+                                  HebrewVowelFormDetailScreen(
+                                    letterId: concept.id,
+                                    vowelId: kHebrewVowelIds[i],
+                                    form: form,
+                                    voiceService: voiceService,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                       ],

@@ -17,7 +17,7 @@ import 'package:kids_reading_app/screens/letters/english_letter_detail_screen.da
 import 'package:kids_reading_app/screens/letters/english_letters_screen.dart';
 import 'package:kids_reading_app/screens/letters/hebrew_letter_detail_screen.dart';
 import 'package:kids_reading_app/screens/letters/hebrew_letters_screen.dart';
-import 'package:kids_reading_app/screens/letters/letters_menu_screen.dart';
+import 'package:kids_reading_app/screens/letters/hebrew_vowel_form_detail_screen.dart';
 import 'package:kids_reading_app/services/feedback_service.dart';
 import 'package:kids_reading_app/services/voice_clip_service.dart';
 import 'package:kids_reading_app/widgets/module_tile.dart';
@@ -176,22 +176,47 @@ void main() {
     expect(find.text('מצא את החיה'), findsOneWidget);
   });
 
-  testWidgets('לחיצה על אריח האותיות פותחת את תפריט מודול האותיות', (
+  testWidgets(
+    'לחיצה על אריח האותיות נכנסת ישר למסלול העברי (שפת ברירת המחדל)',
+    (tester) async {
+      await tester.pumpWidget(const KidsReadingApp());
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1500));
+
+      tester
+          .widget<ModuleTile>(find.widgetWithText(ModuleTile, 'אותיות'))
+          .onTap();
+      await tester.pump();
+      // רשת של 22 אותיות עם אנימציית כניסה מדורגת (40ms לכל אחת) -
+      // צריך יותר זמן מרשתות קטנות יותר כדי שכל הטיימרים יסתיימו.
+      await tester.pump(const Duration(milliseconds: 2000));
+
+      // אין מסך בחירה בין עברית לאנגלית - שפת האפליקציה (עברית כברירת
+      // מחדל) קובעת ישירות לאיזה מסלול נכנסים.
+      expect(find.byType(HebrewLettersScreen), findsOneWidget);
+      expect(find.text('א'), findsOneWidget);
+    },
+  );
+
+  testWidgets('אחרי מעבר לאנגלית, אריח האותיות נכנס ישר למסלול האנגלי', (
     tester,
   ) async {
     await tester.pumpWidget(const KidsReadingApp());
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1500));
 
+    await tester.tap(find.byIcon(Icons.language_rounded));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1500));
+
     tester
-        .widget<ModuleTile>(find.widgetWithText(ModuleTile, 'אותיות'))
+        .widget<ModuleTile>(find.widgetWithText(ModuleTile, 'Letters'))
         .onTap();
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    // רשת של 26 אותיות עם אנימציית כניסה מדורגת - כנ"ל.
+    await tester.pump(const Duration(milliseconds: 2000));
 
-    expect(find.byType(LettersMenuScreen), findsOneWidget);
-    expect(find.text('אותיות בעברית'), findsOneWidget);
-    expect(find.text('אותיות באנגלית'), findsOneWidget);
+    expect(find.byType(EnglishLettersScreen), findsOneWidget);
   });
 
   testWidgets(
@@ -202,7 +227,9 @@ void main() {
         _wrapWithLanguage(HebrewLettersScreen(voiceService: voice)),
       );
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 1500));
+      // רשת של 22 אותיות עם אנימציית כניסה מדורגת (40ms לכל אחת) -
+      // צריך מספיק זמן שכל הטיימרים יסתיימו.
+      await tester.pump(const Duration(milliseconds: 2000));
 
       expect(find.byType(GridView), findsOneWidget);
       expect(find.text('א'), findsOneWidget);
@@ -217,9 +244,13 @@ void main() {
       expect(find.text('אַבָּא'), findsOneWidget);
       expect(voice.spoken, isEmpty);
 
+      // לחיצה על כרטיסיית ניקוד נכנסת למסך גדול של המילה הזו, ושם
+      // היא נאמרת בקול - לא נשארים על מסך הרשת.
       _tapGridTileWithText(tester, 'אַבָּא');
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
 
+      expect(find.byType(HebrewVowelFormDetailScreen), findsOneWidget);
       expect(voice.spoken, isNotEmpty);
       expect(voice.spoken.first, contains('אַבָּא'));
     },
@@ -233,7 +264,8 @@ void main() {
         _wrapWithLanguage(EnglishLettersScreen(voiceService: voice)),
       );
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 1500));
+      // רשת של 26 אותיות עם אנימציית כניסה מדורגת - כנ"ל.
+      await tester.pump(const Duration(milliseconds: 2000));
 
       expect(find.byType(GridView), findsOneWidget);
       expect(find.text('A'), findsOneWidget);

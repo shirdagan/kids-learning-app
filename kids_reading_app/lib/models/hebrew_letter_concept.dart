@@ -32,6 +32,12 @@ class HebrewVowelForm {
   String get spoken => '$symbol. $word.';
 }
 
+/// מזהים באנגלית (ASCII) לחמש התנועות המלאות, לפי הסדר הקבוע שבו הן
+/// תמיד מופיעות ב-vowelForms של כל אות. משמשים לבניית שם קובץ הקלטה
+/// שאפשר להקליד בפועל (למשל "letters_he_alef_patach") - בניגוד לסימן
+/// הניקוד עצמו (כמו "אַ"), ששמיש לתצוגה אבל לא לשם קובץ.
+const kHebrewVowelIds = ['patach', 'segol', 'hiriq', 'holam', 'shuruk'];
+
 /// אות עברית יחידה שהאפליקציה מלמדת: הצורה של האות עצמה, וחמש
 /// הדוגמאות שמראות אותה עם כל אחת מהתנועות המלאות.
 class HebrewLetterConcept {
