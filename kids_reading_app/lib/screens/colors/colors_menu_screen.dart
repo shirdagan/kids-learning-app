@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
 import '../../navigation/fade_scale_route.dart';
+import '../../services/voice_clip_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/responsive_center.dart';
@@ -14,11 +17,17 @@ import 'color_sort_game_screen.dart';
 
 /// תפריט מודול הצבעים: היכרות, משחק "מצא את הצבע" ומשחק מיון.
 class ColorsMenuScreen extends StatelessWidget {
-  const ColorsMenuScreen({super.key});
+  const ColorsMenuScreen({super.key, this.voiceService});
+
+  /// נקודת הזרקה לצורך בדיקות.
+  final VoiceService? voiceService;
 
   @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
+    // מדברים כאן, באותה לחיצה שפותחת את מסך המשחק - לא במסך היעד -
+    // כדי שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
+    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -66,16 +75,43 @@ class ColorsMenuScreen extends StatelessWidget {
                         label: AppStrings.findMenuItem(l),
                         icon: Icons.search_rounded,
                         color: AppTheme.secondary,
-                        onTap: () => Navigator.of(context)
-                            .push(fadeScaleRoute(const ColorFindGameScreen())),
+                        onTap: () {
+                          final round = pickColorFindRound(Random());
+                          voice.speak(
+                            'find_prompt_${round.target.id}',
+                            AppStrings.findPrompt(l, round.target.nameFor(l)),
+                            language: l,
+                          );
+                          Navigator.of(context).push(
+                            fadeScaleRoute(
+                              ColorFindGameScreen(
+                                voiceService: voiceService,
+                                initialRound: round,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 20),
                       _MenuCard(
                         label: AppStrings.sortMenuItem(l),
                         icon: Icons.shopping_basket_rounded,
                         color: AppTheme.success,
-                        onTap: () => Navigator.of(context)
-                            .push(fadeScaleRoute(const ColorSortGameScreen())),
+                        onTap: () {
+                          voice.speak(
+                            'sort_intro',
+                            AppStrings.sortIntro(l),
+                            language: l,
+                          );
+                          Navigator.of(context).push(
+                            fadeScaleRoute(
+                              ColorSortGameScreen(
+                                voiceService: voiceService,
+                                introAlreadySpoken: true,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

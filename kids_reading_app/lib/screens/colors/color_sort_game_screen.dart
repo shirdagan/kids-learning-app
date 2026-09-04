@@ -21,11 +21,17 @@ class ColorSortGameScreen extends StatefulWidget {
     super.key,
     this.voiceService,
     this.feedbackService,
+    this.introAlreadySpoken = false,
   });
 
   /// נקודות הזרקה לצורך בדיקות.
   final VoiceService? voiceService;
   final SoundFeedback? feedbackService;
+
+  /// true אם משפט הפתיחה כבר נאמר בלחיצה במסך התפריט, לפני הניווט
+  /// לכאן (כי בספארי/אייאוס דיבור סינתטי נחסם בשקט אם הוא לא קורה
+  /// ישירות בתוך הלחיצה) - במקרה כזה לא מכריזים שוב באתחול.
+  final bool introAlreadySpoken;
 
   @override
   State<ColorSortGameScreen> createState() => _ColorSortGameScreenState();
@@ -54,7 +60,7 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
   @override
   void initState() {
     super.initState();
-    _startRound();
+    _startRound(announceIntro: !widget.introAlreadySpoken);
   }
 
   @override
@@ -64,7 +70,7 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
     super.dispose();
   }
 
-  void _startRound() {
+  void _startRound({bool announceIntro = true}) {
     final pool = [...kColorConcepts]..shuffle(_random);
     final baskets = pool.take(_basketCount).toList();
     final items = List.generate(_itemsPerRound, (_) {
@@ -75,6 +81,7 @@ class _ColorSortGameScreenState extends State<ColorSortGameScreen> {
       _baskets = baskets;
       _items = items;
     });
+    if (!announceIntro) return;
     Future.delayed(const Duration(milliseconds: 400), () {
       if (!mounted) return;
       final language = LanguageScope.of(context).value;

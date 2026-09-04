@@ -16,6 +16,24 @@ import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
 import '../../widgets/tap_scale.dart';
 
+/// מספר האפשרויות שמוצגות בכל סבב - חשוף כי גם מסך התפריט צריך אותו
+/// כדי לבחור סבב מראש (ראו [pickColorFindRound]).
+const colorFindOptionsPerRound = 4;
+
+/// בוחר סבב אקראי חדש למשחק "מצא את הצבע": כמה אפשרויות ומטרה אחת
+/// מביניהן. חשוף כפונקציה עצמאית (לא רק לוגיקה פנימית של ה-State) כדי
+/// שמסך התפריט יוכל לבחור סבב ולהכריז עליו *לפני* הניווט למסך המשחק
+/// עצמו - כי בספארי/אייאוס דיבור סינתטי נחסם בשקט אם הוא לא קורה
+/// ישירות בתוך הלחיצה שמפעילה אותו, ולא אחרי מעבר מסך.
+({List<ColorConcept> options, ColorConcept target}) pickColorFindRound(
+  Random random,
+) {
+  final pool = [...kColorConcepts]..shuffle(random);
+  final options = pool.take(colorFindOptionsPerRound).toList();
+  final target = options[random.nextInt(options.length)];
+  return (options: options, target: target);
+}
+
 /// משחק "מצא את הצבע": האפליקציה אומרת שם צבע, והילד לוחץ על החפץ
 /// בצבע הנכון מבין כמה חפצים על המסך.
 class ColorFindGameScreen extends StatefulWidget {
@@ -23,19 +41,23 @@ class ColorFindGameScreen extends StatefulWidget {
     super.key,
     this.voiceService,
     this.feedbackService,
+    this.initialRound,
   });
 
   /// נקודות הזרקה לצורך בדיקות.
   final VoiceService? voiceService;
   final SoundFeedback? feedbackService;
 
+  /// סבב שכבר נבחר והוכרז בקול במסך התפריט, לפני הניווט למסך הזה -
+  /// אם סופק, הוא משמש לסבב הראשון במקום לבחור סבב חדש ולהכריז עליו
+  /// שוב (וכפול).
+  final ({List<ColorConcept> options, ColorConcept target})? initialRound;
+
   @override
   State<ColorFindGameScreen> createState() => _ColorFindGameScreenState();
 }
 
 class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
-  static const _optionsPerRound = 4;
-
   late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
   late final SoundFeedback _feedback =
       widget.feedbackService ?? FeedbackService();
@@ -51,11 +73,20 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   @override
   void initState() {
     super.initState();
-    // בוחרים סבב ראשון ישירות (בלי setState — עוד לפני ה-build הראשון),
-    // ומדחים את ההכרזה הקולית לאחר ה-build כדי לא לגעת ב-InheritedWidget
-    // (שפת האפליקציה) לפני ש-initState הסתיים.
-    _prepareRound();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _askForTarget());
+    final initialRound = widget.initialRound;
+    if (initialRound != null) {
+      // הסבב הזה כבר נבחר והוכרז בקול במסך התפריט, לפני הניווט לכאן -
+      // לא מכריזים שוב (ראו pickColorFindRound).
+      _options = initialRound.options;
+      _target = initialRound.target;
+      _celebrating = false;
+    } else {
+      // בוחרים סבב ראשון ישירות (בלי setState — עוד לפני ה-build הראשון),
+      // ומדחים את ההכרזה הקולית לאחר ה-build כדי לא לגעת ב-InheritedWidget
+      // (שפת האפליקציה) לפני ש-initState הסתיים.
+      _prepareRound();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _askForTarget());
+    }
   }
 
   @override
@@ -66,10 +97,9 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   }
 
   void _prepareRound() {
-    final pool = [...kColorConcepts]..shuffle(_random);
-    final options = pool.take(_optionsPerRound).toList();
-    _options = options;
-    _target = options[_random.nextInt(options.length)];
+    final round = pickColorFindRound(_random);
+    _options = round.options;
+    _target = round.target;
     _celebrating = false;
   }
 

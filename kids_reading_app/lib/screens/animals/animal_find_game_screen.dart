@@ -17,6 +17,24 @@ import '../../widgets/responsive_center.dart';
 import '../../widgets/round_icon_button.dart';
 import '../../widgets/tap_scale.dart';
 
+/// מספר האפשרויות שמוצגות בכל סבב - חשוף כי גם מסך התפריט צריך אותו
+/// כדי לבחור סבב מראש (ראו [pickAnimalFindRound]).
+const animalFindOptionsPerRound = 4;
+
+/// בוחר סבב אקראי חדש למשחק "מצא את החיה": כמה אפשרויות וחיית-מטרה
+/// אחת מביניהן. חשוף כפונקציה עצמאית כדי שמסך התפריט יוכל לבחור סבב
+/// ולהשמיע את קולה *לפני* הניווט למסך המשחק עצמו - כי בספארי/אייאוס
+/// דיבור סינתטי נחסם בשקט אם הוא לא קורה ישירות בתוך הלחיצה שמפעילה
+/// אותו, ולא אחרי מעבר מסך.
+({List<AnimalConcept> options, AnimalConcept target}) pickAnimalFindRound(
+  Random random,
+) {
+  final pool = [...kAnimalConcepts]..shuffle(random);
+  final options = pool.take(animalFindOptionsPerRound).toList();
+  final target = options[random.nextInt(options.length)];
+  return (options: options, target: target);
+}
+
 /// משחק "מצא את החיה": האפליקציה משמיעה את הקול של חיה (הקלטה
 /// אמיתית אם קיימת, אחרת TTS), והילד לוחץ על החיה הנכונה מבין כמה
 /// אפשרויות על המסך - בדיוק כמו "מצא את הצבע", רק שהרמז הוא קול
@@ -26,19 +44,22 @@ class AnimalFindGameScreen extends StatefulWidget {
     super.key,
     this.voiceService,
     this.feedbackService,
+    this.initialRound,
   });
 
   /// נקודות הזרקה לצורך בדיקות.
   final VoiceService? voiceService;
   final SoundFeedback? feedbackService;
 
+  /// סבב שכבר נבחר והושמע במסך התפריט, לפני הניווט לכאן - אם סופק,
+  /// משמש לסבב הראשון במקום לבחור סבב חדש ולהשמיע אותו שוב (וכפול).
+  final ({List<AnimalConcept> options, AnimalConcept target})? initialRound;
+
   @override
   State<AnimalFindGameScreen> createState() => _AnimalFindGameScreenState();
 }
 
 class _AnimalFindGameScreenState extends State<AnimalFindGameScreen> {
-  static const _optionsPerRound = 4;
-
   late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
   late final SoundFeedback _feedback =
       widget.feedbackService ?? FeedbackService();
@@ -54,8 +75,17 @@ class _AnimalFindGameScreenState extends State<AnimalFindGameScreen> {
   @override
   void initState() {
     super.initState();
-    _prepareRound();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _playTargetSound());
+    final initialRound = widget.initialRound;
+    if (initialRound != null) {
+      // הסבב הזה כבר נבחר והושמע במסך התפריט, לפני הניווט לכאן - לא
+      // משמיעים שוב (ראו pickAnimalFindRound).
+      _options = initialRound.options;
+      _target = initialRound.target;
+      _celebrating = false;
+    } else {
+      _prepareRound();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _playTargetSound());
+    }
   }
 
   @override
@@ -66,10 +96,9 @@ class _AnimalFindGameScreenState extends State<AnimalFindGameScreen> {
   }
 
   void _prepareRound() {
-    final pool = [...kAnimalConcepts]..shuffle(_random);
-    final options = pool.take(_optionsPerRound).toList();
-    _options = options;
-    _target = options[_random.nextInt(options.length)];
+    final round = pickAnimalFindRound(_random);
+    _options = round.options;
+    _target = round.target;
     _celebrating = false;
   }
 

@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../i18n/app_strings.dart';
 import '../../i18n/language_controller.dart';
 import '../../navigation/fade_scale_route.dart';
+import '../../services/voice_clip_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/bounce_in.dart';
 import '../../widgets/responsive_center.dart';
@@ -13,11 +16,17 @@ import 'animal_intro_screen.dart';
 
 /// תפריט מודול החיות: קולות של חיות, ומשחק "מצא את החיה".
 class AnimalsMenuScreen extends StatelessWidget {
-  const AnimalsMenuScreen({super.key});
+  const AnimalsMenuScreen({super.key, this.voiceService});
+
+  /// נקודת הזרקה לצורך בדיקות.
+  final VoiceService? voiceService;
 
   @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
+    // מדברים כאן, באותה לחיצה שפותחת את מסך המשחק - לא במסך היעד -
+    // כדי שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
+    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -64,8 +73,22 @@ class AnimalsMenuScreen extends StatelessWidget {
                         label: AppStrings.findAnimalMenuItem(l),
                         icon: Icons.search_rounded,
                         color: AppTheme.secondary,
-                        onTap: () => Navigator.of(context)
-                            .push(fadeScaleRoute(const AnimalFindGameScreen())),
+                        onTap: () {
+                          final round = pickAnimalFindRound(Random());
+                          voice.playSound(
+                            round.target.id,
+                            round.target.introSpeechFor(l),
+                            language: l,
+                          );
+                          Navigator.of(context).push(
+                            fadeScaleRoute(
+                              AnimalFindGameScreen(
+                                voiceService: voiceService,
+                                initialRound: round,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
