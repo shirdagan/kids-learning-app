@@ -92,4 +92,11 @@ enum LetterWordShape {
   pomegranate,
   robot,
   windSwirl,
+  iceCream,
+  kite,
+  umbrella,
+  volcano,
+  watermelon,
+  xylophone,
+  zebra,
 }

@@ -215,6 +215,20 @@ class _LetterWordPainter extends CustomPainter {
         _paintRobot(canvas, size);
       case LetterWordShape.windSwirl:
         _paintWindSwirl(canvas, size);
+      case LetterWordShape.iceCream:
+        _paintIceCream(canvas, size);
+      case LetterWordShape.kite:
+        _paintKite(canvas, size);
+      case LetterWordShape.umbrella:
+        _paintUmbrella(canvas, size);
+      case LetterWordShape.volcano:
+        _paintVolcano(canvas, size);
+      case LetterWordShape.watermelon:
+        _paintWatermelon(canvas, size);
+      case LetterWordShape.xylophone:
+        _paintXylophone(canvas, size);
+      case LetterWordShape.zebra:
+        _paintZebra(canvas, size);
     }
   }
 
@@ -3419,6 +3433,289 @@ class _LetterWordPainter extends CustomPainter {
         math.pi * 1.5,
         false,
         swirl,
+      );
+    }
+  }
+
+  void _paintIceCream(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.32, h * 0.5)
+        ..lineTo(w * 0.5, h * 0.94)
+        ..lineTo(w * 0.68, h * 0.5)
+        ..close(),
+      Paint()..color = const Color(0xFFE8B923),
+    );
+    final line = Paint()
+      ..color = const Color(0xFFB07A3F)
+      ..strokeWidth = w * 0.01;
+    canvas.drawLine(
+      Offset(w * 0.36, h * 0.56),
+      Offset(w * 0.56, h * 0.82),
+      line,
+    );
+    canvas.drawLine(
+      Offset(w * 0.64, h * 0.56),
+      Offset(w * 0.44, h * 0.82),
+      line,
+    );
+    canvas.drawCircle(
+      Offset(w * 0.5, h * 0.36),
+      w * 0.24,
+      Paint()..color = const Color(0xFFF3C6A0),
+    );
+    canvas.drawCircle(
+      Offset(w * 0.5, h * 0.16),
+      w * 0.02,
+      Paint()..color = const Color(0xFFE24B4B),
+    );
+  }
+
+  void _paintKite(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final path = Path()
+      ..moveTo(w * 0.5, h * 0.06)
+      ..lineTo(w * 0.82, h * 0.4)
+      ..lineTo(w * 0.5, h * 0.74)
+      ..lineTo(w * 0.18, h * 0.4)
+      ..close();
+    canvas.drawPath(
+      Path.combine(
+        PathOperation.intersect,
+        path,
+        Path()..addRect(Rect.fromLTWH(0, 0, w, h * 0.4)),
+      ),
+      Paint()..color = const Color(0xFF4FB6E8),
+    );
+    canvas.drawPath(
+      Path.combine(
+        PathOperation.intersect,
+        path,
+        Path()..addRect(Rect.fromLTWH(0, h * 0.4, w, h)),
+      ),
+      Paint()..color = const Color(0xFFE8639B),
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = const Color(0xFF3A2E2E)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.012,
+    );
+    final tail = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.012;
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.5, h * 0.74)
+        ..quadraticBezierTo(w * 0.4, h * 0.84, w * 0.5, h * 0.92)
+        ..quadraticBezierTo(w * 0.6, h * 1.0, w * 0.48, h * 1.06),
+      tail,
+    );
+  }
+
+  void _paintUmbrella(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final canopy = Paint()..color = const Color(0xFFE24B4B);
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.1, h * 0.46)
+        ..quadraticBezierTo(w * 0.5, h * 0.1, w * 0.9, h * 0.46)
+        ..lineTo(w * 0.1, h * 0.46)
+        ..close(),
+      canopy,
+    );
+    final seg = Paint()..color = const Color(0xFFB03636);
+    for (final t in [0.28, 0.5, 0.72]) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(w * t, h * 0.46)
+          ..lineTo(w * t, h * (0.46 - (0.5 - (t - 0.5).abs()) * 0.5))
+          ..lineTo(w * (t + 0.02), h * 0.46)
+          ..close(),
+        seg,
+      );
+    }
+    canvas.drawLine(
+      Offset(w * 0.5, h * 0.44),
+      Offset(w * 0.5, h * 0.9),
+      Paint()
+        ..color = const Color(0xFF3A2E2E)
+        ..strokeWidth = w * 0.025,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.5, h * 0.9)
+        ..quadraticBezierTo(w * 0.4, h * 0.9, w * 0.4, h * 0.8),
+      Paint()
+        ..color = const Color(0xFF3A2E2E)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.025,
+    );
+  }
+
+  void _paintVolcano(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.16, h * 0.9)
+        ..lineTo(w * 0.42, h * 0.24)
+        ..lineTo(w * 0.58, h * 0.24)
+        ..lineTo(w * 0.84, h * 0.9)
+        ..close(),
+      Paint()..color = const Color(0xFF9D9184),
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.44, h * 0.32)
+        ..lineTo(w * 0.5, h * 0.1)
+        ..lineTo(w * 0.56, h * 0.32)
+        ..close(),
+      Paint()..color = const Color(0xFFE24B4B),
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.34, h * 0.6)
+        ..lineTo(w * 0.46, h * 0.44)
+        ..lineTo(w * 0.58, h * 0.6)
+        ..lineTo(w * 0.5, h * 0.6)
+        ..lineTo(w * 0.5, h * 0.9)
+        ..lineTo(w * 0.42, h * 0.9)
+        ..lineTo(w * 0.42, h * 0.6)
+        ..close(),
+      Paint()..color = const Color(0xFFE8863A),
+    );
+  }
+
+  void _paintWatermelon(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    canvas.drawArc(
+      Rect.fromLTWH(w * 0.08, h * 0.1, w * 0.84, h * 0.84),
+      math.pi,
+      math.pi,
+      true,
+      Paint()..color = const Color(0xFFE24B4B),
+    );
+    canvas.drawArc(
+      Rect.fromLTWH(w * 0.08, h * 0.1, w * 0.84, h * 0.84),
+      math.pi,
+      math.pi,
+      false,
+      Paint()
+        ..color = const Color(0xFF5CB85C)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.06,
+    );
+    final seed = Paint()..color = const Color(0xFF3A2E2E);
+    for (final o in [
+      Offset(-0.2, -0.05),
+      Offset(0, -0.15),
+      Offset(0.2, -0.05),
+      Offset(-0.1, -0.28),
+      Offset(0.1, -0.28),
+    ]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(w * (0.5 + o.dx), h * (0.5 + o.dy)),
+          width: w * 0.03,
+          height: h * 0.05,
+        ),
+        seed,
+      );
+    }
+  }
+
+  void _paintXylophone(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final colors = [
+      const Color(0xFFE24B4B),
+      const Color(0xFFE8863A),
+      const Color(0xFFFBCB2E),
+      const Color(0xFF6FB65C),
+      const Color(0xFF4FB6E8),
+    ];
+    for (var i = 0; i < colors.length; i++) {
+      final barW = w * 0.16 - i * w * 0.012;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(w * (0.14 + i * 0.18), h * 0.5),
+            width: barW,
+            height: h * 0.74,
+          ),
+          Radius.circular(w * 0.02),
+        ),
+        Paint()..color = colors[i],
+      );
+    }
+  }
+
+  void _paintZebra(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    final base = Paint()..color = Colors.white;
+    final center = Offset(w * 0.46, h * 0.56);
+    canvas.drawOval(
+      Rect.fromCenter(center: center, width: w * 0.6, height: h * 0.42),
+      base,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(w * 0.32, -h * 0.12),
+        width: w * 0.22,
+        height: h * 0.3,
+      ),
+      base,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.18, h * 0.5)
+        ..quadraticBezierTo(w * 0.04, h * 0.6, w * 0.08, h * 0.78)
+        ..quadraticBezierTo(w * 0.12, h * 0.9, w * 0.2, h * 0.86)
+        ..quadraticBezierTo(w * 0.14, h * 0.72, w * 0.24, h * 0.58)
+        ..close(),
+      base,
+    );
+    final stripe = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.03;
+    for (final t in [-0.16, -0.02, 0.12, 0.24]) {
+      canvas.drawLine(
+        Offset(center.dx + w * t, center.dy - h * 0.18),
+        Offset(center.dx + w * t - w * 0.03, center.dy + h * 0.18),
+        stripe,
+      );
+    }
+    for (final dx in [0.36, 0.42]) {
+      canvas.drawLine(
+        Offset(w * dx, h * (dx == 0.36 ? 0.32 : 0.36)),
+        Offset(w * dx - w * 0.02, h * 0.5),
+        stripe,
+      );
+    }
+    canvas.drawCircle(
+      center + Offset(w * 0.4, -h * 0.14),
+      w * 0.02,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    for (final dx in [-0.24, -0.12, 0.24, 0.4]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(w * dx, h * 0.2),
+          width: w * 0.06,
+          height: h * 0.28,
+        ),
+        base,
+      );
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(w * dx, h * 0.32),
+          width: w * 0.06,
+          height: h * 0.08,
+        ),
+        Paint()..color = const Color(0xFF3A2E2E),
       );
     }
   }
