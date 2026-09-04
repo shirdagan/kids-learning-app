@@ -30,11 +30,10 @@ class ColorDetailScreen extends StatefulWidget {
 class _ColorDetailScreenState extends State<ColorDetailScreen> {
   late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _speak());
-  }
+  // הערה: אין דיבור אוטומטי בכניסה למסך הזה - הוא כבר נאמר בלחיצה על
+  // האריח במסך הרשת, שם עדיין (ולא כאן, אחרי מעבר מסך א-סינכרוני)
+  // בטוח שהמכשיר יאפשר דיבור סינתטי (חשוב בעיקר בספארי/אייאוס). לחיצה
+  // חוזרת כאן על האיור כן משמיעה, כי היא עצמה מגע ישיר.
 
   @override
   void dispose() {

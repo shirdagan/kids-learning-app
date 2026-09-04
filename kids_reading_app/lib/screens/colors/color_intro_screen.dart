@@ -25,6 +25,11 @@ class ColorIntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
+    // חשוב: המכשיר שדובר בפועל - ולא רק המסך היעד - כי בספארי/אייסאוס
+    // דיבור סינתטי (TTS) נחסם בשקט אם הוא לא מופעל ישירות מתוך אירוע
+    // מגע (לא אחרי מעבר מסך א-סינכרוני). לכן מדברים כאן, באותה לחיצה
+    // שגם פותחת את המסך - לא במסך היעד עצמו.
+    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFDF7),
@@ -68,14 +73,21 @@ class ColorIntroScreen extends StatelessWidget {
                           child: _ColorGridTile(
                             concept: concept,
                             label: concept.nameFor(l),
-                            onTap: () => Navigator.of(context).push(
-                              fadeScaleRoute(
-                                ColorDetailScreen(
-                                  concept: concept,
-                                  voiceService: voiceService,
+                            onTap: () {
+                              voice.speak(
+                                'colors_intro_${concept.id}',
+                                concept.introSpeechFor(l),
+                                language: l,
+                              );
+                              Navigator.of(context).push(
+                                fadeScaleRoute(
+                                  ColorDetailScreen(
+                                    concept: concept,
+                                    voiceService: voiceService,
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         ),
                     ],

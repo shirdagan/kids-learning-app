@@ -25,6 +25,10 @@ class AnimalIntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
+    // ראו הערה מקבילה ב-ColorIntroScreen: מדברים כאן, באותה לחיצה
+    // שפותחת את המסך - לא במסך היעד - כדי שדיבור סינתטי לא ייחסם
+    // בשקט בספארי/אייאוס.
+    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFDF7),
@@ -68,14 +72,21 @@ class AnimalIntroScreen extends StatelessWidget {
                           child: _AnimalGridTile(
                             concept: concept,
                             label: concept.nameFor(l),
-                            onTap: () => Navigator.of(context).push(
-                              fadeScaleRoute(
-                                AnimalDetailScreen(
-                                  concept: concept,
-                                  voiceService: voiceService,
+                            onTap: () {
+                              voice.playSound(
+                                concept.id,
+                                concept.introSpeechFor(l),
+                                language: l,
+                              );
+                              Navigator.of(context).push(
+                                fadeScaleRoute(
+                                  AnimalDetailScreen(
+                                    concept: concept,
+                                    voiceService: voiceService,
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         ),
                     ],

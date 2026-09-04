@@ -27,11 +27,9 @@ class EnglishLetterDetailScreen extends StatefulWidget {
 class _EnglishLetterDetailScreenState extends State<EnglishLetterDetailScreen> {
   late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _speak());
-  }
+  // הערה: אין דיבור אוטומטי בכניסה למסך הזה - הוא כבר נאמר בלחיצה על
+  // האריח במסך הרשת (ראו EnglishLettersScreen). לחיצה חוזרת כאן כן
+  // משמיעה, כי היא עצמה מגע ישיר.
 
   @override
   void dispose() {

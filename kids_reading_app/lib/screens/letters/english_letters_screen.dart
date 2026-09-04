@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/english_letters_data.dart';
+import '../../i18n/app_language.dart';
 import '../../navigation/fade_scale_route.dart';
 import '../../services/voice_clip_service.dart';
 import '../../widgets/bounce_in.dart';
@@ -19,6 +20,10 @@ class EnglishLettersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // מדברים כאן, באותה לחיצה שפותחת את המסך - לא במסך היעד - כדי
+    // שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
+    final voice = voiceService ?? VoiceClipService();
+
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Scaffold(
@@ -63,14 +68,21 @@ class EnglishLettersScreen extends StatelessWidget {
                             delay: Duration(milliseconds: 40 * i),
                             child: _LetterGridTile(
                               letter: concept.letter,
-                              onTap: () => Navigator.of(context).push(
-                                fadeScaleRoute(
-                                  EnglishLetterDetailScreen(
-                                    concept: concept,
-                                    voiceService: voiceService,
+                              onTap: () {
+                                voice.speak(
+                                  'letters_en_${concept.id}',
+                                  concept.fullExplanation,
+                                  language: AppLanguage.english,
+                                );
+                                Navigator.of(context).push(
+                                  fadeScaleRoute(
+                                    EnglishLetterDetailScreen(
+                                      concept: concept,
+                                      voiceService: voiceService,
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
                           ),
                       ],

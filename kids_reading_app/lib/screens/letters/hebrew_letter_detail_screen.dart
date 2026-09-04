@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../i18n/app_language.dart';
 import '../../models/hebrew_letter_concept.dart';
 import '../../navigation/fade_scale_route.dart';
 import '../../services/voice_clip_service.dart';
@@ -26,6 +27,9 @@ class HebrewLetterDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const accent = Color(0xFF9C6ADE);
+    // מדברים כאן, באותה לחיצה שפותחת את מסך המילה - לא במסך היעד -
+    // כדי שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
+    final voice = voiceService ?? VoiceClipService();
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -102,16 +106,23 @@ class HebrewLetterDetailScreen extends StatelessWidget {
                             delay: Duration(milliseconds: 60 * i),
                             child: _VowelCard(
                               form: form,
-                              onTap: () => Navigator.of(context).push(
-                                fadeScaleRoute(
-                                  HebrewVowelFormDetailScreen(
-                                    letterId: concept.id,
-                                    vowelId: kHebrewVowelIds[i],
-                                    form: form,
-                                    voiceService: voiceService,
+                              onTap: () {
+                                voice.speak(
+                                  'letters_he_${concept.id}_${kHebrewVowelIds[i]}',
+                                  form.spoken,
+                                  language: AppLanguage.hebrew,
+                                );
+                                Navigator.of(context).push(
+                                  fadeScaleRoute(
+                                    HebrewVowelFormDetailScreen(
+                                      letterId: concept.id,
+                                      vowelId: kHebrewVowelIds[i],
+                                      form: form,
+                                      voiceService: voiceService,
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
                           ),
                       ],

@@ -29,11 +29,9 @@ class AnimalDetailScreen extends StatefulWidget {
 class _AnimalDetailScreenState extends State<AnimalDetailScreen> {
   late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _playSound());
-  }
+  // הערה: אין השמעה אוטומטית בכניסה למסך הזה - היא כבר נשמעה בלחיצה
+  // על האריח במסך הרשת (ראו AnimalIntroScreen). לחיצה חוזרת כאן על
+  // האיור כן משמיעה, כי היא עצמה מגע ישיר.
 
   @override
   void dispose() {
