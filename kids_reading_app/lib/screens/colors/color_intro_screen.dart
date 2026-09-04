@@ -76,7 +76,7 @@ class ColorIntroScreen extends StatelessWidget {
                             onTap: () {
                               voice.speak(
                                 'colors_intro_${concept.id}',
-                                concept.introSpeechFor(l),
+                                concept.nameFor(l),
                                 language: l,
                               );
                               Navigator.of(context).push(

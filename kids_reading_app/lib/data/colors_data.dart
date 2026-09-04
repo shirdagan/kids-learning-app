@@ -10,8 +10,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'אדום',
     englishName: 'red',
     color: Color(0xFFE8433A),
-    objectHebrewName: 'תפוח',
-    objectEnglishName: 'apple',
     shape: ObjectShape.apple,
   ),
   ColorConcept(
@@ -19,8 +17,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'כתום',
     englishName: 'orange',
     color: Color(0xFFF3902F),
-    objectHebrewName: 'תפוז',
-    objectEnglishName: 'orange',
     shape: ObjectShape.orange,
   ),
   ColorConcept(
@@ -28,8 +24,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'צהוב',
     englishName: 'yellow',
     color: Color(0xFFFBCB2E),
-    objectHebrewName: 'שמש',
-    objectEnglishName: 'sun',
     shape: ObjectShape.sun,
   ),
   ColorConcept(
@@ -37,8 +31,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'ירוק',
     englishName: 'green',
     color: Color(0xFF4CAF50),
-    objectHebrewName: 'עלה',
-    objectEnglishName: 'leaf',
     shape: ObjectShape.leaf,
   ),
   ColorConcept(
@@ -46,8 +38,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'כחול',
     englishName: 'blue',
     color: Color(0xFF3E9DE6),
-    objectHebrewName: 'טיפה',
-    objectEnglishName: 'drop',
     shape: ObjectShape.drop,
   ),
   ColorConcept(
@@ -55,8 +45,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'סגול',
     englishName: 'purple',
     color: Color(0xFF9C6ADE),
-    objectHebrewName: 'ענבים',
-    objectEnglishName: 'grapes',
     shape: ObjectShape.grapes,
   ),
   ColorConcept(
@@ -64,8 +52,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'ורוד',
     englishName: 'pink',
     color: Color(0xFFF17DB0),
-    objectHebrewName: 'פרח',
-    objectEnglishName: 'flower',
     shape: ObjectShape.flower,
   ),
   ColorConcept(
@@ -73,8 +59,6 @@ const List<ColorConcept> kColorConcepts = [
     hebrewName: 'לבן',
     englishName: 'white',
     color: Color(0xFFFFFFFF),
-    objectHebrewName: 'ענן',
-    objectEnglishName: 'cloud',
     shape: ObjectShape.cloud,
   ),
   ColorConcept(
@@ -84,8 +68,6 @@ const List<ColorConcept> kColorConcepts = [
     // גוון פחם רך במקום שחור מוחלט — קריא באותה מידה ככחור, אך פחות קשה
     // לעין של פעוט.
     color: Color(0xFF2B2B2E),
-    objectHebrewName: 'לילה',
-    objectEnglishName: 'night',
     shape: ObjectShape.moon,
   ),
 ];

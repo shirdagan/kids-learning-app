@@ -46,7 +46,7 @@ class _ColorDetailScreenState extends State<ColorDetailScreen> {
     final language = LanguageScope.of(context).value;
     _voice.speak(
       'colors_intro_${widget.concept.id}',
-      widget.concept.introSpeechFor(language),
+      widget.concept.nameFor(language),
       language: language,
     );
   }

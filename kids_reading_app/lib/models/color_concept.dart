@@ -11,8 +11,6 @@ class ColorConcept {
     required this.hebrewName,
     required this.englishName,
     required this.color,
-    required this.objectHebrewName,
-    required this.objectEnglishName,
     required this.shape,
   });
 
@@ -28,23 +26,9 @@ class ColorConcept {
   /// גוון הצבע בפועל.
   final Color color;
 
-  /// שם החפץ המוכר בעברית, לדוגמה "תפוח".
-  final String objectHebrewName;
-
-  /// שם החפץ המוכר באנגלית, לדוגמה "apple".
-  final String objectEnglishName;
-
-  /// הצורה המצוירת שמייצגת את החפץ.
+  /// הצורה המצוירת שמייצגת חפץ מוכר בצבע הזה (למשל תפוח לאדום).
   final ObjectShape shape;
 
   String nameFor(AppLanguage language) =>
       language.isHebrew ? hebrewName : englishName;
-
-  String objectNameFor(AppLanguage language) =>
-      language.isHebrew ? objectHebrewName : objectEnglishName;
-
-  /// המשפט שנאמר בקול כאשר לוחצים על החפץ: "אדום, כמו תפוח" / "red, like an apple".
-  String introSpeechFor(AppLanguage language) => language.isHebrew
-      ? '$hebrewName, כמו $objectHebrewName'
-      : '$englishName, like $objectEnglishName';
 }
