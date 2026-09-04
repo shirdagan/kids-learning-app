@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../i18n/app_language.dart';
@@ -62,7 +63,18 @@ class TtsService implements SpeechService {
       _staticOptionsSet = true;
     }
     await _tts.stop();
-    await _tts.speak(text);
+    // חשוב: על דפדפנים מבוססי-Chromium יש תקלה ידועה ב-Web Speech API
+    // שבה קריאה ל-speak() מיד אחרי cancel() (מה ש-stop() עושה) נבלעת
+    // בשקט - אין שגיאה, אבל גם אין קול. השהיה קצרה בין השניים "משחררת"
+    // את התור הפנימי של הדפדפן ופותרת את זה.
+    await Future<void>.delayed(const Duration(milliseconds: 60));
+    try {
+      await _tts.speak(text);
+    } catch (error) {
+      // לא זורקים הלאה: כישלון דיבור בודד לא אמור לשבור את שאר האפליקציה,
+      // אבל כן רושמים אותו כדי שיהיה אפשר לאבחן בעיות דיבור בעתיד.
+      debugPrint('TtsService.speak failed: $error');
+    }
   }
 
   @override
