@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../i18n/app_language.dart';
+import 'speech_bridge.dart';
 
 /// ממשק לשירות דיבור, כדי שמסכים יוכלו לקבל מימוש דמה בבדיקות בלי
 /// לגעת בערוצי פלטפורמה אמיתיים.
@@ -26,6 +27,7 @@ abstract class SpeechService {
 /// מדברת דרך אותו "צינור" באופן עקבי, בלי קשר לכמה מסכים נכנסו ויצאו.
 class TtsService implements SpeechService {
   static final FlutterTts _tts = FlutterTts();
+  static final SpeechBridge _webBridge = SpeechBridge();
   static bool _staticOptionsSet = false;
   static bool _handlersConfigured = false;
   static bool _speaking = false;
@@ -83,6 +85,22 @@ class TtsService implements SpeechService {
     String text, {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
+    if (kIsWeb) {
+      // נתיב מהיר וסינכרוני לגמרי - בלי אף await לפני הקריאה בפועל ל-
+      // speechSynthesis.speak() של הדפדפן. זה קריטי בספארי/אייאוס: כל
+      // await בדרך (גם דברים "זולים" כמו setLanguage/setSpeechRate של
+      // flutter_tts, שכל אחד מהם עובר Future משלו) מספיק כדי שספארי
+      // כבר לא יזהה את הקריאה כתגובה ישירה למגע של המשתמש, וישתיק אותה
+      // בלי שום שגיאה. ראו SpeechBridge להסבר המלא.
+      _webBridge.speakNow(
+        text,
+        lang: language.ttsLocale,
+        rate: 0.42,
+        pitch: 1.15,
+        volume: 1.0,
+      );
+      return;
+    }
     // חשוב: setLanguage נקרא בכל השמעה, לא רק פעם ראשונה. בווב, רשימת
     // הקולות הזמינים (SpeechSynthesis.getVoices) לפעמים עוד לא נטענה
     // בקריאה הראשונה (race condition ידוע בדפדפנים) - ואז setLanguage
@@ -126,7 +144,13 @@ class TtsService implements SpeechService {
   }
 
   @override
-  Future<void> stop() => _tts.stop();
+  Future<void> stop() {
+    if (kIsWeb) {
+      _webBridge.cancel();
+      return Future.value();
+    }
+    return _tts.stop();
+  }
 
   @override
   void dispose() {

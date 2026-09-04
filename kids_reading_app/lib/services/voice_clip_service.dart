@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 
 import '../i18n/app_language.dart';
 import 'tts_service.dart';
@@ -44,16 +44,44 @@ class VoiceClipService implements VoiceService {
   final SpeechService _tts;
   final AudioPlayer _player = AudioPlayer();
 
+  /// רשימת כל קבצי ה-assets שנארזו בפועל בבנייה הזו, נטענת פעם אחת
+  /// באתחול האפליקציה (ראו [preloadManifest]) ונשמרת בזיכרון. חייבים
+  /// לדעת אם קליפ קיים *באופן סינכרוני, בלי שום await*, לפני שמחליטים
+  /// אם לנגן אותו או ליפול ל-TTS - כי `await rootBundle.load(...)` שלא
+  /// מצליח (המצב הנפוץ כרגע, לפני שהוקלטו קבצים) היה שובר את שרשרת
+  /// המגע של המשתמש בספארי/אייאוס בדיוק כמו await בתוך מנוע ה-TTS עצמו
+  /// (ראו TtsService.speak). ראו גם README באותה תיקייה.
+  static Set<String>? _knownAssets;
+  static Future<void>? _preloadFuture;
+
+  /// טוען את מניפסט ה-assets פעם אחת, מוקדם ככל האפשר (מ-main, לפני
+  /// כל מגע של המשתמש) - כדי ש-[speak]/[playSound] יוכלו לבדוק קיום
+  /// קליפ בלי await בכלל.
+  static Future<void> preloadManifest() {
+    return _preloadFuture ??= () async {
+      try {
+        final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+        _knownAssets = manifest.listAssets().toSet();
+      } catch (_) {
+        // אם הטעינה נכשלת מסיבה כלשהי, פשוט ממשיכים בלי מניפסט - הבדיקה
+        // הסינכרונית תתייחס לכל קליפ כלא-קיים, וכל דיבור ייפול ל-TTS.
+        _knownAssets = {};
+      }
+    }();
+  }
+
+  bool _assetExists(String assetPath) =>
+      _knownAssets?.contains('assets/$assetPath') ?? false;
+
   @override
   Future<void> speak(
     String clipKey,
     String fallbackText, {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
-    final played = await _tryPlayClip(_assetPath(clipKey, language));
-    if (!played) {
-      await _tts.speak(fallbackText, language: language);
-    }
+    final assetPath = _assetPath(clipKey, language);
+    if (_assetExists(assetPath) && await _playClip(assetPath)) return;
+    await _tts.speak(fallbackText, language: language);
   }
 
   @override
@@ -78,7 +106,8 @@ class VoiceClipService implements VoiceService {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
     for (final ext in _soundExtensions) {
-      if (await _tryPlayClip('audio/animal_sounds/$soundKey.$ext')) return;
+      final assetPath = 'audio/animal_sounds/$soundKey.$ext';
+      if (_assetExists(assetPath) && await _playClip(assetPath)) return;
     }
     await _tts.speak(fallbackText, language: language);
   }
@@ -86,17 +115,7 @@ class VoiceClipService implements VoiceService {
   String _assetPath(String clipKey, AppLanguage language) =>
       'audio/voice/${language.localeTag}/$clipKey.m4a';
 
-  Future<bool> _tryPlayClip(String assetPath) async {
-    // בדיקה מהירה ומקומית אם ההקלטה בכלל קיימת בחבילת ה-assets, לפני
-    // שמנסים לנגן אותה. כך, כשההקלטה עדיין לא קיימת (המצב הנפוץ כרגע),
-    // נופלים ל-TTS כמעט מיידית — במקום לחכות לטיים-אאוט ארוך על כל
-    // ביטוי (מה שגרם למשחקים "להיתקע" לכמה שניות אחרי כל תשובה).
-    try {
-      await rootBundle.load('assets/$assetPath');
-    } catch (_) {
-      return false;
-    }
-
+  Future<bool> _playClip(String assetPath) async {
     try {
       await _player.stop();
       final completer = Completer<void>();
