@@ -263,13 +263,11 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
           size: size,
         ),
       ),
-      HebrewVowelForm(
-        symbol: 'וּ',
-        word: 'וּפָרָה',
-        wordPlain: 'ופרה',
-        illustrationBuilder: (size) =>
-            AnimalIllustration(shape: AnimalShape.cow, size: size),
-      ),
+      // אין כרטיס שורוק לאות ו: כמעט שום מילה עצמאית בעברית לא מתחילה
+      // ב-וּ בפועל - ה-ו בניקוד הזה משמשת כמעט תמיד רק כאות חיבור
+      // ("ו החיבור", כמו "עץ ופרה"), לא כאות שורש בתחילת מילה. במקום
+      // להציג "מילה" שהיא בעצם "ו+מילה אחרת" (כמו "ופרה"), פשוט לא
+      // מלמדים כאן את הצורה הזו לאות ו - ראו את שיחת הפיתוח.
     ],
   ),
   HebrewLetterConcept(

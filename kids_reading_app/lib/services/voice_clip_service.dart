@@ -73,14 +73,21 @@ class VoiceClipService implements VoiceService {
   bool _assetExists(String assetPath) =>
       _knownAssets?.contains('assets/$assetPath') ?? false;
 
+  /// סיומות אודיו שמנסים בסדר הזה - כדי שאפשר יהיה להוסיף הקלטה בכל
+  /// פורמט נפוץ (מה שהמכשיר של המקליט/ת מפיק, כמו mp3 מאייפון) בלי
+  /// להמיר קבצים באופן ידני.
+  static const _clipExtensions = ['m4a', 'mp3', 'wav', 'ogg'];
+
   @override
   Future<void> speak(
     String clipKey,
     String fallbackText, {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
-    final assetPath = _assetPath(clipKey, language);
-    if (_assetExists(assetPath) && await _playClip(assetPath)) return;
+    for (final ext in _clipExtensions) {
+      final assetPath = _assetPath(clipKey, language, ext);
+      if (_assetExists(assetPath) && await _playClip(assetPath)) return;
+    }
     await _tts.speak(fallbackText, language: language);
   }
 
@@ -94,26 +101,21 @@ class VoiceClipService implements VoiceService {
     }
   }
 
-  /// סיומות אודיו שמנסים בסדר הזה עבור קולות חיות - כדי שאפשר יהיה
-  /// להוסיף הקלטה בכל פורמט נפוץ (מה שהמכשיר של המקליט/ת מפיק) בלי
-  /// להמיר קבצים באופן ידני.
-  static const _soundExtensions = ['mp3', 'wav', 'm4a', 'ogg'];
-
   @override
   Future<void> playSound(
     String soundKey,
     String fallbackText, {
     AppLanguage language = AppLanguage.hebrew,
   }) async {
-    for (final ext in _soundExtensions) {
+    for (final ext in _clipExtensions) {
       final assetPath = 'audio/animal_sounds/$soundKey.$ext';
       if (_assetExists(assetPath) && await _playClip(assetPath)) return;
     }
     await _tts.speak(fallbackText, language: language);
   }
 
-  String _assetPath(String clipKey, AppLanguage language) =>
-      'audio/voice/${language.localeTag}/$clipKey.m4a';
+  String _assetPath(String clipKey, AppLanguage language, String ext) =>
+      'audio/voice/${language.localeTag}/$clipKey.$ext';
 
   Future<bool> _playClip(String assetPath) async {
     try {

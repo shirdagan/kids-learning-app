@@ -963,43 +963,108 @@ class _LetterWordPainter extends CustomPainter {
   void _paintDinosaur(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final green = Paint()..color = const Color(0xFF6FB65C);
-    final body = Path()
-      ..moveTo(w * 0.2, h * 0.85)
-      ..quadraticBezierTo(w * 0.15, h * 0.55, w * 0.35, h * 0.5)
-      ..quadraticBezierTo(w * 0.3, h * 0.32, w * 0.48, h * 0.18)
-      ..quadraticBezierTo(w * 0.55, h * 0.3, w * 0.5, h * 0.42)
-      ..quadraticBezierTo(w * 0.72, h * 0.4, w * 0.85, h * 0.62)
-      ..quadraticBezierTo(w * 0.68, h * 0.62, w * 0.6, h * 0.7)
-      ..lineTo(w * 0.6, h * 0.85)
-      ..close();
-    canvas.drawPath(body, green);
+    final darkGreen = Paint()..color = const Color(0xFF4E9440);
+    final bodyCenter = Offset(w * 0.42, h * 0.62);
+    final r = w * 0.24;
 
-    final spikes = Paint()..color = const Color(0xFF4E9440);
-    for (final t in [0.24, 0.34, 0.44]) {
-      canvas.drawPath(
-        Path()
-          ..moveTo(w * (0.42 + t * 0.3), h * (0.3 - t * 0.2))
-          ..lineTo(w * (0.46 + t * 0.3), h * (0.14 - t * 0.2))
-          ..lineTo(w * (0.5 + t * 0.3), h * (0.3 - t * 0.2))
-          ..close(),
-        spikes,
+    // זנב - יוצא משמאל-אחור לגוף ומתחדד.
+    canvas.drawPath(
+      Path()
+        ..moveTo(bodyCenter.dx - r * 0.7, bodyCenter.dy + r * 0.1)
+        ..quadraticBezierTo(
+          bodyCenter.dx - r * 2.0,
+          bodyCenter.dy - r * 0.1,
+          bodyCenter.dx - r * 2.3,
+          bodyCenter.dy + r * 0.5,
+        )
+        ..quadraticBezierTo(
+          bodyCenter.dx - r * 1.6,
+          bodyCenter.dy + r * 0.5,
+          bodyCenter.dx - r * 0.6,
+          bodyCenter.dy + r * 0.55,
+        )
+        ..close(),
+      green,
+    );
+
+    // רגליים, מאחורי הגוף.
+    for (final dx in [-0.15, 0.25]) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: bodyCenter + Offset(r * dx, r * 0.95),
+            width: r * 0.5,
+            height: r * 0.7,
+          ),
+          Radius.circular(r * 0.15),
+        ),
+        darkGreen,
       );
     }
 
-    canvas.drawCircle(
-      Offset(w * 0.47, h * 0.22),
-      w * 0.025,
-      Paint()..color = const Color(0xFF3A2E2E),
+    // גוף - עיגול גדול ורך.
+    canvas.drawOval(
+      Rect.fromCenter(center: bodyCenter, width: r * 2.1, height: r * 1.8),
+      green,
     );
 
-    for (final dx in [0.3, 0.42]) {
-      canvas.drawLine(
-        Offset(w * dx, h * 0.85),
-        Offset(w * dx, h * 0.95),
-        Paint()
-          ..color = green.color
-          ..strokeWidth = w * 0.05
-          ..strokeCap = StrokeCap.round,
+    // צוואר - עקומה עבה שעולה מהגוף אל הראש.
+    final headCenter = Offset(w * 0.78, h * 0.24);
+    final neck = Path()
+      ..moveTo(bodyCenter.dx + r * 0.5, bodyCenter.dy - r * 0.4)
+      ..quadraticBezierTo(
+        w * 0.58,
+        h * 0.34,
+        headCenter.dx - r * 0.2,
+        headCenter.dy + r * 0.5,
+      )
+      ..lineTo(headCenter.dx + r * 0.35, headCenter.dy + r * 0.25)
+      ..quadraticBezierTo(
+        w * 0.66,
+        h * 0.46,
+        bodyCenter.dx + r * 0.85,
+        bodyCenter.dy - r * 0.1,
+      )
+      ..close();
+    canvas.drawPath(neck, green);
+
+    // ראש - עיגול בקצה הצוואר, עם קוזמת חיוך ועין.
+    canvas.drawCircle(headCenter, r * 0.55, green);
+    canvas.drawCircle(
+      headCenter + Offset(r * 0.18, -r * 0.05),
+      r * 0.08,
+      Paint()..color = const Color(0xFF3A2E2E),
+    );
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: headCenter + Offset(r * 0.12, r * 0.2),
+        width: r * 0.4,
+        height: r * 0.3,
+      ),
+      0.2,
+      1.6,
+      false,
+      Paint()
+        ..color = const Color(0xFF3A2E2E)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = r * 0.05
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // קוצים משולשים לאורך הגב, מהגוף ועד הצוואר.
+    for (final t in [0.0, 0.28, 0.56, 0.82]) {
+      final base = Offset.lerp(
+        Offset(bodyCenter.dx - r * 0.3, bodyCenter.dy - r * 0.85),
+        Offset(headCenter.dx - r * 0.3, headCenter.dy - r * 0.3),
+        t,
+      )!;
+      canvas.drawPath(
+        Path()
+          ..moveTo(base.dx - r * 0.14, base.dy + r * 0.12)
+          ..lineTo(base.dx, base.dy - r * 0.22)
+          ..lineTo(base.dx + r * 0.14, base.dy + r * 0.12)
+          ..close(),
+        darkGreen,
       );
     }
   }
@@ -2858,33 +2923,70 @@ class _LetterWordPainter extends CustomPainter {
     final w = size.width, h = size.height;
     final fur = Paint()..color = const Color(0xFFE8C069);
     final center = Offset(w * 0.5, h * 0.56);
-    canvas.drawCircle(center, w * 0.32, fur);
-    for (final dx in [-0.7, 0.7]) {
-      canvas.drawCircle(
-        center + Offset(w * dx * 0.42, -w * 0.36),
-        w * 0.1,
+    final r = w * 0.32;
+
+    // אוזניים מחודדות (לא עגולות כמו דוב) - הסימן ההיכר של חתולי-בר.
+    for (final dx in [-1.0, 1.0]) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(center.dx + dx * r * 0.55, center.dy - r * 0.55)
+          ..lineTo(center.dx + dx * r * 0.78, center.dy - r * 1.15)
+          ..lineTo(center.dx + dx * r * 0.98, center.dy - r * 0.45)
+          ..close(),
         fur,
       );
     }
+
+    canvas.drawCircle(center, r, fur);
+
+    // כתם חטוטרת האף הבהיר סביב הפה, כמו בחתולים גדולים.
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(0, r * 0.42),
+        width: r * 0.9,
+        height: r * 0.6,
+      ),
+      Paint()..color = Color.lerp(fur.color, Colors.white, 0.5)!,
+    );
+
     final spot = Paint()..color = const Color(0xFF7A5230);
     for (final o in [
-      Offset(-0.12, -0.12),
-      Offset(0.14, -0.15),
-      Offset(-0.2, 0.1),
-      Offset(0.2, 0.1),
-      Offset(0, 0.2),
+      Offset(-0.5, -0.5),
+      Offset(0.4, -0.55),
+      Offset(-0.7, 0.05),
+      Offset(0.68, 0.05),
+      Offset(-0.35, 0.35),
+      Offset(0.4, 0.4),
+      Offset(0, -0.15),
     ]) {
-      canvas.drawCircle(center + Offset(w * o.dx, w * o.dy), w * 0.035, spot);
+      canvas.drawCircle(center + Offset(r * o.dx, r * o.dy), r * 0.11, spot);
     }
+
+    // שפמפם.
+    final whisker = Paint()
+      ..color = const Color(0xFF7A5230)
+      ..strokeWidth = w * 0.012
+      ..strokeCap = StrokeCap.round;
+    for (final dy in [-0.02, 0.08, 0.18]) {
+      canvas.drawLine(
+        center + Offset(-r * 0.35, r * 0.42 + r * dy),
+        center + Offset(-r * 0.95, r * 0.34 + r * dy),
+        whisker,
+      );
+      canvas.drawLine(
+        center + Offset(r * 0.35, r * 0.42 + r * dy),
+        center + Offset(r * 0.95, r * 0.34 + r * dy),
+        whisker,
+      );
+    }
+
+    final eyePaint = Paint()..color = const Color(0xFF3A2E2E);
+    canvas.drawCircle(center + Offset(-r * 0.28, -r * 0.06), r * 0.08, eyePaint);
+    canvas.drawCircle(center + Offset(r * 0.28, -r * 0.06), r * 0.08, eyePaint);
     canvas.drawCircle(
-      center + Offset(-w * 0.1, -w * 0.02),
-      w * 0.025,
-      Paint()..color = const Color(0xFF3A2E2E),
-    );
-    canvas.drawCircle(
-      center + Offset(w * 0.1, -w * 0.02),
-      w * 0.025,
-      Paint()..color = const Color(0xFF3A2E2E),
+      center + Offset(0, r * 0.32),
+      r * 0.06,
+      Paint()..color = const Color(0xFFE8639B),
     );
   }
 
@@ -3366,24 +3468,43 @@ class _LetterWordPainter extends CustomPainter {
   void _paintFootprint(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final color = Paint()..color = const Color(0xFF9C6ADE);
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.5, h * 0.64),
-        width: w * 0.4,
-        height: h * 0.44,
-      ),
+
+    // כף הרגל - טיפה רחבה למעלה ומתעגלת לעקב, לא עיגול סתמי.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.5, h * 0.34)
+        ..quadraticBezierTo(w * 0.74, h * 0.38, w * 0.68, h * 0.64)
+        ..quadraticBezierTo(w * 0.64, h * 0.88, w * 0.5, h * 0.9)
+        ..quadraticBezierTo(w * 0.36, h * 0.88, w * 0.32, h * 0.64)
+        ..quadraticBezierTo(w * 0.26, h * 0.38, w * 0.5, h * 0.34)
+        ..close(),
       color,
     );
-    for (final o in [
-      Offset(-0.18, -0.34),
-      Offset(-0.06, -0.4),
-      Offset(0.06, -0.4),
-      Offset(0.18, -0.36),
-    ]) {
+
+    // חמש בהונות, צמודות לחלק העליון של כף הרגל כדי שהצללית תיראה
+    // כרגל אחת שלמה - אבל עם ריווח בין המרכזים גדול מסכום הרדיוסים,
+    // אחרת הן מתמזגות לענן אחד ולא נראות כבהונות נפרדות. קו הפרדה
+    // לבן דק ביניהן מדגיש את זה עוד יותר.
+    const toes = [
+      (dx: -0.32, dy: 0.24, r: 0.065),
+      (dx: -0.16, dy: 0.16, r: 0.075),
+      (dx: 0.0, dy: 0.13, r: 0.08),
+      (dx: 0.16, dy: 0.16, r: 0.07),
+      (dx: 0.31, dy: 0.24, r: 0.058),
+    ];
+    for (final toe in toes) {
       canvas.drawCircle(
-        Offset(w * 0.5 + w * o.dx, h * 0.5 + h * o.dy),
-        w * 0.06,
+        Offset(w * (0.5 + toe.dx), h * toe.dy),
+        w * toe.r,
         color,
+      );
+      canvas.drawCircle(
+        Offset(w * (0.5 + toe.dx), h * toe.dy),
+        w * toe.r,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = w * 0.012,
       );
     }
   }
@@ -3692,70 +3813,98 @@ class _LetterWordPainter extends CustomPainter {
 
   void _paintZebra(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
-    final base = Paint()..color = Colors.white;
-    final center = Offset(w * 0.46, h * 0.56);
-    canvas.drawOval(
-      Rect.fromCenter(center: center, width: w * 0.6, height: h * 0.42),
-      base,
-    );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(w * 0.32, -h * 0.12),
-        width: w * 0.22,
-        height: h * 0.3,
-      ),
-      base,
-    );
-    canvas.drawPath(
-      Path()
-        ..moveTo(w * 0.18, h * 0.5)
-        ..quadraticBezierTo(w * 0.04, h * 0.6, w * 0.08, h * 0.78)
-        ..quadraticBezierTo(w * 0.12, h * 0.9, w * 0.2, h * 0.86)
-        ..quadraticBezierTo(w * 0.14, h * 0.72, w * 0.24, h * 0.58)
-        ..close(),
-      base,
-    );
-    final stripe = Paint()
+    // פני זברה פונות-אל-מול-הצופה. במקום כמה קווים בודדים שנראים כמו
+    // מסכה מוזרה, מציירים פסים *צפופים* על פני כל הפרצוף - כולל דרך
+    // אזור העיניים, בדיוק כמו זברה אמיתית - זה מה שהופך את זה למזוהה
+    // מיד כזברה במקום כפרצוף מופשט.
+    final white = Paint()..color = Colors.white;
+    final black = Paint()..color = const Color(0xFF3A2E2E);
+    final outline = Paint()
       ..color = const Color(0xFF3A2E2E)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = w * 0.03;
-    for (final t in [-0.16, -0.02, 0.12, 0.24]) {
-      canvas.drawLine(
-        Offset(center.dx + w * t, center.dy - h * 0.18),
-        Offset(center.dx + w * t - w * 0.03, center.dy + h * 0.18),
-        stripe,
+      ..strokeWidth = w * 0.02;
+    final center = Offset(w * 0.5, h * 0.54);
+    final r = w * 0.3;
+
+    // אוזניים.
+    for (final dx in [-1.0, 1.0]) {
+      final earCenter = center + Offset(r * dx * 0.85, -r * 0.95);
+      final earRect = Rect.fromCenter(
+        center: earCenter,
+        width: r * 0.5,
+        height: r * 0.7,
+      );
+      canvas.drawOval(earRect, white);
+      canvas.drawOval(earRect, outline);
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: earCenter,
+          width: r * 0.24,
+          height: r * 0.38,
+        ),
+        Paint()..color = const Color(0xFFF3C6A0),
       );
     }
-    for (final dx in [0.36, 0.42]) {
-      canvas.drawLine(
-        Offset(w * dx, h * (dx == 0.36 ? 0.32 : 0.36)),
-        Offset(w * dx - w * 0.02, h * 0.5),
-        stripe,
-      );
-    }
-    canvas.drawCircle(
-      center + Offset(w * 0.4, -h * 0.14),
-      w * 0.02,
-      Paint()..color = const Color(0xFF3A2E2E),
+
+    // ראש - עיגול לבן.
+    final headRect = Rect.fromCenter(
+      center: center,
+      width: r * 1.9,
+      height: r * 2.1,
     );
-    for (final dx in [-0.24, -0.12, 0.24, 0.4]) {
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: center + Offset(w * dx, h * 0.2),
-          width: w * 0.06,
-          height: h * 0.28,
-        ),
-        base,
-      );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: center + Offset(w * dx, h * 0.32),
-          width: w * 0.06,
-          height: h * 0.08,
-        ),
-        Paint()..color = const Color(0xFF3A2E2E),
+    final headPath = Path()..addOval(headRect);
+    canvas.drawPath(headPath, white);
+
+    // פסים צפופים על כל הפנים, גזורים לפי צורת הראש כדי שיתעגלו
+    // באופן טבעי בקצוות (כולל דרך אזור העיניים).
+    canvas.save();
+    canvas.clipPath(headPath);
+    final stripe = Paint()
+      ..color = const Color(0xFF3A2E2E)
+      ..strokeWidth = r * 0.13
+      ..strokeCap = StrokeCap.round;
+    for (var i = -4; i <= 4; i++) {
+      final dx = i * 0.21;
+      canvas.drawLine(
+        Offset(center.dx + r * dx, center.dy - r * 1.15),
+        Offset(center.dx + r * dx * 1.15, center.dy + r * 1.15),
+        stripe,
       );
     }
+    canvas.restore();
+
+    // קו מתאר לראש, מעל הפסים - כדי שהצללית תישאר נקייה וברורה.
+    canvas.drawOval(headRect, outline);
+
+    // רעמה - שערות זקופות בין האוזניים.
+    for (final dx in [-0.3, -0.1, 0.1, 0.3]) {
+      canvas.drawPath(
+        Path()
+          ..moveTo(center.dx + r * dx - r * 0.07, center.dy - r * 0.95)
+          ..lineTo(center.dx + r * dx, center.dy - r * 1.22)
+          ..lineTo(center.dx + r * dx + r * 0.07, center.dy - r * 0.95)
+          ..close(),
+        black,
+      );
+    }
+
+    // עיניים - עיגול לבן עם קו מתאר כדי שיבלטו מעל הפסים, ואישון שחור.
+    for (final dx in [-0.32, 0.32]) {
+      final eyeCenter = center + Offset(r * dx, -r * 0.02);
+      canvas.drawCircle(eyeCenter, r * 0.14, white);
+      canvas.drawCircle(eyeCenter, r * 0.14, outline);
+      canvas.drawCircle(eyeCenter, r * 0.07, black);
+    }
+
+    // חוטם.
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(0, r * 0.7),
+        width: r * 0.3,
+        height: r * 0.2,
+      ),
+      black,
+    );
   }
 
   @override
