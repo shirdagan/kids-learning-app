@@ -43,8 +43,8 @@ class _LetterWordPainter extends CustomPainter {
         _paintChick(canvas, size);
       case LetterWordShape.car:
         _paintCar(canvas, size);
-      case LetterWordShape.hamster:
-        _paintHamster(canvas, size);
+      case LetterWordShape.omelet:
+        _paintOmelet(canvas, size);
       case LetterWordShape.balloon:
         _paintBalloon(canvas, size);
       case LetterWordShape.shirt:
@@ -424,74 +424,82 @@ class _LetterWordPainter extends CustomPainter {
     }
   }
 
-  void _paintHamster(Canvas canvas, Size size) {
+  void _paintOmelet(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
-    final fur = Paint()..color = const Color(0xFFD9A05B);
-    final center = Offset(w * 0.5, h * 0.56);
-    final radius = w * 0.36;
-    canvas.drawCircle(center, radius, fur);
+    final plateCenter = Offset(w * 0.5, h * 0.62);
 
-    // בטן בהירה.
+    // צלחת.
+    final plateRect = Rect.fromCenter(
+      center: plateCenter,
+      width: w * 0.86,
+      height: h * 0.5,
+    );
+    canvas.drawOval(plateRect, Paint()..color = const Color(0xFFF5F2EA));
     canvas.drawOval(
+      plateRect,
+      Paint()
+        ..color = const Color(0xFFD8D2C4)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.018,
+    );
+
+    // החביתה - צורת חצי-סהר רך, מקופלת.
+    final omeletPath = Path()
+      ..moveTo(w * 0.22, h * 0.52)
+      ..quadraticBezierTo(w * 0.5, h * 0.3, w * 0.78, h * 0.52)
+      ..quadraticBezierTo(w * 0.6, h * 0.68, w * 0.5, h * 0.6)
+      ..quadraticBezierTo(w * 0.4, h * 0.68, w * 0.22, h * 0.52)
+      ..close();
+    canvas.drawPath(omeletPath, Paint()..color = const Color(0xFFFBCB2E));
+
+    // קו קיפול קל בגוון חם יותר.
+    canvas.drawArc(
       Rect.fromCenter(
-        center: center + Offset(0, radius * 0.25),
-        width: radius * 1.05,
-        height: radius * 0.9,
+        center: Offset(w * 0.5, h * 0.52),
+        width: w * 0.4,
+        height: h * 0.18,
       ),
-      Paint()..color = const Color(0xFFF3E0C4),
+      0,
+      math.pi,
+      false,
+      Paint()
+        ..color = const Color(0xFFE8A93A)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.015,
     );
 
-    // אוזניים.
-    for (final dx in [-0.62, 0.62]) {
+    // נקודות פטרוזיליה.
+    final herb = Paint()..color = const Color(0xFF6FAF57);
+    for (final o in [
+      Offset(-0.12, -0.02),
+      Offset(0.04, -0.07),
+      Offset(0.18, 0.01),
+    ]) {
       canvas.drawCircle(
-        center + Offset(radius * dx, -radius * 0.85),
-        radius * 0.3,
-        fur,
-      );
-      canvas.drawCircle(
-        center + Offset(radius * dx, -radius * 0.85),
-        radius * 0.16,
-        Paint()..color = const Color(0xFFEBB3A0),
+        Offset(w * 0.5, h * 0.44) + Offset(w * o.dx, h * o.dy),
+        w * 0.018,
+        herb,
       );
     }
 
-    // עיניים.
-    final eyePaint = Paint()..color = const Color(0xFF3A2E2E);
-    canvas.drawCircle(
-      center + Offset(-radius * 0.32, -radius * 0.08),
-      radius * 0.1,
-      eyePaint,
-    );
-    canvas.drawCircle(
-      center + Offset(radius * 0.32, -radius * 0.08),
-      radius * 0.1,
-      eyePaint,
-    );
-
-    // אף.
-    canvas.drawCircle(
-      center + Offset(0, radius * 0.14),
-      radius * 0.07,
-      Paint()..color = const Color(0xFFE8639B),
-    );
-
-    // שפמפם.
-    final whisker = Paint()
-      ..color = const Color(0xFF7A5230)
-      ..strokeWidth = w * 0.01
+    // אדים.
+    final steam = Paint()
+      ..color = const Color(0xFFBFD8E8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.015
       ..strokeCap = StrokeCap.round;
-    for (final dy in [-0.04, 0.06, 0.16]) {
-      canvas.drawLine(
-        center + Offset(-radius * 0.2, radius * dy + radius * 0.14),
-        center + Offset(-radius * 0.75, radius * dy),
-        whisker,
-      );
-      canvas.drawLine(
-        center + Offset(radius * 0.2, radius * dy + radius * 0.14),
-        center + Offset(radius * 0.75, radius * dy),
-        whisker,
-      );
-    }
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.38, h * 0.22)
+        ..quadraticBezierTo(w * 0.34, h * 0.13, w * 0.4, h * 0.05),
+      steam,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.6, h * 0.22)
+        ..quadraticBezierTo(w * 0.64, h * 0.13, w * 0.58, h * 0.05),
+      steam,
+    );
   }
 
   void _paintBalloon(Canvas canvas, Size size) {

@@ -133,11 +133,6 @@ class _AnimalFindGameScreenState extends State<AnimalFindGameScreen> {
         phrases[praiseIndex],
         language: language,
       );
-      await _voice.playSound(
-        _target.id,
-        _target.nameFor(language),
-        language: language,
-      );
       await Future.delayed(const Duration(milliseconds: 600));
       if (mounted) _newRound();
     } else {

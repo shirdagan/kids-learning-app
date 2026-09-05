@@ -49,10 +49,10 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
       ),
       HebrewVowelForm(
         symbol: 'אוּ',
-        word: 'אוּגָר',
-        wordPlain: 'אוגר',
+        word: 'אוּמְלֶט',
+        wordPlain: 'אומלט',
         illustrationBuilder: (size) =>
-            LetterWordIllustration(shape: LetterWordShape.hamster, size: size),
+            LetterWordIllustration(shape: LetterWordShape.omelet, size: size),
       ),
     ],
   ),

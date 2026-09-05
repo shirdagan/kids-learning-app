@@ -6,7 +6,7 @@ enum LetterWordShape {
   mom,
   chick,
   car,
-  hamster,
+  omelet,
   balloon,
   shirt,
   cookie,
