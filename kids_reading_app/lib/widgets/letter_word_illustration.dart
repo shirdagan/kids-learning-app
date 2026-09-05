@@ -121,8 +121,8 @@ class _LetterWordPainter extends CustomPainter {
         _paintBattery(canvas, size);
       case LetterWordShape.elephant:
         _paintElephant(canvas, size);
-      case LetterWordShape.pony:
-        _paintPony(canvas, size);
+      case LetterWordShape.pompom:
+        _paintPompom(canvas, size);
       case LetterWordShape.puma:
         _paintPuma(canvas, size);
       case LetterWordShape.teacup:
@@ -1794,95 +1794,130 @@ class _LetterWordPainter extends CustomPainter {
   void _paintElephant(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final skin = Paint()..color = const Color(0xFFB9C4CC);
-    final center = Offset(w * 0.46, h * 0.5);
-    canvas.drawCircle(center, w * 0.3, skin);
-    canvas.drawCircle(center + Offset(-w * 0.32, -h * 0.02), w * 0.2, skin);
+    final skinDark = Paint()..color = const Color(0xFFA3AFB8);
+    final center = Offset(w * 0.52, h * 0.46);
+    final r = w * 0.28;
 
-    // תא.
-    canvas.drawPath(
-      Path()
-        ..moveTo(w * 0.2, h * 0.52)
-        ..quadraticBezierTo(w * 0.06, h * 0.6, w * 0.1, h * 0.78)
-        ..quadraticBezierTo(w * 0.14, h * 0.9, w * 0.22, h * 0.86)
-        ..quadraticBezierTo(w * 0.16, h * 0.72, w * 0.26, h * 0.58)
-        ..close(),
-      skin,
-    );
+    // רגליים, מאחורי הגוף.
+    for (final dx in [-0.16, 0.12]) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center + Offset(r * dx, r * 0.95),
+            width: r * 0.5,
+            height: r * 0.85,
+          ),
+          Radius.circular(r * 0.2),
+        ),
+        skinDark,
+      );
+    }
 
-    // אוזן.
+    // אוזן גדולה ורכה, מאחורי הראש.
     canvas.drawOval(
       Rect.fromCenter(
-        center: center + Offset(w * 0.18, -h * 0.02),
-        width: w * 0.32,
-        height: h * 0.4,
+        center: center + Offset(r * 0.85, -r * 0.05),
+        width: r * 1.4,
+        height: r * 1.6,
       ),
-      Paint()..color = const Color(0xFFD7DEE3),
+      Paint()..color = const Color(0xFFCBD4DA),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(r * 0.92, -r * 0.05),
+        width: r * 0.9,
+        height: r * 1.05,
+      ),
+      Paint()..color = const Color(0xFFE3E9EC),
     );
 
+    // ראש/גוף - עיגול אחד גדול ורך.
+    canvas.drawCircle(center, r, skin);
+
+    // חדק - עקומה רכה שיורדת ומתעגלת בקצה.
+    final trunk = Path()
+      ..moveTo(center.dx - r * 0.32, center.dy + r * 0.5)
+      ..quadraticBezierTo(
+        center.dx - r * 0.75,
+        center.dy + r * 0.85,
+        center.dx - r * 0.55,
+        center.dy + r * 1.3,
+      )
+      ..quadraticBezierTo(
+        center.dx - r * 0.3,
+        center.dy + r * 1.48,
+        center.dx - r * 0.08,
+        center.dy + r * 1.24,
+      )
+      ..quadraticBezierTo(
+        center.dx - r * 0.32,
+        center.dy + r,
+        center.dx - r * 0.06,
+        center.dy + r * 0.54,
+      )
+      ..close();
+    canvas.drawPath(trunk, skin);
+
+    // שן קטנה לבנה.
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: center + Offset(-r * 0.02, r * 0.56),
+        width: r * 0.22,
+        height: r * 0.16,
+      ),
+      Paint()..color = Colors.white,
+    );
+
+    // עין עם נקודת אור.
     canvas.drawCircle(
-      center + Offset(-w * 0.34, -h * 0.06),
-      w * 0.03,
+      center + Offset(-r * 0.06, -r * 0.1),
+      r * 0.1,
       Paint()..color = const Color(0xFF3A2E2E),
     );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(w * 0.02, h * 0.28),
-        width: w * 0.1,
-        height: h * 0.14,
-      ),
+    canvas.drawCircle(
+      center + Offset(-r * 0.02, -r * 0.13),
+      r * 0.035,
       Paint()..color = Colors.white,
     );
   }
 
-  void _paintPony(Canvas canvas, Size size) {
+  void _paintPompom(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
-    final coat = Paint()..color = const Color(0xFFEBB3A0);
-    final center = Offset(w * 0.5, h * 0.58);
-    canvas.drawCircle(center, w * 0.3, coat);
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(0, -h * 0.36),
-        width: w * 0.18,
-        height: h * 0.28,
-      ),
-      coat,
-    );
-    for (final dx in [-0.16, 0.16]) {
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: center + Offset(w * dx, -h * 0.5),
-          width: w * 0.1,
-          height: h * 0.16,
-        ),
-        coat,
-      );
+    final center = Offset(w * 0.5, h * 0.54);
+    final r = w * 0.22;
+    const puffColor = Color(0xFFE8639B);
+    final puffPaint = Paint()..color = puffColor;
+
+    // "פונים" קטנים מסביב להיקף, כדי ליצור מרקם פרוותי-רך.
+    const puffCount = 14;
+    for (var i = 0; i < puffCount; i++) {
+      final angle = (2 * math.pi / puffCount) * i;
+      final offset = Offset(math.cos(angle), math.sin(angle)) * r * 0.9;
+      canvas.drawCircle(center + offset, r * 0.42, puffPaint);
     }
-    // רעמה צבעונית.
-    final maneColors = [
-      const Color(0xFFE8639B),
-      const Color(0xFF9C6ADE),
-      const Color(0xFF4FB6E8),
-    ];
-    for (var i = 0; i < 3; i++) {
-      canvas.drawCircle(
-        center + Offset(-w * 0.16 + w * 0.1 * i, -h * 0.58),
-        w * 0.06,
-        Paint()..color = maneColors[i],
-      );
-    }
+    // גוף מרכזי אחיד שממלא את החורים בין הפונים.
+    canvas.drawCircle(center, r * 0.85, puffPaint);
+
+    // הדגשת נפח - עיגול בהיר יותר בפינה.
     canvas.drawCircle(
-      center + Offset(-w * 0.08, -h * 0.36),
-      w * 0.025,
-      Paint()..color = const Color(0xFF3A2E2E),
+      center + Offset(-r * 0.32, -r * 0.34),
+      r * 0.34,
+      Paint()..color = Color.lerp(puffColor, Colors.white, 0.55)!,
     );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(0, -h * 0.24),
-        width: w * 0.08,
-        height: h * 0.06,
-      ),
-      Paint()..color = const Color(0xFF3A2E2E),
-    );
+
+    // נקודות מרקם עדינות.
+    final shade = Paint()..color = Color.lerp(puffColor, Colors.black, 0.12)!;
+    for (final o in [
+      Offset(0.18, 0.22),
+      Offset(-0.05, 0.3),
+      Offset(0.3, -0.05),
+    ]) {
+      canvas.drawCircle(
+        center + Offset(r * o.dx, r * o.dy),
+        r * 0.08,
+        shade,
+      );
+    }
   }
 
   void _paintPuma(Canvas canvas, Size size) {

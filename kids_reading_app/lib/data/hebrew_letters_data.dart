@@ -731,10 +731,10 @@ final List<HebrewLetterConcept> kHebrewLetterConcepts = [
       ),
       HebrewVowelForm(
         symbol: 'פּוֹ',
-        word: 'פּוֹנִי',
-        wordPlain: 'פוני',
+        word: 'פּוֹנְפּוֹן',
+        wordPlain: 'פונפון',
         illustrationBuilder: (size) =>
-            LetterWordIllustration(shape: LetterWordShape.pony, size: size),
+            LetterWordIllustration(shape: LetterWordShape.pompom, size: size),
       ),
       HebrewVowelForm(
         symbol: 'פּוּ',

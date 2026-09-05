@@ -45,7 +45,7 @@ enum LetterWordShape {
   pot,
   battery,
   elephant,
-  pony,
+  pompom,
   puma,
   teacup,
   backpack,
