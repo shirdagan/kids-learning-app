@@ -1794,91 +1794,86 @@ class _LetterWordPainter extends CustomPainter {
   void _paintElephant(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     final skin = Paint()..color = const Color(0xFFB9C4CC);
-    final skinDark = Paint()..color = const Color(0xFFA3AFB8);
-    final center = Offset(w * 0.52, h * 0.46);
+    final earOuter = Paint()..color = const Color(0xFFCBD4DA);
+    final earInner = Paint()..color = const Color(0xFFE3E9EC);
+    final center = Offset(w * 0.5, h * 0.44);
     final r = w * 0.28;
 
-    // רגליים, מאחורי הגוף.
-    for (final dx in [-0.16, 0.12]) {
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: center + Offset(r * dx, r * 0.95),
-            width: r * 0.5,
-            height: r * 0.85,
-          ),
-          Radius.circular(r * 0.2),
+    // שתי אוזניים גדולות וסימטריות, מאחורי הראש - כדי שהפנים יזוהו
+    // מיד כפנים-אל-מול-הצופה, כמו שאר האיורים בקובץ הזה (השוו
+    // ל-_paintHippo/_paintBear).
+    for (final dx in [-1.0, 1.0]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(r * dx, -r * 0.05),
+          width: r * 1.0,
+          height: r * 1.25,
         ),
-        skinDark,
+        earOuter,
+      );
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(r * dx, -r * 0.05),
+          width: r * 0.62,
+          height: r * 0.85,
+        ),
+        earInner,
       );
     }
 
-    // אוזן גדולה ורכה, מאחורי הראש.
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(r * 0.85, -r * 0.05),
-        width: r * 1.4,
-        height: r * 1.6,
-      ),
-      Paint()..color = const Color(0xFFCBD4DA),
-    );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(r * 0.92, -r * 0.05),
-        width: r * 0.9,
-        height: r * 1.05,
-      ),
-      Paint()..color = const Color(0xFFE3E9EC),
-    );
-
-    // ראש/גוף - עיגול אחד גדול ורך.
+    // ראש עגול.
     canvas.drawCircle(center, r, skin);
 
-    // חדק - עקומה רכה שיורדת ומתעגלת בקצה.
+    // חדק - יורד מהאמצע ומתעגל קלות בקצה, כמו ו' הפוכה.
     final trunk = Path()
-      ..moveTo(center.dx - r * 0.32, center.dy + r * 0.5)
+      ..moveTo(center.dx - r * 0.16, center.dy + r * 0.48)
       ..quadraticBezierTo(
-        center.dx - r * 0.75,
-        center.dy + r * 0.85,
-        center.dx - r * 0.55,
+        center.dx - r * 0.32,
+        center.dy + r * 0.95,
+        center.dx - r * 0.06,
         center.dy + r * 1.3,
       )
       ..quadraticBezierTo(
-        center.dx - r * 0.3,
+        center.dx + r * 0.12,
         center.dy + r * 1.48,
-        center.dx - r * 0.08,
-        center.dy + r * 1.24,
+        center.dx + r * 0.26,
+        center.dy + r * 1.28,
       )
       ..quadraticBezierTo(
-        center.dx - r * 0.32,
-        center.dy + r,
-        center.dx - r * 0.06,
-        center.dy + r * 0.54,
+        center.dx + r * 0.08,
+        center.dy + r * 1.06,
+        center.dx + r * 0.18,
+        center.dy + r * 0.5,
       )
       ..close();
     canvas.drawPath(trunk, skin);
 
-    // שן קטנה לבנה.
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: center + Offset(-r * 0.02, r * 0.56),
-        width: r * 0.22,
-        height: r * 0.16,
-      ),
-      Paint()..color = Colors.white,
-    );
+    // שנהב קטן משני צידי החדק.
+    for (final dx in [-0.24, 0.24]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: center + Offset(r * dx, r * 0.5),
+          width: r * 0.16,
+          height: r * 0.22,
+        ),
+        Paint()..color = Colors.white,
+      );
+    }
 
-    // עין עם נקודת אור.
-    canvas.drawCircle(
-      center + Offset(-r * 0.06, -r * 0.1),
-      r * 0.1,
-      Paint()..color = const Color(0xFF3A2E2E),
-    );
-    canvas.drawCircle(
-      center + Offset(-r * 0.02, -r * 0.13),
-      r * 0.035,
-      Paint()..color = Colors.white,
-    );
+    // עיניים סימטריות עם נקודות אור.
+    final eyePaint = Paint()..color = const Color(0xFF3A2E2E);
+    for (final dx in [-0.3, 0.3]) {
+      canvas.drawCircle(
+        center + Offset(r * dx, -r * 0.12),
+        r * 0.09,
+        eyePaint,
+      );
+      canvas.drawCircle(
+        center + Offset(r * dx + r * 0.03, -r * 0.15),
+        r * 0.03,
+        Paint()..color = Colors.white,
+      );
+    }
   }
 
   void _paintPompom(Canvas canvas, Size size) {
