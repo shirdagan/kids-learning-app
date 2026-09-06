@@ -25,12 +25,22 @@ const colorFindOptionsPerRound = 4;
 /// שמסך התפריט יוכל לבחור סבב ולהכריז עליו *לפני* הניווט למסך המשחק
 /// עצמו - כי בספארי/אייאוס דיבור סינתטי נחסם בשקט אם הוא לא קורה
 /// ישירות בתוך הלחיצה שמפעילה אותו, ולא אחרי מעבר מסך.
+///
+/// [excludeTargetId] הוא מזהה הצבע שהיה המטרה בסבב הקודם (אם יש) - כדי
+/// שהמשחק לא ישאל על אותו צבע פעמיים ברצף (מבלבל: נשמע כאילו הוא "נתקע"
+/// על צבע אחד). אם אחרי הסינון לא נשארה אף אפשרות (למשל כשכל האפשרויות
+/// שנבחרו הן אותו צבע בודד), נופלים חזרה לבחירה מכל האפשרויות.
 ({List<ColorConcept> options, ColorConcept target}) pickColorFindRound(
-  Random random,
-) {
+  Random random, {
+  String? excludeTargetId,
+}) {
   final pool = [...kColorConcepts]..shuffle(random);
   final options = pool.take(colorFindOptionsPerRound).toList();
-  final target = options[random.nextInt(options.length)];
+  final candidates = excludeTargetId == null
+      ? options
+      : options.where((c) => c.id != excludeTargetId).toList();
+  final targetPool = candidates.isEmpty ? options : candidates;
+  final target = targetPool[random.nextInt(targetPool.length)];
   return (options: options, target: target);
 }
 
@@ -70,6 +80,10 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   bool _celebrating = false;
   int _celebrationTrigger = 0;
 
+  /// מזהה הצבע שהיה המטרה בסבב האחרון - כדי שהסבב הבא לא ישאל שוב על
+  /// אותו צבע (ראו [pickColorFindRound]).
+  String? _lastTargetId;
+
   @override
   void initState() {
     super.initState();
@@ -79,6 +93,7 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
       // לא מכריזים שוב (ראו pickColorFindRound).
       _options = initialRound.options;
       _target = initialRound.target;
+      _lastTargetId = initialRound.target.id;
       _celebrating = false;
     } else {
       // בוחרים סבב ראשון ישירות (בלי setState — עוד לפני ה-build הראשון),
@@ -97,9 +112,10 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
   }
 
   void _prepareRound() {
-    final round = pickColorFindRound(_random);
+    final round = pickColorFindRound(_random, excludeTargetId: _lastTargetId);
     _options = round.options;
     _target = round.target;
+    _lastTargetId = round.target.id;
     _celebrating = false;
   }
 

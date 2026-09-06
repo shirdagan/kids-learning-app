@@ -20,6 +20,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import xml.sax.saxutils as saxutils
 
 API_KEY = os.environ.get("GOOGLE_TTS_API_KEY")
 if not API_KEY:
@@ -83,11 +84,27 @@ def list_voices():
     return data.get("voices", [])
 
 
+def build_ssml(text):
+    """
+    עוטף את הטקסט ב-SSML עם פרוזודיה (קצב וגובה קול מוגברים מעט) ודגש -
+    כדי שהקול יישמע שמח ונלהב, מתאים לילדים, במקום הטון השטוח/הקר
+    שיוצא כברירת מחדל בלי שום כיוונון. נתמך על ידי Wavenet/Standard/
+    Neural2/Studio (לא על ידי Chirp3-HD, שלא תומך ב-SSML בכלל - לא
+    רלוונטי כאן כי ממילא מעדיפים קולות אחרים, ראו QUALITY_RANK_BY_LANGUAGE).
+    """
+    escaped = saxutils.escape(text)
+    return (
+        '<speak><prosody rate="108%" pitch="+3st">'
+        f'<emphasis level="moderate">{escaped}</emphasis>'
+        "</prosody></speak>"
+    )
+
+
 def synthesize(text, voice_name):
     url = f"https://texttospeech.googleapis.com/v1/text:synthesize?key={API_KEY}"
     body = json.dumps(
         {
-            "input": {"text": text},
+            "input": {"ssml": build_ssml(text)},
             "voice": {"languageCode": LANGUAGE_CODE, "name": voice_name},
             "audioConfig": {"audioEncoding": "MP3"},
         }
