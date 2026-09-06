@@ -84,17 +84,23 @@ def list_voices():
     return data.get("voices", [])
 
 
-def build_ssml(text):
+def build_ssml(text, voice_name):
     """
     עוטף את הטקסט ב-SSML עם פרוזודיה (קצב וגובה קול מוגברים מעט) ודגש -
     כדי שהקול יישמע שמח ונלהב, מתאים לילדים, במקום הטון השטוח/הקר
     שיוצא כברירת מחדל בלי שום כיוונון. נתמך על ידי Wavenet/Standard/
     Neural2/Studio (לא על ידי Chirp3-HD, שלא תומך ב-SSML בכלל - לא
     רלוונטי כאן כי ממילא מעדיפים קולות אחרים, ראו QUALITY_RANK_BY_LANGUAGE).
+
+    קולות Studio, בניגוד לשאר, דוחים בקשה עם attribute בשם pitch על
+    prosody (שגיאת 400) - אז עבורם משמיטים אותו ומסתפקים בקצב ובדגש.
     """
     escaped = saxutils.escape(text)
+    prosody_attrs = 'rate="108%"'
+    if "Studio" not in voice_name:
+        prosody_attrs += ' pitch="+3st"'
     return (
-        '<speak><prosody rate="108%" pitch="+3st">'
+        f"<speak><prosody {prosody_attrs}>"
         f'<emphasis level="moderate">{escaped}</emphasis>'
         "</prosody></speak>"
     )
@@ -104,7 +110,7 @@ def synthesize(text, voice_name):
     url = f"https://texttospeech.googleapis.com/v1/text:synthesize?key={API_KEY}"
     body = json.dumps(
         {
-            "input": {"ssml": build_ssml(text)},
+            "input": {"ssml": build_ssml(text, voice_name)},
             "voice": {"languageCode": LANGUAGE_CODE, "name": voice_name},
             "audioConfig": {"audioEncoding": "MP3"},
         }
