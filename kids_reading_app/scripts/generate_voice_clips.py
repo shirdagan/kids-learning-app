@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-מייצר קובצי קול חסרים לעברית (אותיות/צבעים/עידוד) דרך Google Cloud
-Text-to-Speech, ושומר אותם תחת assets/audio/voice/he/<id>.mp3.
+מייצר קובצי קול חסרים (אותיות/צבעים/עידוד, בעברית או באנגלית) דרך
+Google Cloud Text-to-Speech, ושומר אותם תחת
+assets/audio/voice/<he|en>/<id>.mp3.
 
 רץ בתוך GitHub Actions (לא אצל Claude ולא בדפדפן) כדי לעקוף הגבלות
 רשת שלא קשורות ל-Google בכלל - ראו .github/workflows/generate-voice-clips.yml.
 
-דורש משתנה סביבה GOOGLE_TTS_API_KEY. מדלג על כל מזהה שהקובץ שלו כבר
-קיים, כך שאפשר להריץ שוב בבטחה בלי לשכתב הקלטות אמיתיות שכבר הועלו
-ידנית (למשל אם מישהו כבר החליף חלק מהקבצים בהקלטה אמיתית - תבדקו את
-זה לפני הרצה נוספת, כי הסקריפט מדלג לפי *שם קובץ* בלבד).
+דורש משתנה סביבה GOOGLE_TTS_API_KEY. אופציונלי: LANGUAGE (he או en,
+ברירת מחדל he) ו-VOICE_NAME (שם קול ספציפי; ריק = בחירה אוטומטית).
+מדלג על כל מזהה שהקובץ שלו כבר קיים, כך שאפשר להריץ שוב בבטחה בלי
+לשכתב הקלטות שכבר הועלו ידנית.
 """
 
 import base64
@@ -25,22 +26,35 @@ if not API_KEY:
     print("::error::GOOGLE_TTS_API_KEY is not set", file=sys.stderr)
     sys.exit(1)
 
+LANGUAGE = os.environ.get("LANGUAGE", "he").strip().lower()
 VOICE_NAME = os.environ.get("VOICE_NAME", "").strip()
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-WORDS_PATH = os.path.join(SCRIPT_DIR, "voice_words.json")
-OUT_DIR = os.path.join(SCRIPT_DIR, "..", "assets", "audio", "voice", "he")
+LANGUAGE_CODES = {"he": "he-IL", "en": "en-US"}
+if LANGUAGE not in LANGUAGE_CODES:
+    print(f"::error::Unknown LANGUAGE '{LANGUAGE}' (expected he or en)", file=sys.stderr)
+    sys.exit(1)
+LANGUAGE_CODE = LANGUAGE_CODES[LANGUAGE]
 
-# סדר עדיפות לבחירת הקול הכי טוב אוטומטית, אם לא נבחר קול ספציפי.
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+WORDS_PATH = os.path.join(SCRIPT_DIR, f"voice_words_{LANGUAGE}.json")
+OUT_DIR = os.path.join(SCRIPT_DIR, "..", "assets", "audio", "voice", LANGUAGE)
+
+# סדר עדיפות לבחירת הקול הכי טוב אוטומטית, לפי שפה, אם לא נבחר קול
+# ספציפי.
 #
-# חשוב: Chirp3-HD הוא הדור הכי חדש של גוגל, אבל הוא מודל רב-לשוני
+# עברית: Chirp3-HD הוא הדור הכי חדש של גוגל, אבל הוא מודל רב-לשוני
 # משותף (בדומה ל-ElevenLabs) - וכשבדקנו בפועל, ההגייה שלו לעברית עם
 # ניקוד יצאה מעוותת ולא נשמעה כמו עברית בכלל. Wavenet, לעומת זאת,
-# הוא קול ותיק שנבנה ספציפית לכל שפה (כולל עברית) כבר כמה שנים -
-# פחות "מרשים" על הנייר, אבל הרבה יותר אמין להגייה נכונה בפועל.
-# לכן הוא מקבל עדיפות ראשונה, למרות שהוא "נמוך" יותר בטבלת האיכות
-# הרשמית של גוגל.
-QUALITY_RANK = ["Wavenet", "Standard", "Chirp3-HD", "Studio", "Neural2"]
+# הוא קול ותיק שנבנה ספציפית לכל שפה כבר כמה שנים - הרבה יותר אמין.
+#
+# אנגלית: אין את אותה בעיה - Studio ו-Neural2 הם קולות בוגרים
+# ומוכחים ספציפית לאנגלית (לא ניסיוניים כמו Chirp3-HD לעברית), אז
+# מקבלים עדיפות ראשונה לאיכות הכי טובה.
+QUALITY_RANK_BY_LANGUAGE = {
+    "he": ["Wavenet", "Standard", "Chirp3-HD", "Studio", "Neural2"],
+    "en": ["Studio", "Neural2", "Wavenet", "Chirp3-HD", "Standard"],
+}
+QUALITY_RANK = QUALITY_RANK_BY_LANGUAGE[LANGUAGE]
 
 
 def pick_best_voice(voices):
@@ -62,7 +76,7 @@ def pick_best_voice(voices):
 def list_voices():
     url = (
         "https://texttospeech.googleapis.com/v1/voices"
-        f"?languageCode=he-IL&key={API_KEY}"
+        f"?languageCode={LANGUAGE_CODE}&key={API_KEY}"
     )
     with urllib.request.urlopen(url) as resp:
         data = json.load(resp)
@@ -74,7 +88,7 @@ def synthesize(text, voice_name):
     body = json.dumps(
         {
             "input": {"text": text},
-            "voice": {"languageCode": "he-IL", "name": voice_name},
+            "voice": {"languageCode": LANGUAGE_CODE, "name": voice_name},
             "audioConfig": {"audioEncoding": "MP3"},
         }
     ).encode("utf-8")
@@ -90,7 +104,7 @@ def main():
     voices = list_voices()
     if not voices:
         print(
-            "::error::No he-IL voices returned - check that the "
+            f"::error::No {LANGUAGE_CODE} voices returned - check that the "
             "Cloud Text-to-Speech API is enabled for this key's project.",
             file=sys.stderr,
         )
@@ -99,9 +113,10 @@ def main():
     voice_name = VOICE_NAME or pick_best_voice(voices)
     chosen = next((v for v in voices if v["name"] == voice_name), None)
     gender = chosen.get("ssmlGender") if chosen else "unknown"
+    print(f"Language: {LANGUAGE_CODE}")
     print(f"Using voice: {voice_name} (gender: {gender})")
     print(
-        "Available he-IL voices:",
+        f"Available {LANGUAGE_CODE} voices:",
         ", ".join(f"{v['name']} ({v.get('ssmlGender')})" for v in voices),
     )
 

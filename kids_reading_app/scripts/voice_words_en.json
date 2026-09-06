@@ -1,0 +1,297 @@
+[
+  {
+    "group": "letter A",
+    "id": "letters_en_a",
+    "text": "A is for Apple"
+  },
+  {
+    "group": "letter B",
+    "id": "letters_en_b",
+    "text": "B is for Ball"
+  },
+  {
+    "group": "letter C",
+    "id": "letters_en_c",
+    "text": "C is for Cat"
+  },
+  {
+    "group": "letter D",
+    "id": "letters_en_d",
+    "text": "D is for Dog"
+  },
+  {
+    "group": "letter E",
+    "id": "letters_en_e",
+    "text": "E is for Elephant"
+  },
+  {
+    "group": "letter F",
+    "id": "letters_en_f",
+    "text": "F is for Fish"
+  },
+  {
+    "group": "letter G",
+    "id": "letters_en_g",
+    "text": "G is for Guitar"
+  },
+  {
+    "group": "letter H",
+    "id": "letters_en_h",
+    "text": "H is for Horse"
+  },
+  {
+    "group": "letter I",
+    "id": "letters_en_i",
+    "text": "I is for Ice Cream"
+  },
+  {
+    "group": "letter J",
+    "id": "letters_en_j",
+    "text": "J is for Jump Rope"
+  },
+  {
+    "group": "letter K",
+    "id": "letters_en_k",
+    "text": "K is for Kite"
+  },
+  {
+    "group": "letter L",
+    "id": "letters_en_l",
+    "text": "L is for Lion"
+  },
+  {
+    "group": "letter M",
+    "id": "letters_en_m",
+    "text": "M is for Monkey"
+  },
+  {
+    "group": "letter N",
+    "id": "letters_en_n",
+    "text": "N is for Nest"
+  },
+  {
+    "group": "letter O",
+    "id": "letters_en_o",
+    "text": "O is for Orange"
+  },
+  {
+    "group": "letter P",
+    "id": "letters_en_p",
+    "text": "P is for Pig"
+  },
+  {
+    "group": "letter Q",
+    "id": "letters_en_q",
+    "text": "Q is for Queen"
+  },
+  {
+    "group": "letter R",
+    "id": "letters_en_r",
+    "text": "R is for Rainbow"
+  },
+  {
+    "group": "letter S",
+    "id": "letters_en_s",
+    "text": "S is for Sun"
+  },
+  {
+    "group": "letter T",
+    "id": "letters_en_t",
+    "text": "T is for Turtle"
+  },
+  {
+    "group": "letter U",
+    "id": "letters_en_u",
+    "text": "U is for Umbrella"
+  },
+  {
+    "group": "letter V",
+    "id": "letters_en_v",
+    "text": "V is for Volcano"
+  },
+  {
+    "group": "letter W",
+    "id": "letters_en_w",
+    "text": "W is for Watermelon"
+  },
+  {
+    "group": "letter X",
+    "id": "letters_en_x",
+    "text": "X is for Xylophone"
+  },
+  {
+    "group": "letter Y",
+    "id": "letters_en_y",
+    "text": "Y is for Yarn"
+  },
+  {
+    "group": "letter Z",
+    "id": "letters_en_z",
+    "text": "Z is for Zebra"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_red",
+    "text": "Red"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_red",
+    "text": "Red"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_orange",
+    "text": "Orange"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_orange",
+    "text": "Orange"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_yellow",
+    "text": "Yellow"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_yellow",
+    "text": "Yellow"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_green",
+    "text": "Green"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_green",
+    "text": "Green"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_blue",
+    "text": "Blue"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_blue",
+    "text": "Blue"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_purple",
+    "text": "Purple"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_purple",
+    "text": "Purple"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_pink",
+    "text": "Pink"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_pink",
+    "text": "Pink"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_white",
+    "text": "White"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_white",
+    "text": "White"
+  },
+  {
+    "group": "colors",
+    "id": "colors_intro_black",
+    "text": "Black"
+  },
+  {
+    "group": "colors",
+    "id": "color_name_black",
+    "text": "Black"
+  },
+  {
+    "group": "praise",
+    "id": "praise_1",
+    "text": "Good job!"
+  },
+  {
+    "group": "praise",
+    "id": "praise_2",
+    "text": "Well done!"
+  },
+  {
+    "group": "praise",
+    "id": "praise_3",
+    "text": "Great!"
+  },
+  {
+    "group": "praise",
+    "id": "praise_4",
+    "text": "That's right!"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_red",
+    "text": "Where is Red?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_orange",
+    "text": "Where is Orange?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_yellow",
+    "text": "Where is Yellow?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_green",
+    "text": "Where is Green?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_blue",
+    "text": "Where is Blue?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_purple",
+    "text": "Where is Purple?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_pink",
+    "text": "Where is Pink?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_white",
+    "text": "Where is White?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_black",
+    "text": "Where is Black?"
+  },
+  {
+    "group": "color sort",
+    "id": "sort_intro",
+    "text": "Let's sort by color!"
+  },
+  {
+    "group": "color sort",
+    "id": "sort_complete",
+    "text": "Great job! You sorted them all!"
+  }
+]

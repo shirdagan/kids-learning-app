@@ -1,11 +1,19 @@
-name: Generate Hebrew Voice Clips
+name: Generate Voice Clips
 
 # הפעלה ידנית בלבד (כפתור "Run workflow" בלשונית Actions) - לא רץ
 # אוטומטית על כל push, כי זה עולה כסף (זעיר, אבל בכל זאת) ומיועד
-# לריצה מכוונת כשרוצים להוסיף/לעדכן הקלטות.
+# לריצה מכוונת כשרוצים להוסיף/לעדכן הקלטות, בעברית או באנגלית.
 on:
   workflow_dispatch:
     inputs:
+      language:
+        description: 'שפה ליצירת קליפים'
+        required: true
+        default: 'he'
+        type: choice
+        options:
+          - he
+          - en
       voice_name:
         description: >-
           שם קול ספציפי מ-Google TTS (למשל he-IL-Wavenet-C). ריק = בוחר
@@ -34,6 +42,7 @@ jobs:
       - name: Generate voice clips
         env:
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          LANGUAGE: ${{ inputs.language }}
           VOICE_NAME: ${{ inputs.voice_name }}
         run: python scripts/generate_voice_clips.py
 
@@ -41,10 +50,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/audio/voice/he/
+          git add assets/audio/voice/
           if git diff --cached --quiet; then
             echo "No new files to commit."
           else
-            git commit -m "Add generated Hebrew voice clips"
+            git commit -m "Add generated voice clips (${{ inputs.language }})"
             git push
           fi

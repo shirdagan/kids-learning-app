@@ -1,0 +1,712 @@
+[
+  {
+    "group": "צבעים",
+    "id": "colors_intro_red",
+    "text": "אָדֹם"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_red",
+    "text": "אָדֹם"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_orange",
+    "text": "כָּתֹם"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_orange",
+    "text": "כָּתֹם"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_yellow",
+    "text": "צָהֹב"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_yellow",
+    "text": "צָהֹב"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_green",
+    "text": "יָרֹק"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_green",
+    "text": "יָרֹק"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_blue",
+    "text": "כָּחֹל"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_blue",
+    "text": "כָּחֹל"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_purple",
+    "text": "סָגֹל"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_purple",
+    "text": "סָגֹל"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_pink",
+    "text": "וָרֹד"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_pink",
+    "text": "וָרֹד"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_white",
+    "text": "לָבָן"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_white",
+    "text": "לָבָן"
+  },
+  {
+    "group": "צבעים",
+    "id": "colors_intro_black",
+    "text": "שָׁחֹר"
+  },
+  {
+    "group": "צבעים",
+    "id": "color_name_black",
+    "text": "שָׁחֹר"
+  },
+  {
+    "group": "עידוד",
+    "id": "praise_1",
+    "text": "כל הכבוד!"
+  },
+  {
+    "group": "עידוד",
+    "id": "praise_2",
+    "text": "יופי!"
+  },
+  {
+    "group": "עידוד",
+    "id": "praise_3",
+    "text": "מעולה!"
+  },
+  {
+    "group": "עידוד",
+    "id": "praise_4",
+    "text": "נכון מאוד!"
+  },
+  {
+    "group": "אות א",
+    "id": "letters_he_alef_patach",
+    "text": "אַ. אַבָּא."
+  },
+  {
+    "group": "אות א",
+    "id": "letters_he_alef_segol",
+    "text": "אֶ. אֶפְרוֹחַ."
+  },
+  {
+    "group": "אות א",
+    "id": "letters_he_alef_hiriq",
+    "text": "אִ. אִמָּא."
+  },
+  {
+    "group": "אות א",
+    "id": "letters_he_alef_holam",
+    "text": "אוֹ. אוֹטוֹ."
+  },
+  {
+    "group": "אות א",
+    "id": "letters_he_alef_shuruk",
+    "text": "אוּ. אוּמְלֶט."
+  },
+  {
+    "group": "אות ב",
+    "id": "letters_he_bet_patach",
+    "text": "בַּ. בַּלּוֹן."
+  },
+  {
+    "group": "אות ב",
+    "id": "letters_he_bet_segol",
+    "text": "בֶּ. בֶּגֶד."
+  },
+  {
+    "group": "אות ב",
+    "id": "letters_he_bet_hiriq",
+    "text": "בִּ. בִּיסְקְוִיט."
+  },
+  {
+    "group": "אות ב",
+    "id": "letters_he_bet_holam",
+    "text": "בּוֹ. בּוֹקֶר."
+  },
+  {
+    "group": "אות ב",
+    "id": "letters_he_bet_shuruk",
+    "text": "בּוּ. בּוּבָּה."
+  },
+  {
+    "group": "אות ג",
+    "id": "letters_he_gimel_patach",
+    "text": "גַּ. גַּלְגַּל."
+  },
+  {
+    "group": "אות ג",
+    "id": "letters_he_gimel_segol",
+    "text": "גֶּ. גֶּזֶר."
+  },
+  {
+    "group": "אות ג",
+    "id": "letters_he_gimel_hiriq",
+    "text": "גִּ. גִּיטָרָה."
+  },
+  {
+    "group": "אות ג",
+    "id": "letters_he_gimel_holam",
+    "text": "גּוֹ. גּוֹזָל."
+  },
+  {
+    "group": "אות ג",
+    "id": "letters_he_gimel_shuruk",
+    "text": "גּוּ. גּוּר."
+  },
+  {
+    "group": "אות ד",
+    "id": "letters_he_dalet_patach",
+    "text": "דָּ. דָּג."
+  },
+  {
+    "group": "אות ד",
+    "id": "letters_he_dalet_segol",
+    "text": "דֶּ. דֶּלֶת."
+  },
+  {
+    "group": "אות ד",
+    "id": "letters_he_dalet_hiriq",
+    "text": "דִּי. דִּינוֹזָאוּר."
+  },
+  {
+    "group": "אות ד",
+    "id": "letters_he_dalet_holam",
+    "text": "דּוֹ. דּוֹב."
+  },
+  {
+    "group": "אות ד",
+    "id": "letters_he_dalet_shuruk",
+    "text": "דּוּ. דּוּבִּי."
+  },
+  {
+    "group": "אות ה",
+    "id": "letters_he_hey_patach",
+    "text": "הַ. הַר."
+  },
+  {
+    "group": "אות ה",
+    "id": "letters_he_hey_segol",
+    "text": "הֶ. הֶגֶה."
+  },
+  {
+    "group": "אות ה",
+    "id": "letters_he_hey_hiriq",
+    "text": "הִי. הִיפּוֹפּוֹטָם."
+  },
+  {
+    "group": "אות ה",
+    "id": "letters_he_hey_holam",
+    "text": "הוֹ. הוֹרֶה."
+  },
+  {
+    "group": "אות ה",
+    "id": "letters_he_hey_shuruk",
+    "text": "הוּ. הוּמוֹר."
+  },
+  {
+    "group": "אות ו",
+    "id": "letters_he_vav_patach",
+    "text": "וָ. וָרוֹד."
+  },
+  {
+    "group": "אות ו",
+    "id": "letters_he_vav_segol",
+    "text": "וֶ. וֶרֶד."
+  },
+  {
+    "group": "אות ו",
+    "id": "letters_he_vav_hiriq",
+    "text": "וִי. וִילוֹן."
+  },
+  {
+    "group": "אות ו",
+    "id": "letters_he_vav_holam",
+    "text": "וֹ. וֹלְט."
+  },
+  {
+    "group": "אות ז",
+    "id": "letters_he_zayin_patach",
+    "text": "זַ. זַיִת."
+  },
+  {
+    "group": "אות ז",
+    "id": "letters_he_zayin_segol",
+    "text": "זֶ. זֶמֶר."
+  },
+  {
+    "group": "אות ז",
+    "id": "letters_he_zayin_hiriq",
+    "text": "זִי. זִיקוּק."
+  },
+  {
+    "group": "אות ז",
+    "id": "letters_he_zayin_holam",
+    "text": "זוֹ. זוֹהַר."
+  },
+  {
+    "group": "אות ז",
+    "id": "letters_he_zayin_shuruk",
+    "text": "זוּ. זוּג."
+  },
+  {
+    "group": "אות ח",
+    "id": "letters_he_het_patach",
+    "text": "חָ. חָתוּל."
+  },
+  {
+    "group": "אות ח",
+    "id": "letters_he_het_segol",
+    "text": "חֶ. חֶבֶל."
+  },
+  {
+    "group": "אות ח",
+    "id": "letters_he_het_hiriq",
+    "text": "חִי. חִיפּוּשִׁית."
+  },
+  {
+    "group": "אות ח",
+    "id": "letters_he_het_holam",
+    "text": "חוֹ. חוֹף."
+  },
+  {
+    "group": "אות ח",
+    "id": "letters_he_het_shuruk",
+    "text": "חוּ. חוּט."
+  },
+  {
+    "group": "אות ט",
+    "id": "letters_he_tet_patach",
+    "text": "טַ. טַבַּעַת."
+  },
+  {
+    "group": "אות ט",
+    "id": "letters_he_tet_segol",
+    "text": "טֶ. טֶלֶפוֹן."
+  },
+  {
+    "group": "אות ט",
+    "id": "letters_he_tet_hiriq",
+    "text": "טִי. טִיפָּה."
+  },
+  {
+    "group": "אות ט",
+    "id": "letters_he_tet_holam",
+    "text": "טוֹ. טוֹעֵן."
+  },
+  {
+    "group": "אות ט",
+    "id": "letters_he_tet_shuruk",
+    "text": "טוּ. טוּנָה."
+  },
+  {
+    "group": "אות י",
+    "id": "letters_he_yud_patach",
+    "text": "יָ. יָרֵחַ."
+  },
+  {
+    "group": "אות י",
+    "id": "letters_he_yud_segol",
+    "text": "יֶ. יֶלֶד."
+  },
+  {
+    "group": "אות י",
+    "id": "letters_he_yud_hiriq",
+    "text": "יִ. יִתּוּשׁ."
+  },
+  {
+    "group": "אות י",
+    "id": "letters_he_yud_holam",
+    "text": "יוֹ. יוֹם."
+  },
+  {
+    "group": "אות י",
+    "id": "letters_he_yud_shuruk",
+    "text": "יוּ. יוּבָל."
+  },
+  {
+    "group": "אות כ",
+    "id": "letters_he_kaf_patach",
+    "text": "כַּ. כַּדּוּר."
+  },
+  {
+    "group": "אות כ",
+    "id": "letters_he_kaf_segol",
+    "text": "כֶּ. כֶּלֶב."
+  },
+  {
+    "group": "אות כ",
+    "id": "letters_he_kaf_hiriq",
+    "text": "כִּ. כִּבְשָׂה."
+  },
+  {
+    "group": "אות כ",
+    "id": "letters_he_kaf_holam",
+    "text": "כּוֹ. כּוֹכָב."
+  },
+  {
+    "group": "אות כ",
+    "id": "letters_he_kaf_shuruk",
+    "text": "כּוּ. כּוּרְסָה."
+  },
+  {
+    "group": "אות ל",
+    "id": "letters_he_lamed_patach",
+    "text": "לַ. לַיְלָה."
+  },
+  {
+    "group": "אות ל",
+    "id": "letters_he_lamed_segol",
+    "text": "לֵ. לֵב."
+  },
+  {
+    "group": "אות ל",
+    "id": "letters_he_lamed_hiriq",
+    "text": "לִי. לִימוֹן."
+  },
+  {
+    "group": "אות ל",
+    "id": "letters_he_lamed_holam",
+    "text": "לוֹ. לוֹחַ."
+  },
+  {
+    "group": "אות ל",
+    "id": "letters_he_lamed_shuruk",
+    "text": "לוּ. לוּל."
+  },
+  {
+    "group": "אות מ",
+    "id": "letters_he_mem_patach",
+    "text": "מָ. מָגֵן."
+  },
+  {
+    "group": "אות מ",
+    "id": "letters_he_mem_segol",
+    "text": "מֶ. מֶלֶך."
+  },
+  {
+    "group": "אות מ",
+    "id": "letters_he_mem_hiriq",
+    "text": "מִי. מִטָּה."
+  },
+  {
+    "group": "אות מ",
+    "id": "letters_he_mem_holam",
+    "text": "מוֹ. מוֹנִית."
+  },
+  {
+    "group": "אות מ",
+    "id": "letters_he_mem_shuruk",
+    "text": "מוּ. מוּסִיקָה."
+  },
+  {
+    "group": "אות נ",
+    "id": "letters_he_nun_patach",
+    "text": "נָ. נָהָר."
+  },
+  {
+    "group": "אות נ",
+    "id": "letters_he_nun_segol",
+    "text": "נֶ. נֶמֶר."
+  },
+  {
+    "group": "אות נ",
+    "id": "letters_he_nun_hiriq",
+    "text": "נִי. נִמְלָה."
+  },
+  {
+    "group": "אות נ",
+    "id": "letters_he_nun_holam",
+    "text": "נוֹ. נוֹצָה."
+  },
+  {
+    "group": "אות נ",
+    "id": "letters_he_nun_shuruk",
+    "text": "נוּ. נוּרָה."
+  },
+  {
+    "group": "אות ס",
+    "id": "letters_he_samekh_patach",
+    "text": "סַ. סַבָּא."
+  },
+  {
+    "group": "אות ס",
+    "id": "letters_he_samekh_segol",
+    "text": "סֵ. סֵפֶר."
+  },
+  {
+    "group": "אות ס",
+    "id": "letters_he_samekh_hiriq",
+    "text": "סִי. סִיר."
+  },
+  {
+    "group": "אות ס",
+    "id": "letters_he_samekh_holam",
+    "text": "סוֹ. סוֹלְלָה."
+  },
+  {
+    "group": "אות ס",
+    "id": "letters_he_samekh_shuruk",
+    "text": "סוּ. סוּס."
+  },
+  {
+    "group": "אות ע",
+    "id": "letters_he_ayin_patach",
+    "text": "עָ. עָלֶה."
+  },
+  {
+    "group": "אות ע",
+    "id": "letters_he_ayin_segol",
+    "text": "עֵ. עֵץ."
+  },
+  {
+    "group": "אות ע",
+    "id": "letters_he_ayin_hiriq",
+    "text": "עִי. עִפָּרוֹן."
+  },
+  {
+    "group": "אות ע",
+    "id": "letters_he_ayin_holam",
+    "text": "עוֹ. עוֹגָה."
+  },
+  {
+    "group": "אות ע",
+    "id": "letters_he_ayin_shuruk",
+    "text": "עוּ. עוּגִיָּה."
+  },
+  {
+    "group": "אות פ",
+    "id": "letters_he_pe_patach",
+    "text": "פָּ. פָּרָה."
+  },
+  {
+    "group": "אות פ",
+    "id": "letters_he_pe_segol",
+    "text": "פֶּ. פֶּרַח."
+  },
+  {
+    "group": "אות פ",
+    "id": "letters_he_pe_hiriq",
+    "text": "פִּי. פִּיל."
+  },
+  {
+    "group": "אות פ",
+    "id": "letters_he_pe_holam",
+    "text": "פּוֹ. פּוֹנְפּוֹן."
+  },
+  {
+    "group": "אות פ",
+    "id": "letters_he_pe_shuruk",
+    "text": "פּוּ. פּוּמָה."
+  },
+  {
+    "group": "אות צ",
+    "id": "letters_he_tsadi_patach",
+    "text": "צָ. צָב."
+  },
+  {
+    "group": "אות צ",
+    "id": "letters_he_tsadi_segol",
+    "text": "צֶ. צֶמֶר."
+  },
+  {
+    "group": "אות צ",
+    "id": "letters_he_tsadi_hiriq",
+    "text": "צִי. צִפּוֹר."
+  },
+  {
+    "group": "אות צ",
+    "id": "letters_he_tsadi_holam",
+    "text": "צוֹ. צוֹפָר."
+  },
+  {
+    "group": "אות צ",
+    "id": "letters_he_tsadi_shuruk",
+    "text": "צוּ. צוּק."
+  },
+  {
+    "group": "אות ק",
+    "id": "letters_he_qof_patach",
+    "text": "קַ. קַרְנָף."
+  },
+  {
+    "group": "אות ק",
+    "id": "letters_he_qof_segol",
+    "text": "קֶ. קֶשֶׁת."
+  },
+  {
+    "group": "אות ק",
+    "id": "letters_he_qof_hiriq",
+    "text": "קִי. קִיפוֹד."
+  },
+  {
+    "group": "אות ק",
+    "id": "letters_he_qof_holam",
+    "text": "קוֹ. קוֹף."
+  },
+  {
+    "group": "אות ק",
+    "id": "letters_he_qof_shuruk",
+    "text": "קוּ. קוּבִּיָּה."
+  },
+  {
+    "group": "אות ר",
+    "id": "letters_he_resh_patach",
+    "text": "רַ. רַכֶּבֶת."
+  },
+  {
+    "group": "אות ר",
+    "id": "letters_he_resh_segol",
+    "text": "רֶ. רֶגֶל."
+  },
+  {
+    "group": "אות ר",
+    "id": "letters_he_resh_hiriq",
+    "text": "רִי. רִמּוֹן."
+  },
+  {
+    "group": "אות ר",
+    "id": "letters_he_resh_holam",
+    "text": "רוֹ. רוֹבּוֹט."
+  },
+  {
+    "group": "אות ר",
+    "id": "letters_he_resh_shuruk",
+    "text": "רוּ. רוּחַ."
+  },
+  {
+    "group": "אות ש",
+    "id": "letters_he_shin_patach",
+    "text": "שָׁ. שָׁעוֹן."
+  },
+  {
+    "group": "אות ש",
+    "id": "letters_he_shin_segol",
+    "text": "שֶׁ. שֶׁמֶש."
+  },
+  {
+    "group": "אות ש",
+    "id": "letters_he_shin_hiriq",
+    "text": "שִׁי. שִׁיר."
+  },
+  {
+    "group": "אות ש",
+    "id": "letters_he_shin_holam",
+    "text": "שׁוֹ. שׁוֹקוֹלָד."
+  },
+  {
+    "group": "אות ש",
+    "id": "letters_he_shin_shuruk",
+    "text": "שׁוּ. שׁוּעָל."
+  },
+  {
+    "group": "אות ת",
+    "id": "letters_he_tav_patach",
+    "text": "תַּ. תַּפּוּחַ."
+  },
+  {
+    "group": "אות ת",
+    "id": "letters_he_tav_segol",
+    "text": "תֵּ. תֵּה."
+  },
+  {
+    "group": "אות ת",
+    "id": "letters_he_tav_hiriq",
+    "text": "תִּי. תִּיק."
+  },
+  {
+    "group": "אות ת",
+    "id": "letters_he_tav_holam",
+    "text": "תּוֹ. תּוֹלַעַת."
+  },
+  {
+    "group": "אות ת",
+    "id": "letters_he_tav_shuruk",
+    "text": "תּוּ. תּוּת."
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_red",
+    "text": "אֵיפֹה אָדֹם?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_orange",
+    "text": "אֵיפֹה כָּתֹם?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_yellow",
+    "text": "אֵיפֹה צָהֹב?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_green",
+    "text": "אֵיפֹה יָרֹק?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_blue",
+    "text": "אֵיפֹה כָּחֹל?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_purple",
+    "text": "אֵיפֹה סָגֹל?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_pink",
+    "text": "אֵיפֹה וָרֹד?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_white",
+    "text": "אֵיפֹה לָבָן?"
+  },
+  {
+    "group": "color find prompt",
+    "id": "find_prompt_black",
+    "text": "אֵיפֹה שָׁחֹר?"
+  },
+  {
+    "group": "color sort",
+    "id": "sort_intro",
+    "text": "בואו נמיין לפי צבע!"
+  },
+  {
+    "group": "color sort",
+    "id": "sort_complete",
+    "text": "כל הכבוד! מיינת הכל!"
+  }
+]
