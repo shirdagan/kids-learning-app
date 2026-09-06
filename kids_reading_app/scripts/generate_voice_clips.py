@@ -48,12 +48,13 @@ OUT_DIR = os.path.join(SCRIPT_DIR, "..", "assets", "audio", "voice", LANGUAGE)
 # ניקוד יצאה מעוותת ולא נשמעה כמו עברית בכלל. Wavenet, לעומת זאת,
 # הוא קול ותיק שנבנה ספציפית לכל שפה כבר כמה שנים - הרבה יותר אמין.
 #
-# אנגלית: אין את אותה בעיה - Studio ו-Neural2 הם קולות בוגרים
-# ומוכחים ספציפית לאנגלית (לא ניסיוניים כמו Chirp3-HD לעברית), אז
-# מקבלים עדיפות ראשונה לאיכות הכי טובה.
+# אנגלית: אין את בעיית האמינות שיש לעברית, אבל יש שיקול אחר - קולות
+# Studio תומכים ב-SSML חלקי בלבד (לא prosody עם pitch, ולא emphasis
+# בכלל, ראו build_ssml), מה שסותר את המטרה של טון שמח/נלהב מכוון.
+# Neural2 בוגר לא פחות לאנגלית, ותומך ב-SSML מלא - לכן מקבל עדיפות.
 QUALITY_RANK_BY_LANGUAGE = {
     "he": ["Wavenet", "Standard", "Chirp3-HD", "Studio", "Neural2"],
-    "en": ["Studio", "Neural2", "Wavenet", "Chirp3-HD", "Standard"],
+    "en": ["Neural2", "Studio", "Wavenet", "Chirp3-HD", "Standard"],
 }
 QUALITY_RANK = QUALITY_RANK_BY_LANGUAGE[LANGUAGE]
 
@@ -89,18 +90,20 @@ def build_ssml(text, voice_name):
     עוטף את הטקסט ב-SSML עם פרוזודיה (קצב וגובה קול מוגברים מעט) ודגש -
     כדי שהקול יישמע שמח ונלהב, מתאים לילדים, במקום הטון השטוח/הקר
     שיוצא כברירת מחדל בלי שום כיוונון. נתמך על ידי Wavenet/Standard/
-    Neural2/Studio (לא על ידי Chirp3-HD, שלא תומך ב-SSML בכלל - לא
-    רלוונטי כאן כי ממילא מעדיפים קולות אחרים, ראו QUALITY_RANK_BY_LANGUAGE).
+    Neural2 (לא על ידי Chirp3-HD, שלא תומך ב-SSML בכלל - לא רלוונטי כאן
+    כי ממילא מעדיפים קולות אחרים, ראו QUALITY_RANK_BY_LANGUAGE).
 
-    קולות Studio, בניגוד לשאר, דוחים בקשה עם attribute בשם pitch על
-    prosody (שגיאת 400) - אז עבורם משמיטים אותו ומסתפקים בקצב ובדגש.
+    קולות Studio תומכים ב-SSML חלקי בלבד: לא prosody עם pitch, ולא
+    emphasis בכלל (שני אלה מחזירים שגיאת 400) - לכן מקבלים רק העלאת
+    קצב מתונה. QUALITY_RANK_BY_LANGUAGE מעדיף Neural2 על פני Studio
+    לאנגלית בדיוק בגלל זה, אבל אם מישהו יגדיר VOICE_NAME של Studio
+    במפורש, עדיין לא נרצה שהריצה תיכשל.
     """
     escaped = saxutils.escape(text)
-    prosody_attrs = 'rate="108%"'
-    if "Studio" not in voice_name:
-        prosody_attrs += ' pitch="+3st"'
+    if "Studio" in voice_name:
+        return f'<speak><prosody rate="106%">{escaped}</prosody></speak>'
     return (
-        f"<speak><prosody {prosody_attrs}>"
+        '<speak><prosody rate="108%" pitch="+3st">'
         f'<emphasis level="moderate">{escaped}</emphasis>'
         "</prosody></speak>"
     )
