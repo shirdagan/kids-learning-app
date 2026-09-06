@@ -145,16 +145,13 @@ class _ColorFindGameScreenState extends State<ColorFindGameScreen> {
       await _feedback.playSuccess();
       final phrases = AppStrings.praisePhrases(language);
       final praiseIndex = _random.nextInt(phrases.length);
-      await _voice.speakSequence([
-        (
-          clipKey: 'praise_${praiseIndex + 1}',
-          fallbackText: phrases[praiseIndex],
-        ),
-        (
-          clipKey: 'color_name_${_target.id}',
-          fallbackText: _target.nameFor(language),
-        ),
-      ], language: language);
+      // רק שבח, בלי לחזור על שם הצבע - הילד/ה כבר שמעו אותו בשאלה
+      // ("איפה אדום?") רגע לפני, וחזרה נוספת נשמעת כאילו המשחק נתקע.
+      await _voice.speak(
+        'praise_${praiseIndex + 1}',
+        phrases[praiseIndex],
+        language: language,
+      );
       await Future.delayed(const Duration(milliseconds: 600));
       if (mounted) _newRound();
     } else {

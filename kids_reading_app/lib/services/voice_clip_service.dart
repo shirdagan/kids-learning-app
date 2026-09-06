@@ -62,12 +62,36 @@ class VoiceClipService implements VoiceService {
       try {
         final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
         _knownAssets = manifest.listAssets().toSet();
+        _prefetchClips();
       } catch (_) {
         // אם הטעינה נכשלת מסיבה כלשהי, פשוט ממשיכים בלי מניפסט - הבדיקה
         // הסינכרונית תתייחס לכל קליפ כלא-קיים, וכל דיבור ייפול ל-TTS.
         _knownAssets = {};
       }
     }();
+  }
+
+  /// מזמין מראש, ברקע, את כל קבצי הקול האמיתיים שנמצאו במניפסט - כדי
+  /// שהדפדפן כבר יוריד אותם לפני שמישהו בכלל לוחץ על משהו. בלעדי זה,
+  /// כל ביטוי חדש שמושמע בפעם הראשונה בסשן גורם לעיכוב הכרחי בזמן
+  /// שהדפדפן מביא אותו מהרשת - וזה בדיוק העיכוב שמורגש כל הזמן, כי רוב
+  /// הביטויים במשחקים שונים בכל סבב.
+  ///
+  /// AudioCache על ווב פשוט מבצע GET ומסתמך על מטמון הדפדפן (ראו
+  /// audio_cache.dart בחבילת audioplayers) - בדיוק אותו מטמון ש-
+  /// AudioPlayer.play(AssetSource(...)) בודק לפני שהוא בכלל פונה לרשת,
+  /// כי שני הצדדים משתמשים ב-AudioCache.instance המשותף. לא מחכים
+  /// לתוצאה בכוונה: זה רץ ברקע בזמן שהמסך הראשון עולה, ואם קליפ בודד
+  /// נכשל בטעינה מראש זה בסדר - הניגון בפועל עדיין ינסה ברגע האמת.
+  static void _prefetchClips() {
+    final assets = _knownAssets;
+    if (assets == null) return;
+    const prefixes = ['assets/audio/voice/', 'assets/audio/animal_sounds/'];
+    final paths = assets
+        .where((path) => prefixes.any(path.startsWith))
+        .map((path) => path.substring('assets/'.length))
+        .toList();
+    unawaited(AudioCache.instance.loadAll(paths).catchError((_) => <Uri>[]));
   }
 
   bool _assetExists(String assetPath) =>
