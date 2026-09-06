@@ -31,17 +31,23 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 WORDS_PATH = os.path.join(SCRIPT_DIR, "voice_words.json")
 OUT_DIR = os.path.join(SCRIPT_DIR, "..", "assets", "audio", "voice", "he")
 
-# סדר עדיפות לבחירת הקול הכי טוב אוטומטית, אם לא נבחר קול ספציפי.
+# סדר עדיפות לבחירת הקול הכי טוב אוטומטית, אם לא נבחר קול ספציפי -
+# קודם איכות הקול, ואז מעדיפים קול נשי (מתאים יותר לילדים קטנים,
+# לפי הבקשה).
 QUALITY_RANK = ["Chirp3-HD", "Studio", "Neural2", "Wavenet", "Standard"]
 
 
 def pick_best_voice(voices):
-    def rank(v):
+    def quality(v):
         name = v["name"]
         for i, tag in enumerate(QUALITY_RANK):
             if tag in name:
                 return i
         return len(QUALITY_RANK)
+
+    def rank(v):
+        is_female = v.get("ssmlGender") == "FEMALE"
+        return (quality(v), 0 if is_female else 1)
 
     ranked = sorted(voices, key=rank)
     return ranked[0]["name"] if ranked else None
@@ -85,8 +91,13 @@ def main():
         sys.exit(1)
 
     voice_name = VOICE_NAME or pick_best_voice(voices)
-    print(f"Using voice: {voice_name}")
-    print("Available he-IL voices:", ", ".join(v["name"] for v in voices))
+    chosen = next((v for v in voices if v["name"] == voice_name), None)
+    gender = chosen.get("ssmlGender") if chosen else "unknown"
+    print(f"Using voice: {voice_name} (gender: {gender})")
+    print(
+        "Available he-IL voices:",
+        ", ".join(f"{v['name']} ({v.get('ssmlGender')})" for v in voices),
+    )
 
     with open(WORDS_PATH, encoding="utf-8") as f:
         items = json.load(f)
