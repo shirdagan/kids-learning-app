@@ -12,18 +12,30 @@ import 'english_letter_detail_screen.dart';
 
 /// מסך "English Letters": מציג את כל האותיות שנלמדו עד כה ברשת אחת -
 /// דובר אנגלית תמיד, בלי קשר למתג השפה הכללי.
-class EnglishLettersScreen extends StatelessWidget {
+class EnglishLettersScreen extends StatefulWidget {
   const EnglishLettersScreen({super.key, this.voiceService});
 
   /// נקודת הזרקה לצורך בדיקות (מועברת הלאה למסך האות הבודדת).
   final VoiceService? voiceService;
 
   @override
-  Widget build(BuildContext context) {
-    // מדברים כאן, באותה לחיצה שפותחת את המסך - לא במסך היעד - כדי
-    // שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
-    final voice = voiceService ?? VoiceClipService();
+  State<EnglishLettersScreen> createState() => _EnglishLettersScreenState();
+}
 
+class _EnglishLettersScreenState extends State<EnglishLettersScreen> {
+  // מופע יחיד ל-state כולה של המסך, כדי לא ליצור נגן קול חדש (ולהדליף
+  // את הקודם, בלי לעצור אותו) בכל build - מה שגרם לקליפים ישנים
+  // להמשיך להתנגן ברקע ולהתערבב עם קליפים חדשים ממסכים אחרים.
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
+
+  @override
+  void dispose() {
+    _voice.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Scaffold(
@@ -69,7 +81,10 @@ class EnglishLettersScreen extends StatelessWidget {
                             child: _LetterGridTile(
                               letter: concept.letter,
                               onTap: () {
-                                voice.speak(
+                                // מדברים כאן, באותה לחיצה שפותחת את המסך -
+                                // לא במסך היעד - כי בספארי/אייאוס דיבור
+                                // סינתטי לא ייחסם בשקט.
+                                _voice.speak(
                                   'letters_en_${concept.id}',
                                   concept.fullExplanation,
                                   language: AppLanguage.english,
@@ -78,7 +93,7 @@ class EnglishLettersScreen extends StatelessWidget {
                                   fadeScaleRoute(
                                     EnglishLetterDetailScreen(
                                       concept: concept,
-                                      voiceService: voiceService,
+                                      voiceService: widget.voiceService,
                                     ),
                                   ),
                                 );

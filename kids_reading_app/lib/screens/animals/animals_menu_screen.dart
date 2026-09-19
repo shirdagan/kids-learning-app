@@ -15,18 +15,32 @@ import 'animal_find_game_screen.dart';
 import 'animal_intro_screen.dart';
 
 /// תפריט מודול החיות: קולות של חיות, ומשחק "מצא את החיה".
-class AnimalsMenuScreen extends StatelessWidget {
+class AnimalsMenuScreen extends StatefulWidget {
   const AnimalsMenuScreen({super.key, this.voiceService});
 
   /// נקודת הזרקה לצורך בדיקות.
   final VoiceService? voiceService;
 
   @override
+  State<AnimalsMenuScreen> createState() => _AnimalsMenuScreenState();
+}
+
+class _AnimalsMenuScreenState extends State<AnimalsMenuScreen> {
+  // מופע יחיד ל-state כולה של המסך, כדי לא ליצור נגן קול חדש (ולהדליף
+  // את הקודם, בלי לעצור אותו) בכל build - מה שגרם לקליפים ישנים
+  // להמשיך להתנגן ברקע ולהתערבב עם קליפים חדשים ממסכים אחרים.
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
+  final _random = Random();
+
+  @override
+  void dispose() {
+    _voice.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
-    // מדברים כאן, באותה לחיצה שפותחת את מסך המשחק - לא במסך היעד -
-    // כדי שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
-    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -74,8 +88,11 @@ class AnimalsMenuScreen extends StatelessWidget {
                         icon: Icons.search_rounded,
                         color: AppTheme.secondary,
                         onTap: () {
-                          final round = pickAnimalFindRound(Random());
-                          voice.playSound(
+                          // מדברים כאן, באותה לחיצה שגם פותחת את המסך -
+                          // לא במסך היעד - כי בספארי/אייאוס דיבור סינתטי
+                          // נחסם בשקט אם הוא לא קורה ישירות בתוך הלחיצה.
+                          final round = pickAnimalFindRound(_random);
+                          _voice.playSound(
                             round.target.id,
                             round.target.introSpeechFor(l),
                             language: l,
@@ -83,7 +100,7 @@ class AnimalsMenuScreen extends StatelessWidget {
                           Navigator.of(context).push(
                             fadeScaleRoute(
                               AnimalFindGameScreen(
-                                voiceService: voiceService,
+                                voiceService: widget.voiceService,
                                 initialRound: round,
                               ),
                             ),

@@ -16,20 +16,31 @@ import 'color_detail_screen.dart';
 
 /// מסך "היכרות עם צבעים": מציג את כל הצבעים ביחד ברשת אחת, כדי
 /// שהילד/ה יבחרו בעצמם לאיזה צבע להיכנס - במקום לדפדף אחד-אחד.
-class ColorIntroScreen extends StatelessWidget {
+class ColorIntroScreen extends StatefulWidget {
   const ColorIntroScreen({super.key, this.voiceService});
 
   /// נקודת הזרקה לצורך בדיקות (מועברת הלאה למסך הצבע הבודד).
   final VoiceService? voiceService;
 
   @override
+  State<ColorIntroScreen> createState() => _ColorIntroScreenState();
+}
+
+class _ColorIntroScreenState extends State<ColorIntroScreen> {
+  // מופע יחיד ל-state כולה של המסך, כדי לא ליצור נגן קול חדש (ולהדליף
+  // את הקודם, בלי לעצור אותו) בכל build - מה שגרם לקליפים ישנים
+  // להמשיך להתנגן ברקע ולהתערבב עם קליפים חדשים ממסכים אחרים.
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
+
+  @override
+  void dispose() {
+    _voice.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
-    // חשוב: המכשיר שדובר בפועל - ולא רק המסך היעד - כי בספארי/אייסאוס
-    // דיבור סינתטי (TTS) נחסם בשקט אם הוא לא מופעל ישירות מתוך אירוע
-    // מגע (לא אחרי מעבר מסך א-סינכרוני). לכן מדברים כאן, באותה לחיצה
-    // שגם פותחת את המסך - לא במסך היעד עצמו.
-    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFDF7),
@@ -74,7 +85,11 @@ class ColorIntroScreen extends StatelessWidget {
                             concept: concept,
                             label: concept.nameFor(l),
                             onTap: () {
-                              voice.speak(
+                              // מדברים כאן, באותה לחיצה שגם פותחת את המסך -
+                              // לא במסך היעד - כי בספארי/אייאוס דיבור
+                              // סינתטי נחסם בשקט אם הוא לא קורה ישירות
+                              // בתוך הלחיצה.
+                              _voice.speak(
                                 'colors_intro_${concept.id}',
                                 concept.nameFor(l),
                                 language: l,
@@ -83,7 +98,7 @@ class ColorIntroScreen extends StatelessWidget {
                                 fadeScaleRoute(
                                   ColorDetailScreen(
                                     concept: concept,
-                                    voiceService: voiceService,
+                                    voiceService: widget.voiceService,
                                   ),
                                 ),
                               );

@@ -14,7 +14,7 @@ import 'hebrew_vowel_form_detail_screen.dart';
 /// חמש כרטיסיות, אחת לכל תנועה מלאה (פתח/קמץ, צירי/סגול, חיריק, חולם,
 /// קובוץ/שורוק), כל אחת עם מילה אמיתית מנוקדת ואיור. לחיצה על כרטיסיה
 /// נכנסת למסך גדול של המילה הזו (ושם היא נאמרת בקול).
-class HebrewLetterDetailScreen extends StatelessWidget {
+class HebrewLetterDetailScreen extends StatefulWidget {
   const HebrewLetterDetailScreen({
     super.key,
     required this.concept,
@@ -25,11 +25,28 @@ class HebrewLetterDetailScreen extends StatelessWidget {
   final VoiceService? voiceService;
 
   @override
+  State<HebrewLetterDetailScreen> createState() =>
+      _HebrewLetterDetailScreenState();
+}
+
+class _HebrewLetterDetailScreenState extends State<HebrewLetterDetailScreen> {
+  // מופע יחיד ל-state כולה של המסך, כדי לא ליצור נגן קול חדש (ולהדליף
+  // את הקודם, בלי לעצור אותו) בכל build - מה שגרם לקליפים ישנים
+  // להמשיך להתנגן ברקע ולהתערבב עם קליפים חדשים ממסכים אחרים (כולל
+  // מילים לא קשורות ממסך התנועה שנפתח אחרי).
+  late final VoiceService _voice =
+      widget.voiceService ?? VoiceClipService();
+
+  @override
+  void dispose() {
+    _voice.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final concept = widget.concept;
     const accent = Color(0xFF9C6ADE);
-    // מדברים כאן, באותה לחיצה שפותחת את מסך המילה - לא במסך היעד -
-    // כדי שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
-    final voice = voiceService ?? VoiceClipService();
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -107,7 +124,10 @@ class HebrewLetterDetailScreen extends StatelessWidget {
                             child: _VowelCard(
                               form: form,
                               onTap: () {
-                                voice.speak(
+                                // מדברים כאן, באותה לחיצה שפותחת את מסך
+                                // המילה - לא במסך היעד - כדי שדיבור סינתטי
+                                // לא ייחסם בשקט בספארי/אייאוס.
+                                _voice.speak(
                                   'letters_he_${concept.id}_${kHebrewVowelIds[i]}',
                                   form.spoken,
                                   language: AppLanguage.hebrew,
@@ -118,7 +138,7 @@ class HebrewLetterDetailScreen extends StatelessWidget {
                                       letterId: concept.id,
                                       vowelId: kHebrewVowelIds[i],
                                       form: form,
-                                      voiceService: voiceService,
+                                      voiceService: widget.voiceService,
                                     ),
                                   ),
                                 );

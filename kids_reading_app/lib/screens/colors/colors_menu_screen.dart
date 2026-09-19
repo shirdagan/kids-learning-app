@@ -16,18 +16,32 @@ import 'color_intro_screen.dart';
 import 'color_sort_game_screen.dart';
 
 /// תפריט מודול הצבעים: היכרות, משחק "מצא את הצבע" ומשחק מיון.
-class ColorsMenuScreen extends StatelessWidget {
+class ColorsMenuScreen extends StatefulWidget {
   const ColorsMenuScreen({super.key, this.voiceService});
 
   /// נקודת הזרקה לצורך בדיקות.
   final VoiceService? voiceService;
 
   @override
+  State<ColorsMenuScreen> createState() => _ColorsMenuScreenState();
+}
+
+class _ColorsMenuScreenState extends State<ColorsMenuScreen> {
+  // מופע יחיד ל-state כולה של המסך, כדי לא ליצור נגן קול חדש (ולהדליף
+  // את הקודם, בלי לעצור אותו) בכל build - מה שגרם לקליפים ישנים
+  // להמשיך להתנגן ברקע ולהתערבב עם קליפים חדשים ממסכים אחרים.
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
+  final _random = Random();
+
+  @override
+  void dispose() {
+    _voice.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
-    // מדברים כאן, באותה לחיצה שפותחת את מסך המשחק - לא במסך היעד -
-    // כדי שדיבור סינתטי לא ייחסם בשקט בספארי/אייאוס (ראו ColorIntroScreen).
-    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -76,8 +90,11 @@ class ColorsMenuScreen extends StatelessWidget {
                         icon: Icons.search_rounded,
                         color: AppTheme.secondary,
                         onTap: () {
-                          final round = pickColorFindRound(Random());
-                          voice.speak(
+                          // מדברים כאן, באותה לחיצה שגם פותחת את המסך -
+                          // לא במסך היעד - כי בספארי/אייאוס דיבור סינתטי
+                          // נחסם בשקט אם הוא לא קורה ישירות בתוך הלחיצה.
+                          final round = pickColorFindRound(_random);
+                          _voice.speak(
                             'find_prompt_${round.target.id}',
                             AppStrings.findPrompt(l, round.target.nameFor(l)),
                             language: l,
@@ -85,7 +102,7 @@ class ColorsMenuScreen extends StatelessWidget {
                           Navigator.of(context).push(
                             fadeScaleRoute(
                               ColorFindGameScreen(
-                                voiceService: voiceService,
+                                voiceService: widget.voiceService,
                                 initialRound: round,
                               ),
                             ),
@@ -98,7 +115,7 @@ class ColorsMenuScreen extends StatelessWidget {
                         icon: Icons.shopping_basket_rounded,
                         color: AppTheme.success,
                         onTap: () {
-                          voice.speak(
+                          _voice.speak(
                             'sort_intro',
                             AppStrings.sortIntro(l),
                             language: l,
@@ -106,7 +123,7 @@ class ColorsMenuScreen extends StatelessWidget {
                           Navigator.of(context).push(
                             fadeScaleRoute(
                               ColorSortGameScreen(
-                                voiceService: voiceService,
+                                voiceService: widget.voiceService,
                                 introAlreadySpoken: true,
                               ),
                             ),

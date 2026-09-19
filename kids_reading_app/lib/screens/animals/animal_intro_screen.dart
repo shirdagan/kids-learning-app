@@ -16,19 +16,31 @@ import 'animal_detail_screen.dart';
 
 /// מסך "קולות של חיות": מציג את כל החיות ביחד ברשת אחת, כדי שהילד/ה
 /// יבחרו בעצמם לאיזו חיה להיכנס - במקום לדפדף אחת-אחת.
-class AnimalIntroScreen extends StatelessWidget {
+class AnimalIntroScreen extends StatefulWidget {
   const AnimalIntroScreen({super.key, this.voiceService});
 
   /// נקודת הזרקה לצורך בדיקות (מועברת הלאה למסך החיה הבודדת).
   final VoiceService? voiceService;
 
   @override
+  State<AnimalIntroScreen> createState() => _AnimalIntroScreenState();
+}
+
+class _AnimalIntroScreenState extends State<AnimalIntroScreen> {
+  // מופע יחיד ל-state כולה של המסך, כדי לא ליצור נגן קול חדש (ולהדליף
+  // את הקודם, בלי לעצור אותו) בכל build - מה שגרם לקליפים ישנים
+  // להמשיך להתנגן ברקע ולהתערבב עם קליפים חדשים ממסכים אחרים.
+  late final VoiceService _voice = widget.voiceService ?? VoiceClipService();
+
+  @override
+  void dispose() {
+    _voice.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = LanguageScope.of(context).value;
-    // ראו הערה מקבילה ב-ColorIntroScreen: מדברים כאן, באותה לחיצה
-    // שפותחת את המסך - לא במסך היעד - כדי שדיבור סינתטי לא ייחסם
-    // בשקט בספארי/אייאוס.
-    final voice = voiceService ?? VoiceClipService();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFDF7),
@@ -73,7 +85,11 @@ class AnimalIntroScreen extends StatelessWidget {
                             concept: concept,
                             label: concept.nameFor(l),
                             onTap: () {
-                              voice.playSound(
+                              // ראו הערה מקבילה ב-ColorIntroScreen: מדברים
+                              // כאן, באותה לחיצה שפותחת את המסך - לא במסך
+                              // היעד - כי בספארי/אייאוס דיבור סינתטי לא
+                              // ייחסם בשקט.
+                              _voice.playSound(
                                 concept.id,
                                 concept.introSpeechFor(l),
                                 language: l,
@@ -82,7 +98,7 @@ class AnimalIntroScreen extends StatelessWidget {
                                 fadeScaleRoute(
                                   AnimalDetailScreen(
                                     concept: concept,
-                                    voiceService: voiceService,
+                                    voiceService: widget.voiceService,
                                   ),
                                 ),
                               );
