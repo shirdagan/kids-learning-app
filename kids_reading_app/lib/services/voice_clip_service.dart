@@ -42,7 +42,17 @@ class VoiceClipService implements VoiceService {
     : _tts = ttsFallback ?? TtsService();
 
   final SpeechService _tts;
-  final AudioPlayer _player = AudioPlayer();
+
+  /// נגן קול אחד ומשותף לכל האפליקציה (לא אחד חדש לכל מסך/State) - כי
+  /// כל מסך יוצר את ה-VoiceClipService שלו ומדבר בלחיצה שגם פותחת את
+  /// המסך הבא (ראו למשל ColorIntroScreen), אבל פלאטר לא סוגר את ה-
+  /// State של המסך הקודם רק כי דחפו מסך חדש מעליו (Navigator.push) -
+  /// הוא נשאר חי (ולכן גם הנגן שלו) עד שחוזרים אליו ועוזבים אותו
+  /// לגמרי. עם נגן נפרד לכל מסך, זה אומר שהקליפ שהמסך הקודם התחיל
+  /// להשמיע ממשיך לנגן ברקע בזמן שהמסך הבא משמיע קליפ אחר משלו - שני
+  /// קולות בבת אחת. נגן משותף אחד פותר את זה: התחלת ניגון חדש בכל
+  /// מקום עוצרת אוטומטית כל ניגון קודם, מכל מסך שהוא.
+  static final AudioPlayer _player = AudioPlayer();
 
   /// רשימת כל קבצי ה-assets שנארזו בפועל בבנייה הזו, נטענת פעם אחת
   /// באתחול האפליקציה (ראו [preloadManifest]) ונשמרת בזיכרון. חייבים
@@ -99,8 +109,9 @@ class VoiceClipService implements VoiceService {
 
   /// סיומות אודיו שמנסים בסדר הזה - כדי שאפשר יהיה להוסיף הקלטה בכל
   /// פורמט נפוץ (מה שהמכשיר של המקליט/ת מפיק, כמו mp3 מאייפון) בלי
-  /// להמיר קבצים באופן ידני.
-  static const _clipExtensions = ['m4a', 'mp3', 'wav', 'ogg'];
+  /// להמיר קבצים באופן ידני. flac נוסף כי חלק מקולות החיות שהובאו
+  /// מוויקישיתוף הגיעו בפורמט הזה.
+  static const _clipExtensions = ['m4a', 'mp3', 'wav', 'ogg', 'flac'];
 
   @override
   Future<void> speak(
@@ -145,9 +156,17 @@ class VoiceClipService implements VoiceService {
     try {
       await _player.stop();
       final completer = Completer<void>();
-      late final StreamSubscription<void> sub;
-      sub = _player.onPlayerComplete.listen((_) {
-        if (!completer.isCompleted) completer.complete();
+      late final StreamSubscription<PlayerState> sub;
+      sub = _player.onPlayerStateChanged.listen((state) {
+        // מסתפקים גם ב-stopped (לא רק completed): מכיוון שהנגן משותף
+        // לכל האפליקציה (ראו הערה על _player), קליפ יכול "להיפסק" לא
+        // רק בגלל שהוא נגמר, אלא כי ניגון אחר, ממסך אחר, קרא ל-stop()
+        // כדי להתחיל את הקליפ שלו. בכל מקרה לא רוצים שהקריאה הזו תיפול
+        // ל-TTS בטעות אחרי שהמשתמש כבר עבר הלאה.
+        if ((state == PlayerState.completed || state == PlayerState.stopped) &&
+            !completer.isCompleted) {
+          completer.complete();
+        }
       });
       await _player.play(AssetSource(assetPath));
       // אם הניגון עצמו נתקע (למשל שגיאת פלטפורמה) — טיים-אאוט זורק
@@ -163,6 +182,7 @@ class VoiceClipService implements VoiceService {
 
   @override
   void dispose() {
-    _player.dispose();
+    // הנגן משותף לכל האפליקציה (ראו הערה על _player) - לא נסגר כשמסך
+    // בודד נעלם, אחרת המסך הראשון שנסגר היה שובר השמעה לכל השאר.
   }
 }
