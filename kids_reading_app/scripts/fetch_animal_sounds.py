@@ -15,6 +15,14 @@ Commons), ושומר אותם תחת assets/audio/animal_sounds/<id>.<ext>.
 מדלג על כל חיה שכבר יש לה קובץ (למשל dog.mp3/cow.wav/lion.wav/
 chicken.wav שהועלו ידנית), כך שאפשר להריץ שוב בבטחה בלי לשכתב הקלטות
 קיימות.
+
+חשוב: הסקריפט לא יכול "להאזין" ולוודא שהקובץ שנבחר באמת נשמע כמו
+החיה - ההתאמה מבוססת רק על טקסט (כותרת/רישיון). בפועל זה כבר הוליד
+טעויות אמיתיות (למשל "Bio-duck.flac" - כינוי לקול לוויתן מינק, לא
+ברווז; "Rabbit oinks and squeaks.wav" - ארנב, לא חזיר) - ראו
+_CONFUSABLE_BLOCKLIST לרשימת המלכודות הידועות שסוננו בעקבות זה. כל
+קובץ חדש שהתווסף כדאי עדיין לבדוק ידנית (קריאת השם/ריכוז ב-
+ATTRIBUTIONS.md) לפני שסומכים עליו סופית.
 """
 
 import json
@@ -36,17 +44,33 @@ USER_AGENT = (
 )
 
 # כמה ניסוחי חיפוש לכל חיה, בסדר עדיפות - ניסיון ראשון שמחזיר קובץ
-# מתאים עוצר את החיפוש לאותה חיה.
+# מתאים עוצר את החיפוש לאותה חיה. מונחי "-שלילה" (נתמכים בחיפוש של
+# ויקישיתוף) מנסים לסנן מראש התאמות מוכרות ומטעות (ראו
+# _CONFUSABLE_BLOCKLIST על אותה בעיה בדיוק).
 SEARCH_QUERIES = {
     "cat": ["cat meowing sound", "cat meow"],
-    "duck": ["duck quacking sound", "duck quack"],
+    "duck": ["duck quacking sound -bio -whale -minke", "duck quack"],
     "sheep": ["sheep bleating sound", "sheep baa"],
     "horse": ["horse neighing sound", "horse whinny"],
-    "pig": ["pig oinking sound", "pig oink"],
+    "pig": ["pig oinking sound -rabbit -guinea", "pig oink -rabbit -guinea"],
 }
 
 _SEARCHABLE_EXTENSIONS = {"ogg", "oga", "wav", "mp3", "flac"}
 _SUPPORTED_EXTENSIONS = {"mp3", "wav", "m4a", "ogg"}
+
+# מונחים שאם מופיעים בכותרת פוסלים אותה, גם אם שם החיה עצמו כן מופיע
+# שם - כי גילינו בפועל שחיפוש טקסטואלי לבד לא מספיק. "Bio-duck" הוא
+# למשל שם מוכר לקול לוויתן מינק שמזכיר געגוע ברווז, לא ברווז אמיתי;
+# "Rabbit oinks..." הוא ארנב, לא חזיר, למרות שהכותרת משתמשת במילה
+# "oinks" בשם חיבה. מכיוון שאין דרך להאזין ולוודא באמת, זו רשת ביטחון
+# נוספת מעבר לחיפוש עצמו - לא תחליף להאזנה אנושית לפני שמשתמשים בקובץ.
+_CONFUSABLE_BLOCKLIST = {
+    "duck": ["bio-duck", "bio duck", "whale", "minke"],
+    "pig": ["rabbit", "guinea pig"],
+    "cat": ["catfish", "caterpillar", "concatenat"],
+    "horse": ["seahorse", "sea horse", "horseshoe"],
+    "sheep": ["sheepdog", "black sheep"],
+}
 
 # רישיונות חופשיים בלבד. כל קובץ שמתארח בוויקישיתוף כבר עומד במדיניות
 # האתר (מתיר שימוש מסחרי ושינוי), אבל בודקים גם במפורש.
@@ -119,9 +143,20 @@ def _license_ok(info):
     return any(marker in combined for marker in _ALLOWED_LICENSE_MARKERS)
 
 
+def _title_matches_animal(title, animal_id):
+    lowered = title.lower()
+    if not re.search(rf"\b{re.escape(animal_id)}\b", lowered):
+        return False
+    blocked = _CONFUSABLE_BLOCKLIST.get(animal_id, [])
+    return not any(term in lowered for term in blocked)
+
+
 def find_best_file(animal_id):
     for query in SEARCH_QUERIES[animal_id]:
-        candidates = _search_candidates(query)
+        candidates = [
+            t for t in _search_candidates(query)
+            if _title_matches_animal(t, animal_id)
+        ]
         if not candidates:
             continue
         infos = _fetch_imageinfo(candidates)
