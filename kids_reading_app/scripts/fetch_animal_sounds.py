@@ -46,30 +46,63 @@ USER_AGENT = (
 # כמה ניסוחי חיפוש לכל חיה, בסדר עדיפות - ניסיון ראשון שמחזיר קובץ
 # מתאים עוצר את החיפוש לאותה חיה. מונחי "-שלילה" (נתמכים בחיפוש של
 # ויקישיתוף) מנסים לסנן מראש התאמות מוכרות ומטעות (ראו
-# _CONFUSABLE_BLOCKLIST על אותה בעיה בדיוק).
+# _CONFUSABLE_BLOCKLIST על אותה בעיה בדיוק). כמה ניסוחים לכל חיה, כולל
+# מילים נרדפות (לא רק שם החיה עצמה) - כי קבצים רבים בוויקישיתוף
+# מתויגים לפי מונח ספציפי (למשל "mallard call" ולא "duck sound").
 SEARCH_QUERIES = {
-    "cat": ["cat meowing sound", "cat meow"],
-    "duck": ["duck quacking sound -bio -whale -minke", "duck quack"],
-    "sheep": ["sheep bleating sound", "sheep baa"],
-    "horse": ["horse neighing sound", "horse whinny"],
-    "pig": ["pig oinking sound -rabbit -guinea", "pig oink -rabbit -guinea"],
+    "cat": ["cat meowing sound", "cat meow", "kitten meowing"],
+    "duck": [
+        "duck quacking sound -bio -whale -minke",
+        "mallard call -whale -minke",
+        "duck quack",
+    ],
+    "sheep": [
+        "sheep bleating sound",
+        "sheep baa",
+        "lamb bleating",
+        "ewe bleating",
+    ],
+    "horse": [
+        "horse neighing sound",
+        "horse whinny",
+        "horse snort",
+        "stallion neighing",
+    ],
+    "pig": [
+        "pig oinking sound -rabbit -guinea",
+        "pig oink -rabbit -guinea",
+        "piglet squealing",
+        "hog grunting -rabbit",
+    ],
+}
+
+# מילים נרדפות מקובלות לכל חיה - התאמה דורשת לפחות אחת מהן כמילה
+# שלמה בכותרת (לא רק את ה-id באנגלית), כי קבצים רבים מתויגים לפי
+# מונח ספציפי יותר (גור/זכר/נקבה) ולא שם החיה הכללי.
+_ANIMAL_SYNONYMS = {
+    "cat": ["cat", "kitten", "feline"],
+    "duck": ["duck", "mallard", "drake", "duckling"],
+    "sheep": ["sheep", "lamb", "ewe", "ram"],
+    "horse": ["horse", "stallion", "mare", "foal", "pony", "colt"],
+    "pig": ["pig", "piglet", "hog", "sow", "boar"],
 }
 
 _SEARCHABLE_EXTENSIONS = {"ogg", "oga", "wav", "mp3", "flac"}
 _SUPPORTED_EXTENSIONS = {"mp3", "wav", "m4a", "ogg"}
 
-# מונחים שאם מופיעים בכותרת פוסלים אותה, גם אם שם החיה עצמו כן מופיע
-# שם - כי גילינו בפועל שחיפוש טקסטואלי לבד לא מספיק. "Bio-duck" הוא
-# למשל שם מוכר לקול לוויתן מינק שמזכיר געגוע ברווז, לא ברווז אמיתי;
-# "Rabbit oinks..." הוא ארנב, לא חזיר, למרות שהכותרת משתמשת במילה
-# "oinks" בשם חיבה. מכיוון שאין דרך להאזין ולוודא באמת, זו רשת ביטחון
-# נוספת מעבר לחיפוש עצמו - לא תחליף להאזנה אנושית לפני שמשתמשים בקובץ.
+# מונחים שאם מופיעים בכותרת פוסלים אותה, גם אם אחת המילים הנרדפות כן
+# מופיעה שם - כי גילינו בפועל שחיפוש טקסטואלי לבד לא מספיק. "Bio-duck"
+# הוא למשל שם מוכר לקול לוויתן מינק שמזכיר געגוע ברווז, לא ברווז
+# אמיתי; "Rabbit oinks..." הוא ארנב, לא חזיר, למרות שהכותרת משתמשת
+# במילה "oinks" בשם חיבה. מכיוון שאין דרך להאזין ולוודא באמת, זו רשת
+# ביטחון נוספת מעבר לחיפוש עצמו - לא תחליף להאזנה אנושית לפני שמשתמשים
+# בקובץ.
 _CONFUSABLE_BLOCKLIST = {
     "duck": ["bio-duck", "bio duck", "whale", "minke"],
     "pig": ["rabbit", "guinea pig"],
     "cat": ["catfish", "caterpillar", "concatenat"],
-    "horse": ["seahorse", "sea horse", "horseshoe"],
-    "sheep": ["sheepdog", "black sheep"],
+    "horse": ["seahorse", "sea horse", "horseshoe", "carousel"],
+    "sheep": ["sheepdog", "black sheep", "wolf in sheep"],
 }
 
 # רישיונות חופשיים בלבד. כל קובץ שמתארח בוויקישיתוף כבר עומד במדיניות
@@ -106,7 +139,7 @@ def _search_candidates(query):
             "list": "search",
             "srnamespace": "6",  # namespace File:
             "srsearch": query,
-            "srlimit": "10",
+            "srlimit": "20",
             "format": "json",
         }
     )
@@ -145,7 +178,8 @@ def _license_ok(info):
 
 def _title_matches_animal(title, animal_id):
     lowered = title.lower()
-    if not re.search(rf"\b{re.escape(animal_id)}\b", lowered):
+    synonyms = _ANIMAL_SYNONYMS.get(animal_id, [animal_id])
+    if not any(re.search(rf"\b{re.escape(word)}\b", lowered) for word in synonyms):
         return False
     blocked = _CONFUSABLE_BLOCKLIST.get(animal_id, [])
     return not any(term in lowered for term in blocked)
